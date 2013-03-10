@@ -52,26 +52,42 @@ public class CommandsManager {
         String subCommand = "";
         boolean helpCommand = false;
 
+        if (mainCommand.isEmpty()) {
+            return;
+        }
+
         if (args.length > 0) {
             subCommand = args[0];
-            if (args.length > 1 && args[1].toLowerCase().equals("help")) {
+            if (args.length > 1 && (args[1].equalsIgnoreCase("help") || args[1].equals("?"))) {
                 helpCommand = true;
             }
         }
 
-        if (!subCommand.isEmpty() && subCommand.toLowerCase().equals("help")) {
+        if (!subCommand.isEmpty() && (subCommand.equalsIgnoreCase("help") || subCommand.equals("?"))) {
             subCommand = "";
             helpCommand = true;
         }
 
         if (helpCommand) {
+            // search for defined help command
+            for (ChatCommand command : commands) {
+                if (command.isCommand(mainCommand, "help") || command.isCommand(mainCommand, "?")) {
+                    Queue<String> argsQueue = new LinkedList<String>(Arrays.asList(args));
+
+                    command.execute(sender, argsQueue.toArray(new String[] {}));
+
+                    return;
+                }
+            }
+
             for (ChatCommand command : commands) {
                 command.sendHelp(mainCommand, subCommand, sender);
             }
+
             return;
         }
 
-        if (!mainCommand.isEmpty() && !subCommand.isEmpty()) {
+        if (!subCommand.isEmpty()) {
             for (ChatCommand command : commands) {
                 if (command.isCommand(mainCommand, subCommand)) {
                     Queue<String> argsQueue = new LinkedList<String>(Arrays.asList(args));
@@ -83,15 +99,13 @@ public class CommandsManager {
             }
         }
 
-        if (!mainCommand.isEmpty()) {
-            for (ChatCommand command : commands) {
-                if (command.isCommand(mainCommand)) {
-                    Queue<String> argsQueue = new LinkedList<String>(Arrays.asList(args));
+        for (ChatCommand command : commands) {
+            if (command.isCommand(mainCommand)) {
+                Queue<String> argsQueue = new LinkedList<String>(Arrays.asList(args));
 
-                    command.execute(sender, argsQueue.toArray(new String[] {}));
+                command.execute(sender, argsQueue.toArray(new String[] {}));
 
-                    return;
-                }
+                return;
             }
         }
 

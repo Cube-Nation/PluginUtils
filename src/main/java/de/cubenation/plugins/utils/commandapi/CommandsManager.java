@@ -111,7 +111,7 @@ public class CommandsManager {
 
         if (sender instanceof Player) {
             ((Player) sender).sendMessage(ChatColor.RED + "Befehl nicht gefunden. Versuche /" + mainCommand + " help"
-                    + (!subCommand.isEmpty() ? " oder /" + mainCommand + " " + subCommand : ""));
+                    + (!subCommand.isEmpty() ? " oder /" + mainCommand + " " + subCommand : "") + " help");
         }
     }
 }

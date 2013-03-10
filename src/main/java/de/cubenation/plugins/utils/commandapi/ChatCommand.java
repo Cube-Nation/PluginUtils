@@ -11,16 +11,20 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class ChatCommand {
+    // annotation data
     private ArrayList<String> mainNames = new ArrayList<String>();
     private ArrayList<String> subNames = new ArrayList<String>();
-    private Object instance;
-    private Method method;
-    private boolean consoleCommand = false;
     private ArrayList<String> permissions = new ArrayList<String>();
-    private int max;
-    private int min;
+    private ArrayList<String> worlds = new ArrayList<String>();
+    private boolean consoleCommand = false;
+    private int min = 0;
+    private int max = -1;
     private String usage = "";
     private String help = "";
+
+    // reflection objects
+    private Object instance;
+    private Method method;
 
     public ChatCommand(Object instance, Method method) {
         this.instance = instance;
@@ -47,6 +51,15 @@ public class ChatCommand {
         if (checkPermissionAnnotation) {
             CommandPermissions checkPermission = method.getAnnotation(CommandPermissions.class);
             permissions.addAll(Arrays.asList(checkPermission.value()));
+        }
+
+        boolean checkWorldAnnotation = method.isAnnotationPresent(World.class);
+        if (checkWorldAnnotation) {
+            World checkWorld = method.getAnnotation(World.class);
+
+            for (String world : checkWorld.value()) {
+                worlds.add(world.toLowerCase());
+            }
         }
     }
 
@@ -120,6 +133,23 @@ public class ChatCommand {
                             + " " + usage);
                 }
                 return;
+            }
+
+            if (worlds.size() > 0) {
+                String playerCurrentWorld = ((Player) sender).getWorld().getName().toLowerCase();
+
+                if (!worlds.contains(playerCurrentWorld)) {
+                    StringBuilder worldString = new StringBuilder("");
+                    for (String world : worlds) {
+                        if (worldString.length() > 0) {
+                            worldString.append(", ");
+                        }
+                        worldString.append(world);
+                    }
+                    ((Player) sender).sendMessage(ChatColor.RED + "Du befindest dich nicht in der richtigen Spielwelt! Der Befehl kann nur in "
+                            + worldString.toString() + " verwendet werden.");
+                    return;
+                }
             }
 
             arguments.add((Player) sender);

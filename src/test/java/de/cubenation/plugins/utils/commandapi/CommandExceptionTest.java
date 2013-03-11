@@ -1,5 +1,10 @@
 package de.cubenation.plugins.utils.commandapi;
 
+import org.bukkit.command.BlockCommandSender;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.RemoteConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.Assert;
 import org.junit.Test;
@@ -78,10 +83,9 @@ public class CommandExceptionTest {
             commandsManager.add(TestInvalidCommandWrongMethodParameterFirst.class);
             Assert.fail("expected wrong first parameter");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals(
-                    "["
-                            + TestInvalidCommandWrongMethodParameterFirst.class.getName()
-                            + "] first parameter in method wrongCommad must be Player, ConsoleCommandSender, BlockCommandSender or RemoteConsoleCommandSender but was java.lang.Integer",
+            Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterFirst.class.getName() + "] first parameter in method wrongCommad must be "
+                    + Player.class.getSimpleName() + ", " + ConsoleCommandSender.class.getSimpleName() + ", " + BlockCommandSender.class.getSimpleName() + ", "
+                    + RemoteConsoleCommandSender.class.getSimpleName() + " or " + CommandSender.class.getSimpleName() + " but was java.lang.Integer",
                     e.getMessage());
         }
     }
@@ -134,10 +138,10 @@ public class CommandExceptionTest {
 
         try {
             commandsManager.add(TestInvalidCommandMultiAnnotation.class);
-            Assert.fail("expected multi annotation exception");
+            Assert.fail("expected wrong first parameter exception");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandMultiAnnotation.class.getName() + "] multiple sender annotation found, only one allowed",
-                    e.getMessage());
+            Assert.assertEquals("[" + TestInvalidCommandMultiAnnotation.class.getName()
+                    + "] first parameter in method emptyCommand must be ConsoleCommandSender or CommandSender but was org.bukkit.entity.Player", e.getMessage());
         }
     }
 }

@@ -15,6 +15,7 @@ import de.cubenation.plugins.utils.commandapi.testutils.TestRemoteConsole;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandBlock;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandConsole;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMain;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMulti;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandRemoteConsole;
 
 public class CommandSenderTest extends AbstractTest {
@@ -128,5 +129,16 @@ public class CommandSenderTest extends AbstractTest {
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
         Assert.assertEquals("Befehl nicht gefunden. Versuche /test help", chatList.get(0));
+    }
+
+    @Test
+    public void testMultiCommand() throws CommandException {
+        commandsManager.add(TestValidCommandMulti.class);
+
+        executeComannd("/test", new TestConsole());
+
+        Assert.assertEquals(1, testValid.size());
+        Assert.assertTrue(testValid.containsKey("testMultiCommand"));
+        Assert.assertEquals(new Short((short) 1), testValid.get("testMultiCommand"));
     }
 }

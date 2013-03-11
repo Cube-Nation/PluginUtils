@@ -11,11 +11,12 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import de.cubenation.plugins.utils.commandapi.annotation.Block;
+import de.cubenation.plugins.utils.commandapi.annotation.SenderBlock;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.annotation.CommandPermissions;
-import de.cubenation.plugins.utils.commandapi.annotation.Console;
-import de.cubenation.plugins.utils.commandapi.annotation.RemoteConsole;
+import de.cubenation.plugins.utils.commandapi.annotation.SenderConsole;
+import de.cubenation.plugins.utils.commandapi.annotation.SenderPlayer;
+import de.cubenation.plugins.utils.commandapi.annotation.SenderRemoteConsole;
 import de.cubenation.plugins.utils.commandapi.annotation.World;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
@@ -27,7 +28,11 @@ public class ChatCommand {
     private ArrayList<String> subNames = new ArrayList<String>();
     private ArrayList<String> permissions = new ArrayList<String>();
     private ArrayList<String> worlds = new ArrayList<String>();
-    private SenderType senderType = SenderType.PLAYER;
+    private boolean isConsoleSender = false;
+    private boolean isBlockSender = false;
+    private boolean isPlayerSender = true;
+    private boolean isRemoteConsoleSender = false;
+    private boolean isMultipleSender = false;
     private int min = 0;
     private int max = -1;
     private String usage = "";
@@ -68,14 +73,31 @@ public class ChatCommand {
         usage = annotation.usage();
         help = annotation.help();
 
-        if (method.isAnnotationPresent(Console.class)) {
-            senderType = SenderType.CONSOLE;
-        } else if (method.isAnnotationPresent(Block.class)) {
-            senderType = SenderType.BLOCK;
-        } else if (method.isAnnotationPresent(RemoteConsole.class)) {
-            senderType = SenderType.REMOTE_CONSOLE;
-        } else if (method.isAnnotationPresent(de.cubenation.plugins.utils.commandapi.annotation.Player.class)) {
-            senderType = SenderType.PLAYER;
+        short annoCount = 0;
+        isConsoleSender = method.isAnnotationPresent(SenderConsole.class);
+        if (isConsoleSender) {
+            annoCount++;
+        }
+
+        isBlockSender = method.isAnnotationPresent(SenderBlock.class);
+        if (isBlockSender) {
+            annoCount++;
+        }
+
+        isRemoteConsoleSender = method.isAnnotationPresent(SenderRemoteConsole.class);
+        if (isRemoteConsoleSender) {
+            annoCount++;
+        }
+
+        if (annoCount > 0) {
+            isPlayerSender = method.isAnnotationPresent(SenderPlayer.class);
+            if (isPlayerSender) {
+                annoCount++;
+            }
+        }
+
+        if (annoCount > 1) {
+            isMultipleSender = true;
         }
 
         boolean checkPermissionAnnotation = method.isAnnotationPresent(CommandPermissions.class);
@@ -104,21 +126,22 @@ public class ChatCommand {
     }
 
     public boolean isCommand(CommandSender sender, String mainName, String subName) {
-        return ((sender instanceof Player && senderType == SenderType.PLAYER) || (sender instanceof ConsoleCommandSender && senderType == SenderType.CONSOLE)
-                || (sender instanceof BlockCommandSender && senderType == SenderType.BLOCK) || (sender instanceof RemoteConsoleCommandSender && senderType == SenderType.REMOTE_CONSOLE))
+        return ((sender instanceof Player && isPlayerSender) || (sender instanceof ConsoleCommandSender && isConsoleSender)
+                || (sender instanceof BlockCommandSender && isBlockSender) || (sender instanceof RemoteConsoleCommandSender && isRemoteConsoleSender))
                 && mainNames.contains(mainName.toLowerCase()) && subNames.contains(subName.toLowerCase());
     }
 
     public boolean isCommand(CommandSender sender, String mainName) {
-        return ((sender instanceof Player && senderType == SenderType.PLAYER) || (sender instanceof ConsoleCommandSender && senderType == SenderType.CONSOLE)
-                || (sender instanceof BlockCommandSender && senderType == SenderType.BLOCK) || (sender instanceof RemoteConsoleCommandSender && senderType == SenderType.REMOTE_CONSOLE))
+        return ((sender instanceof Player && isPlayerSender) || (sender instanceof ConsoleCommandSender && isConsoleSender)
+                || (sender instanceof BlockCommandSender && isBlockSender) || (sender instanceof RemoteConsoleCommandSender && isRemoteConsoleSender))
                 && mainNames.contains(mainName.toLowerCase()) && subNames.isEmpty();
     }
 
     private boolean checkCommand(CommandSender sender, String[] args) {
-        if (senderType == SenderType.PLAYER) {
+        if (isPlayerSender && sender instanceof Player) {
             return checkCommandForPlayer((Player) sender, args);
-        } else if (senderType == SenderType.CONSOLE || senderType == SenderType.BLOCK || senderType == SenderType.REMOTE_CONSOLE) {
+        } else if ((isConsoleSender && sender instanceof ConsoleCommandSender) || (isBlockSender && sender instanceof BlockCommandSender)
+                || (isRemoteConsoleSender && sender instanceof RemoteConsoleCommandSender)) {
             return checkCommandForOther(sender, args);
         }
         return false;
@@ -217,14 +240,18 @@ public class ChatCommand {
 
     private ArrayList<Object> getParameterList(CommandSender sender, String[] args) {
         ArrayList<Object> arguments = new ArrayList<Object>();
-        if (senderType == SenderType.CONSOLE) {
-            arguments.add((ConsoleCommandSender) sender);
-        } else if (senderType == SenderType.PLAYER) {
-            arguments.add((Player) sender);
-        } else if (senderType == SenderType.BLOCK) {
-            arguments.add((BlockCommandSender) sender);
-        } else if (senderType == SenderType.REMOTE_CONSOLE) {
-            arguments.add((RemoteConsoleCommandSender) sender);
+        if (isMultipleSender) {
+            arguments.add(sender);
+        } else {
+            if (isConsoleSender) {
+                arguments.add((ConsoleCommandSender) sender);
+            } else if (isPlayerSender) {
+                arguments.add((Player) sender);
+            } else if (isBlockSender) {
+                arguments.add((BlockCommandSender) sender);
+            } else if (isRemoteConsoleSender) {
+                arguments.add((RemoteConsoleCommandSender) sender);
+            }
         }
 
         arguments.add(args);
@@ -252,9 +279,9 @@ public class ChatCommand {
 
         if ((mainNames.contains(mainCommand.toLowerCase()) && subCommand.isEmpty())
                 || (mainNames.contains(mainCommand.toLowerCase()) && subNames.contains(subCommand.toLowerCase()))) {
-            if (senderType == SenderType.CONSOLE || senderType == SenderType.BLOCK || senderType == SenderType.REMOTE_CONSOLE) {
+            if (isConsoleSender || isBlockSender || isRemoteConsoleSender) {
                 sender.sendMessage("/" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " - " + help);
-            } else {
+            } else if (isPlayerSender) {
                 if (permissions.size() > 0) {
                     for (String permission : permissions) {
                         if (!hasPlayerRight((Player) sender, permission)) {
@@ -270,9 +297,5 @@ public class ChatCommand {
 
     public void setPermissionInterface(PermissionInterface permissionInterface) {
         this.permissionInterface = permissionInterface;
-    }
-
-    private enum SenderType {
-        PLAYER, CONSOLE, BLOCK, REMOTE_CONSOLE
     }
 }

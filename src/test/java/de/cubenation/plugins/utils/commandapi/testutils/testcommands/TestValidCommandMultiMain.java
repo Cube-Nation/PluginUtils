@@ -1,6 +1,6 @@
 package de.cubenation.plugins.utils.commandapi.testutils.testcommands;
 
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
@@ -14,7 +14,7 @@ public class TestValidCommandMultiMain {
     }
 
     @Command(main = { "test1", "test2" })
-    public void testMultiMainCommand(Player player, String[] args) {
+    public void testMultiMainCommand(CommandSender player, String[] args) {
         plugin.doSomeThing("testMultiMainCommand");
     }
 }

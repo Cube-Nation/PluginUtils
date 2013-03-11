@@ -242,9 +242,9 @@ public class ChatCommand {
                             return;
                         }
                     }
-                    ((Player) sender).sendMessage(ChatColor.AQUA + "/" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "")
-                            + ChatColor.WHITE + " - " + help);
                 }
+                ((Player) sender).sendMessage(ChatColor.AQUA + "/" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + ChatColor.WHITE
+                        + " - " + help);
             }
         }
     }

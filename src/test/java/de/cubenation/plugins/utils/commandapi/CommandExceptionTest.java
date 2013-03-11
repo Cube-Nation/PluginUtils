@@ -49,7 +49,8 @@ public class CommandExceptionTest {
             commandsManager.add(TestInvalidCommandWrongConstructor.class);
             Assert.fail("expected wrong constructor");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandWrongConstructor.class.getName() + "] no matching constructor found", e.getMessage());
+            Assert.assertEquals("[" + TestInvalidCommandWrongConstructor.class.getName()
+                    + "] no matching constructor found, matches are empty constructors and constructors with JavaPlugin as parameter", e.getMessage());
         }
     }
 

@@ -40,7 +40,8 @@ public class CommandsManager {
                 try {
                     instance = commandClass.newInstance();
                 } catch (InstantiationException e1) {
-                    throw new CommandWarmUpException(commandClass, "no matching constructor found");
+                    throw new CommandWarmUpException(commandClass,
+                            "no matching constructor found, matches are empty constructors and constructors with JavaPlugin as parameter");
                 }
             }
             Method[] declaredMethods = instance.getClass().getDeclaredMethods();

@@ -1,4 +1,4 @@
-package de.cubenation.plugins.utils.commandapi;
+package de.cubenation.plugins.utils.commandapi.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -2,7 +2,6 @@ package de.cubenation.plugins.utils.commandapi;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,6 +9,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import de.cubenation.plugins.utils.commandapi.annotation.Command;
+import de.cubenation.plugins.utils.commandapi.annotation.CommandPermissions;
+import de.cubenation.plugins.utils.commandapi.annotation.Console;
+import de.cubenation.plugins.utils.commandapi.annotation.World;
+import de.cubenation.plugins.utils.commandapi.exception.CommandException;
+import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.pluginwrapper.PermissionsExWrapper;
 
 public class ChatCommand {
@@ -28,22 +33,33 @@ public class ChatCommand {
     private Object instance;
     private Method method;
 
-    public ChatCommand(Object instance, Method method) {
+    public ChatCommand(Object instance, Method method) throws CommandWarmUpException {
         this.instance = instance;
         this.method = method;
 
         Command annotation = method.getAnnotation(Command.class);
 
         for (String main : annotation.main()) {
+            if (main == null || main.isEmpty()) {
+                throw new CommandWarmUpException(instance.getClass(), "main attribute could not be empty");
+            }
             mainNames.add(main.toLowerCase());
         }
 
         for (String sub : annotation.sub()) {
+            if (sub == null || sub.isEmpty()) {
+                continue;
+            }
             subNames.add(sub.toLowerCase());
         }
 
         min = annotation.min();
         max = annotation.max();
+
+        if (max > -1 && min > max) {
+            throw new CommandWarmUpException(instance.getClass(), "min(" + min + ") attribute could not be greater than max(" + max + ") attribute");
+        }
+
         usage = annotation.usage();
         help = annotation.help();
 
@@ -52,7 +68,13 @@ public class ChatCommand {
         boolean checkPermissionAnnotation = method.isAnnotationPresent(CommandPermissions.class);
         if (checkPermissionAnnotation) {
             CommandPermissions checkPermission = method.getAnnotation(CommandPermissions.class);
-            permissions.addAll(Arrays.asList(checkPermission.value()));
+
+            for (String permission : checkPermission.value()) {
+                if (permission == null || permission.isEmpty()) {
+                    continue;
+                }
+                permissions.add(permission);
+            }
         }
 
         boolean checkWorldAnnotation = method.isAnnotationPresent(World.class);
@@ -60,17 +82,22 @@ public class ChatCommand {
             World checkWorld = method.getAnnotation(World.class);
 
             for (String world : checkWorld.value()) {
+                if (world == null || world.isEmpty()) {
+                    continue;
+                }
                 worlds.add(world.toLowerCase());
             }
         }
     }
 
-    public boolean isCommand(String mainName, String subName) {
-        return mainNames.contains(mainName.toLowerCase()) && subNames.contains(subName.toLowerCase());
+    public boolean isCommand(CommandSender sender, String mainName, String subName) {
+        return ((sender instanceof Player && !consoleCommand) || (sender instanceof ConsoleCommandSender && consoleCommand))
+                && mainNames.contains(mainName.toLowerCase()) && subNames.contains(subName.toLowerCase());
     }
 
-    public boolean isCommand(String mainName) {
-        return mainNames.contains(mainName.toLowerCase()) && subNames.isEmpty();
+    public boolean isCommand(CommandSender sender, String mainName) {
+        return ((sender instanceof Player && !consoleCommand) || (sender instanceof ConsoleCommandSender && consoleCommand))
+                && mainNames.contains(mainName.toLowerCase()) && subNames.isEmpty();
     }
 
     private boolean checkCommand(CommandSender sender, String[] args) {
@@ -92,7 +119,7 @@ public class ChatCommand {
         }
 
         if (min > 0 && min > args.length) {
-            sender.sendMessage(ChatColor.RED + "Mindest Anzahl an Parameter nicht ausreichend");
+            sender.sendMessage(ChatColor.RED + "Mindest Anzahl an Parameter nicht angegeben");
             if (!usage.isEmpty()) {
                 sender.sendMessage(ChatColor.RED + "Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
             }
@@ -135,7 +162,7 @@ public class ChatCommand {
 
     private boolean checkCommandForConsolse(ConsoleCommandSender sender, String[] args) {
         if (min > 0 && min > args.length) {
-            sender.sendMessage("Mindest Anzahl an Parameter nicht ausreichend");
+            sender.sendMessage("Mindest Anzahl an Parameter nicht angegeben");
             if (!usage.isEmpty()) {
                 sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
                 return false;
@@ -187,7 +214,8 @@ public class ChatCommand {
     public boolean hasPlayerRight(Player player, String rightName) {
         boolean has = false;
 
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("PermissionsEx")) {
+        if (Bukkit.getServer() != null && Bukkit.getServer().getPluginManager() != null
+                && Bukkit.getServer().getPluginManager().isPluginEnabled("PermissionsEx")) {
             has = PermissionsExWrapper.hasPlayerRight(player, rightName);
         } else {
             has = player.hasPermission(rightName);

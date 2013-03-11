@@ -1,4 +1,4 @@
-package de.cubenation.plugins.utils.commandapi;
+package de.cubenation.plugins.utils.commandapi.exception;
 
 public class CommandException extends Exception {
     private static final long serialVersionUID = 870638193072101739L;
@@ -11,8 +11,11 @@ public class CommandException extends Exception {
         super(message);
     }
 
-    public CommandException(Throwable t) {
-        super(t);
+    public CommandException(Throwable cause) {
+        super(cause);
     }
 
+    public CommandException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

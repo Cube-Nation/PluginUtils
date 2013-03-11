@@ -6,6 +6,9 @@
 	<version>0.0.1</version>
 	<name>PluginUtils</name>
 	<url>http://www.cube-nation.de/</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<repositories>
 		<repository>
 			<id>cna-public-repos</id>

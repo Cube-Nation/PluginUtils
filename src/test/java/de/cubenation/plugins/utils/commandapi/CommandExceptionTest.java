@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandEmptyMain;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandMultiAnnotation;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandOtherException;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongConstructor;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterFirst;
@@ -77,8 +78,11 @@ public class CommandExceptionTest {
             commandsManager.add(TestInvalidCommandWrongMethodParameterFirst.class);
             Assert.fail("expected wrong first parameter");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterFirst.class.getName()
-                    + "] first parameter in method wrongCommad must be Player, ConsoleCommandSender, BlockCommandSender or RemoteConsoleCommandSender but was java.lang.Integer", e.getMessage());
+            Assert.assertEquals(
+                    "["
+                            + TestInvalidCommandWrongMethodParameterFirst.class.getName()
+                            + "] first parameter in method wrongCommad must be Player, ConsoleCommandSender, BlockCommandSender or RemoteConsoleCommandSender but was java.lang.Integer",
+                    e.getMessage());
         }
     }
 
@@ -119,6 +123,20 @@ public class CommandExceptionTest {
             Assert.fail("expected other exception");
         } catch (CommandWarmUpException e) {
             Assert.assertEquals("[" + TestInvalidCommandWrongMinMax.class.getName() + "] min(2) attribute could not be greater than max(1) attribute",
+                    e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandMultiAnnotation() {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandMultiAnnotation.class);
+            Assert.fail("expected multi annotation exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandMultiAnnotation.class.getName() + "] multiple sender annotation found, only one allowed",
                     e.getMessage());
         }
     }

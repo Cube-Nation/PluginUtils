@@ -74,6 +74,8 @@ public class ChatCommand {
             senderType = SenderType.BLOCK;
         } else if (method.isAnnotationPresent(RemoteConsole.class)) {
             senderType = SenderType.REMOTE_CONSOLE;
+        } else if (method.isAnnotationPresent(de.cubenation.plugins.utils.commandapi.annotation.Player.class)) {
+            senderType = SenderType.PLAYER;
         }
 
         boolean checkPermissionAnnotation = method.isAnnotationPresent(CommandPermissions.class);

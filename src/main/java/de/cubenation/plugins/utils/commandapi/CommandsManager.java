@@ -15,7 +15,10 @@ import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.cubenation.plugins.utils.commandapi.annotation.Block;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
+import de.cubenation.plugins.utils.commandapi.annotation.Console;
+import de.cubenation.plugins.utils.commandapi.annotation.RemoteConsole;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 
@@ -66,6 +69,24 @@ public class CommandsManager {
                     if (!parameterTypes[1].equals(String[].class)) {
                         throw new CommandWarmUpException(commandClass, "second parameter in method " + declaredMethod.getName() + " must be String[] but was "
                                 + parameterTypes[1].getName());
+                    }
+
+                    short annoCount = 0;
+                    if (declaredMethod.isAnnotationPresent(de.cubenation.plugins.utils.commandapi.annotation.Player.class)) {
+                        annoCount++;
+                    }
+                    if (declaredMethod.isAnnotationPresent(Console.class)) {
+                        annoCount++;
+                    }
+                    if (declaredMethod.isAnnotationPresent(Block.class)) {
+                        annoCount++;
+                    }
+                    if (declaredMethod.isAnnotationPresent(RemoteConsole.class)) {
+                        annoCount++;
+                    }
+
+                    if (annoCount > 1) {
+                        throw new CommandWarmUpException(commandClass, "multiple sender annotation found, only one allowed");
                     }
 
                     ChatCommand newchatCommand = new ChatCommand(instance, declaredMethod);

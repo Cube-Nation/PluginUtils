@@ -32,6 +32,7 @@ public class ChatCommand {
     // reflection objects
     private Object instance;
     private Method method;
+    private PermissionInterface permissionInterface;
 
     public ChatCommand(Object instance, Method method) throws CommandWarmUpException {
         this.instance = instance;
@@ -214,7 +215,9 @@ public class ChatCommand {
     public boolean hasPlayerRight(Player player, String rightName) {
         boolean has = false;
 
-        if (Bukkit.getServer() != null && Bukkit.getServer().getPluginManager() != null
+        if (permissionInterface != null) {
+            has = permissionInterface.hasPermission(player, rightName);
+        } else if (Bukkit.getServer() != null && Bukkit.getServer().getPluginManager() != null
                 && Bukkit.getServer().getPluginManager().isPluginEnabled("PermissionsEx")) {
             has = PermissionsExWrapper.hasPlayerRight(player, rightName);
         } else {
@@ -244,5 +247,9 @@ public class ChatCommand {
                 }
             }
         }
+    }
+
+    public void setPermissionInterface(PermissionInterface permissionInterface) {
+        this.permissionInterface = permissionInterface;
     }
 }

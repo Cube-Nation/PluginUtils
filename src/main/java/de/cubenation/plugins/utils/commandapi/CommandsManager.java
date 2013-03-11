@@ -20,6 +20,7 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 public class CommandsManager {
     private JavaPlugin plugin;
     private ArrayList<ChatCommand> commands = new ArrayList<ChatCommand>();
+    private PermissionInterface permissionInterface = null;
 
     public CommandsManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -46,7 +47,11 @@ public class CommandsManager {
             for (Method declaredMethod : declaredMethods) {
                 boolean annotationPresent = declaredMethod.isAnnotationPresent(Command.class);
                 if (annotationPresent) {
-                    commands.add(new ChatCommand(instance, declaredMethod));
+                    ChatCommand newchatCommand = new ChatCommand(instance, declaredMethod);
+                    if (permissionInterface != null) {
+                        newchatCommand.setPermissionInterface(permissionInterface);
+                    }
+                    commands.add(newchatCommand);
                 }
             }
         } catch (CommandWarmUpException e) {
@@ -130,6 +135,14 @@ public class CommandsManager {
         } else {
             ((ConsoleCommandSender) sender).sendMessage("Befehl nicht gefunden. Versuche /" + mainCommand + " help"
                     + (!subCommand.isEmpty() ? " oder /" + mainCommand + " " + subCommand + " help" : ""));
+        }
+    }
+
+    public void setPermissionInterface(PermissionInterface permissionInterface) {
+        this.permissionInterface = permissionInterface;
+
+        for (ChatCommand command : commands) {
+            command.setPermissionInterface(permissionInterface);
         }
     }
 }

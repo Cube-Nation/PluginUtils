@@ -7,6 +7,7 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMain;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMultiMain;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandOtherMethod;
 
 public class CommandMainTest extends AbstractTest {
     @Test
@@ -30,5 +31,16 @@ public class CommandMainTest extends AbstractTest {
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testMultiMainCommand"));
         Assert.assertEquals(new Short((short) 2), testValid.get("testMultiMainCommand"));
+    }
+
+    @Test
+    public void testOtherCommand() throws CommandException {
+        commandsManager.add(TestValidCommandOtherMethod.class);
+
+        executeComannd("/test");
+
+        Assert.assertEquals(1, testValid.size());
+        Assert.assertTrue(testValid.containsKey("testOtherCommand"));
+        Assert.assertEquals(new Short((short) 1), testValid.get("testOtherCommand"));
     }
 }

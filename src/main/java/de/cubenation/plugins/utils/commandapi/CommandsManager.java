@@ -48,25 +48,26 @@ public class CommandsManager {
             }
             Method[] declaredMethods = instance.getClass().getDeclaredMethods();
             for (Method declaredMethod : declaredMethods) {
-                Class<?>[] parameterTypes = declaredMethod.getParameterTypes();
-
-                if (parameterTypes.length != 2) {
-                    throw new CommandWarmUpException(commandClass, "wrong number of paramter in method " + declaredMethod.getName() + ", expected 2 but was "
-                            + parameterTypes.length);
-                }
-                if (!parameterTypes[0].equals(Player.class) && !parameterTypes[0].equals(ConsoleCommandSender.class)
-                        && !parameterTypes[0].equals(BlockCommandSender.class) && !parameterTypes[0].equals(RemoteConsoleCommandSender.class)) {
-                    throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName()
-                            + " must be Player, ConsoleCommandSender, BlockCommandSender or RemoteConsoleCommandSender but was " + parameterTypes[0].getName());
-                }
-
-                if (!parameterTypes[1].equals(String[].class)) {
-                    throw new CommandWarmUpException(commandClass, "second parameter in method " + declaredMethod.getName() + " must be String[] but was "
-                            + parameterTypes[1].getName());
-                }
-
                 boolean annotationPresent = declaredMethod.isAnnotationPresent(Command.class);
                 if (annotationPresent) {
+                    Class<?>[] parameterTypes = declaredMethod.getParameterTypes();
+
+                    if (parameterTypes.length != 2) {
+                        throw new CommandWarmUpException(commandClass, "wrong number of paramter in method " + declaredMethod.getName()
+                                + ", expected 2 but was " + parameterTypes.length);
+                    }
+                    if (!parameterTypes[0].equals(Player.class) && !parameterTypes[0].equals(ConsoleCommandSender.class)
+                            && !parameterTypes[0].equals(BlockCommandSender.class) && !parameterTypes[0].equals(RemoteConsoleCommandSender.class)) {
+                        throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName()
+                                + " must be Player, ConsoleCommandSender, BlockCommandSender or RemoteConsoleCommandSender but was "
+                                + parameterTypes[0].getName());
+                    }
+
+                    if (!parameterTypes[1].equals(String[].class)) {
+                        throw new CommandWarmUpException(commandClass, "second parameter in method " + declaredMethod.getName() + " must be String[] but was "
+                                + parameterTypes[1].getName());
+                    }
+
                     ChatCommand newchatCommand = new ChatCommand(instance, declaredMethod);
                     if (permissionInterface != null) {
                         newchatCommand.setPermissionInterface(permissionInterface);

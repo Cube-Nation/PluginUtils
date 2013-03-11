@@ -8,6 +8,9 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandEmptyMain;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandOtherException;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongConstructor;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterFirst;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterNumber;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterSecond;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMinMax;
 
 public class CommandExceptionTest {
@@ -47,6 +50,48 @@ public class CommandExceptionTest {
             Assert.fail("expected wrong constructor");
         } catch (CommandWarmUpException e) {
             Assert.assertEquals("[" + TestInvalidCommandWrongConstructor.class.getName() + "] no matching constructor found", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandWrongNumberOfMethodParameter() {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandWrongMethodParameterNumber.class);
+            Assert.fail("expected wrong number of parameter");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterNumber.class.getName()
+                    + "] wrong number of paramter in method wrongCommad, expected 2 but was 1", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandWrongFirstMethodParameter() {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandWrongMethodParameterFirst.class);
+            Assert.fail("expected wrong first parameter");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterFirst.class.getName()
+                    + "] first parameter in method wrongCommad must be Player or ConsoleCommandSender but was java.lang.Integer", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandWrongSecondMethodParameter() {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandWrongMethodParameterSecond.class);
+            Assert.fail("expected wrong second parameter");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterSecond.class.getName()
+                    + "] second parameter in method wrongCommad must be String[] but was java.lang.Integer", e.getMessage());
         }
     }
 

@@ -10,6 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import de.cubenation.plugins.utils.commandapi.pluginwrapper.PermissionsExWrapper;
+
 public class ChatCommand {
     // annotation data
     private ArrayList<String> mainNames = new ArrayList<String>();
@@ -71,96 +73,115 @@ public class ChatCommand {
         return mainNames.contains(mainName.toLowerCase()) && subNames.isEmpty();
     }
 
-    public void execute(CommandSender sender, String[] args) throws CommandException {
-        ArrayList<Object> arguments = new ArrayList<Object>();
+    private boolean checkCommand(CommandSender sender, String[] args) {
         if (consoleCommand) {
-            arguments.add((ConsoleCommandSender) sender);
-
-            if (min > 0 && min > args.length) {
-                ((ConsoleCommandSender) sender).sendMessage("Mindest Anzahl an Parameter nicht ausreichend");
-                if (!usage.isEmpty()) {
-                    ((ConsoleCommandSender) sender).sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "")
-                            + " " + usage);
-                    return;
-                }
-            }
-
-            if (max == 0 && args.length > 0) {
-                ((ConsoleCommandSender) sender).sendMessage("Befehl unterstützt keine Parameter");
-                if (!usage.isEmpty()) {
-                    ((ConsoleCommandSender) sender).sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "")
-                            + " " + usage);
-                    return;
-                }
-            } else if (max > 0 && args.length > max) {
-                ((ConsoleCommandSender) sender).sendMessage("Zu viel Parameter angegeben");
-                if (!usage.isEmpty()) {
-                    ((ConsoleCommandSender) sender).sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "")
-                            + " " + usage);
-                    return;
-                }
-            }
+            return checkCommandForConsolse((ConsoleCommandSender) sender, args);
         } else {
-            if (permissions.size() > 0) {
-                for (String permission : permissions) {
-                    if (!hasPlayerRight((Player) sender, permission)) {
-                        ((Player) sender).sendMessage(ChatColor.RED + "Nicht ausreichende Berechtigungen");
-                        return;
-                    }
+            return checkCommandForPlayer((Player) sender, args);
+        }
+    }
+
+    private boolean checkCommandForPlayer(Player sender, String[] args) {
+        if (permissions.size() > 0) {
+            for (String permission : permissions) {
+                if (!hasPlayerRight(sender, permission)) {
+                    sender.sendMessage(ChatColor.RED + "Nicht ausreichende Berechtigungen");
+                    return false;
                 }
             }
-
-            if (min > 0 && min > args.length) {
-                ((Player) sender).sendMessage(ChatColor.RED + "Mindest Anzahl an Parameter nicht ausreichend");
-                if (!usage.isEmpty()) {
-                    ((Player) sender).sendMessage(ChatColor.RED + "Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "")
-                            + " " + usage);
-                }
-                return;
-            }
-
-            if (max == 0 && args.length > 0) {
-                ((Player) sender).sendMessage(ChatColor.RED + "Befehl unterstützt keine Parameter");
-                if (!usage.isEmpty()) {
-                    ((Player) sender).sendMessage(ChatColor.RED + "Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "")
-                            + " " + usage);
-                }
-                return;
-            } else if (max > 0 && args.length > max) {
-                ((Player) sender).sendMessage(ChatColor.RED + "Zu viel Parameter angegeben");
-                if (!usage.isEmpty()) {
-                    ((Player) sender).sendMessage(ChatColor.RED + "Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "")
-                            + " " + usage);
-                }
-                return;
-            }
-
-            if (worlds.size() > 0) {
-                String playerCurrentWorld = ((Player) sender).getWorld().getName().toLowerCase();
-
-                if (!worlds.contains(playerCurrentWorld)) {
-                    StringBuilder worldString = new StringBuilder("");
-                    for (String world : worlds) {
-                        if (worldString.length() > 0) {
-                            worldString.append(", ");
-                        }
-                        worldString.append(world);
-                    }
-                    ((Player) sender).sendMessage(ChatColor.RED + "Du befindest dich nicht in der richtigen Spielwelt! Der Befehl kann nur in "
-                            + worldString.toString() + " verwendet werden.");
-                    return;
-                }
-            }
-
-            arguments.add((Player) sender);
         }
 
-        arguments.add(args);
+        if (min > 0 && min > args.length) {
+            sender.sendMessage(ChatColor.RED + "Mindest Anzahl an Parameter nicht ausreichend");
+            if (!usage.isEmpty()) {
+                sender.sendMessage(ChatColor.RED + "Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+            }
+            return false;
+        }
+
+        if (max == 0 && args.length > 0) {
+            sender.sendMessage(ChatColor.RED + "Befehl unterstützt keine Parameter");
+            if (!usage.isEmpty()) {
+                sender.sendMessage(ChatColor.RED + "Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+            }
+            return false;
+        } else if (max > 0 && args.length > max) {
+            sender.sendMessage(ChatColor.RED + "Zu viel Parameter angegeben");
+            if (!usage.isEmpty()) {
+                sender.sendMessage(ChatColor.RED + "Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+            }
+            return false;
+        }
+
+        if (worlds.size() > 0) {
+            String playerCurrentWorld = sender.getWorld().getName().toLowerCase();
+
+            if (!worlds.contains(playerCurrentWorld)) {
+                StringBuilder worldString = new StringBuilder("");
+                for (String world : worlds) {
+                    if (worldString.length() > 0) {
+                        worldString.append(", ");
+                    }
+                    worldString.append(world);
+                }
+                sender.sendMessage(ChatColor.RED + "Du befindest dich nicht in der richtigen Spielwelt! Der Befehl kann nur in " + worldString.toString()
+                        + " verwendet werden.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean checkCommandForConsolse(ConsoleCommandSender sender, String[] args) {
+        if (min > 0 && min > args.length) {
+            sender.sendMessage("Mindest Anzahl an Parameter nicht ausreichend");
+            if (!usage.isEmpty()) {
+                sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+                return false;
+            }
+        }
+
+        if (max == 0 && args.length > 0) {
+            sender.sendMessage("Befehl unterstützt keine Parameter");
+            if (!usage.isEmpty()) {
+                sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+                return false;
+            }
+        } else if (max > 0 && args.length > max) {
+            sender.sendMessage("Zu viel Parameter angegeben");
+            if (!usage.isEmpty()) {
+                sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void execute(CommandSender sender, String[] args) throws CommandException {
+        if (!checkCommand(sender, args)) {
+            return;
+        }
+
+        ArrayList<Object> arguments = getParameterList(sender, args);
         try {
             method.invoke(instance, arguments.toArray());
         } catch (Exception e) {
             throw new CommandException(e);
         }
+    }
+
+    private ArrayList<Object> getParameterList(CommandSender sender, String[] args) {
+        ArrayList<Object> arguments = new ArrayList<Object>();
+        if (consoleCommand) {
+            arguments.add((ConsoleCommandSender) sender);
+        } else {
+            arguments.add((Player) sender);
+        }
+
+        arguments.add(args);
+        return arguments;
     }
 
     public boolean hasPlayerRight(Player player, String rightName) {

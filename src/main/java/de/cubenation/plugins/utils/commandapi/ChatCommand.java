@@ -23,7 +23,7 @@ public class ChatCommand {
     private ArrayList<String> subNames = new ArrayList<String>();
     private ArrayList<String> permissions = new ArrayList<String>();
     private ArrayList<String> worlds = new ArrayList<String>();
-    private boolean consoleCommand = false;
+    private SenderType senderType = SenderType.PLAYER;
     private int min = 0;
     private int max = -1;
     private String usage = "";
@@ -64,7 +64,9 @@ public class ChatCommand {
         usage = annotation.usage();
         help = annotation.help();
 
-        consoleCommand = method.isAnnotationPresent(Console.class);
+        if (method.isAnnotationPresent(Console.class)) {
+            senderType = SenderType.CONSOLE;
+        }
 
         boolean checkPermissionAnnotation = method.isAnnotationPresent(CommandPermissions.class);
         if (checkPermissionAnnotation) {
@@ -92,17 +94,17 @@ public class ChatCommand {
     }
 
     public boolean isCommand(CommandSender sender, String mainName, String subName) {
-        return ((sender instanceof Player && !consoleCommand) || (sender instanceof ConsoleCommandSender && consoleCommand))
+        return ((sender instanceof Player && senderType == SenderType.PLAYER) || (sender instanceof ConsoleCommandSender && senderType == SenderType.CONSOLE))
                 && mainNames.contains(mainName.toLowerCase()) && subNames.contains(subName.toLowerCase());
     }
 
     public boolean isCommand(CommandSender sender, String mainName) {
-        return ((sender instanceof Player && !consoleCommand) || (sender instanceof ConsoleCommandSender && consoleCommand))
+        return ((sender instanceof Player && senderType == SenderType.PLAYER) || (sender instanceof ConsoleCommandSender && senderType == SenderType.CONSOLE))
                 && mainNames.contains(mainName.toLowerCase()) && subNames.isEmpty();
     }
 
     private boolean checkCommand(CommandSender sender, String[] args) {
-        if (consoleCommand) {
+        if (senderType == SenderType.CONSOLE) {
             return checkCommandForConsolse((ConsoleCommandSender) sender, args);
         } else {
             return checkCommandForPlayer((Player) sender, args);
@@ -128,7 +130,7 @@ public class ChatCommand {
         }
 
         if (max == 0 && args.length > 0) {
-            sender.sendMessage(ChatColor.RED + "Befehl unterstützt keine Parameter");
+            sender.sendMessage(ChatColor.RED + "Befehl unterstÃ¼tzt keine Parameter");
             if (!usage.isEmpty()) {
                 sender.sendMessage(ChatColor.RED + "Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
             }
@@ -171,7 +173,7 @@ public class ChatCommand {
         }
 
         if (max == 0 && args.length > 0) {
-            sender.sendMessage("Befehl unterstützt keine Parameter");
+            sender.sendMessage("Befehl unterstÃ¼tzt keine Parameter");
             if (!usage.isEmpty()) {
                 sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
                 return false;
@@ -202,7 +204,7 @@ public class ChatCommand {
 
     private ArrayList<Object> getParameterList(CommandSender sender, String[] args) {
         ArrayList<Object> arguments = new ArrayList<Object>();
-        if (consoleCommand) {
+        if (senderType == SenderType.CONSOLE) {
             arguments.add((ConsoleCommandSender) sender);
         } else {
             arguments.add((Player) sender);
@@ -233,7 +235,7 @@ public class ChatCommand {
 
         if ((mainNames.contains(mainCommand.toLowerCase()) && subCommand.isEmpty())
                 || (mainNames.contains(mainCommand.toLowerCase()) && subNames.contains(subCommand.toLowerCase()))) {
-            if (consoleCommand) {
+            if (senderType == SenderType.CONSOLE) {
                 ((ConsoleCommandSender) sender).sendMessage("/" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " - " + help);
             } else {
                 if (permissions.size() > 0) {
@@ -251,5 +253,9 @@ public class ChatCommand {
 
     public void setPermissionInterface(PermissionInterface permissionInterface) {
         this.permissionInterface = permissionInterface;
+    }
+
+    private enum SenderType {
+        PLAYER, CONSOLE, BLOCK, REMOTE_CONSOLE
     }
 }

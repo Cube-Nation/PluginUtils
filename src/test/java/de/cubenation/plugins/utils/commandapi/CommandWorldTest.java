@@ -2,6 +2,7 @@ package de.cubenation.plugins.utils.commandapi;
 
 import java.util.ArrayList;
 
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.junit.Assert;
 import org.junit.Test;
@@ -92,7 +93,8 @@ public class CommandWorldTest extends AbstractTest {
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
-        Assert.assertEquals("§cDu befindest dich nicht in der richtigen Spielwelt! Der Befehl kann nur in world verwendet werden.", chatList.get(0));
+        Assert.assertEquals(ChatColor.RED + "Du befindest dich nicht in der richtigen Spielwelt! Der Befehl kann nur in world verwendet werden.",
+                chatList.get(0));
     }
 
     @Test
@@ -120,6 +122,7 @@ public class CommandWorldTest extends AbstractTest {
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
-        Assert.assertEquals("§cDu befindest dich nicht in der richtigen Spielwelt! Der Befehl kann nur in world1, world2 verwendet werden.", chatList.get(0));
+        Assert.assertEquals(ChatColor.RED + "Du befindest dich nicht in der richtigen Spielwelt! Der Befehl kann nur in world1, world2 verwendet werden.",
+                chatList.get(0));
     }
 }

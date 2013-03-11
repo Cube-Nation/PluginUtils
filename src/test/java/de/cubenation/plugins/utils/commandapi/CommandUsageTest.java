@@ -2,6 +2,7 @@ package de.cubenation.plugins.utils.commandapi;
 
 import java.util.ArrayList;
 
+import org.bukkit.ChatColor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,8 +45,8 @@ public class CommandUsageTest extends AbstractTest {
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(2, chatList.size());
-        Assert.assertEquals("§cMindest Anzahl an Parameter nicht angegeben", chatList.get(0));
-        Assert.assertEquals("§cBefehlssyntax: /gamemode [mode] [player]", chatList.get(1));
+        Assert.assertEquals(ChatColor.RED + "Mindest Anzahl an Parameter nicht angegeben", chatList.get(0));
+        Assert.assertEquals(ChatColor.RED + "Befehlssyntax: /gamemode [mode] [player]", chatList.get(1));
     }
 
     @Test
@@ -62,6 +63,6 @@ public class CommandUsageTest extends AbstractTest {
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
-        Assert.assertEquals("§cMindest Anzahl an Parameter nicht angegeben", chatList.get(0));
+        Assert.assertEquals(ChatColor.RED + "Mindest Anzahl an Parameter nicht angegeben", chatList.get(0));
     }
 }

@@ -2,6 +2,7 @@ package de.cubenation.plugins.utils.commandapi;
 
 import java.util.ArrayList;
 
+import org.bukkit.ChatColor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ public class CommandMaxMinTest extends AbstractTest {
         Assert.assertEquals(new Short((short) 2), testValid.get("testMaxCommand"));
 
         Assert.assertEquals(1, chatList.size());
-        Assert.assertEquals("§cZu viel Parameter angegeben", chatList.get(0));
+        Assert.assertEquals(ChatColor.RED + "Zu viel Parameter angegeben", chatList.get(0));
     }
 
     @Test
@@ -65,7 +66,7 @@ public class CommandMaxMinTest extends AbstractTest {
         Assert.assertEquals(new Short((short) 2), testValid.get("testMinCommand"));
 
         Assert.assertEquals(1, chatList.size());
-        Assert.assertEquals("§cMindest Anzahl an Parameter nicht angegeben", chatList.get(0));
+        Assert.assertEquals(ChatColor.RED + "Mindest Anzahl an Parameter nicht angegeben", chatList.get(0));
     }
 
     @Test
@@ -92,8 +93,8 @@ public class CommandMaxMinTest extends AbstractTest {
         Assert.assertEquals(new Short((short) 1), testValid.get("testMinMaxExactCommand"));
 
         Assert.assertEquals(2, chatList.size());
-        Assert.assertEquals("§cMindest Anzahl an Parameter nicht angegeben", chatList.get(0));
-        Assert.assertEquals("§cZu viel Parameter angegeben", chatList.get(1));
+        Assert.assertEquals(ChatColor.RED + "Mindest Anzahl an Parameter nicht angegeben", chatList.get(0));
+        Assert.assertEquals(ChatColor.RED + "Zu viel Parameter angegeben", chatList.get(1));
     }
 
     @Test
@@ -122,7 +123,7 @@ public class CommandMaxMinTest extends AbstractTest {
         Assert.assertEquals(new Short((short) 2), testValid.get("testMinMaxRangeCommand"));
 
         Assert.assertEquals(2, chatList.size());
-        Assert.assertEquals("§cMindest Anzahl an Parameter nicht angegeben", chatList.get(0));
-        Assert.assertEquals("§cZu viel Parameter angegeben", chatList.get(1));
+        Assert.assertEquals(ChatColor.RED + "Mindest Anzahl an Parameter nicht angegeben", chatList.get(0));
+        Assert.assertEquals(ChatColor.RED + "Zu viel Parameter angegeben", chatList.get(1));
     }
 }

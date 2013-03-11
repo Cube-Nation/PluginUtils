@@ -2,6 +2,7 @@ package de.cubenation.plugins.utils.commandapi;
 
 import java.util.ArrayList;
 
+import org.bukkit.ChatColor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -63,7 +64,7 @@ public class CommandPermissionTest extends AbstractTest {
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
-        Assert.assertEquals("§cNicht ausreichende Berechtigungen", chatList.get(0));
+        Assert.assertEquals(ChatColor.RED + "Nicht ausreichende Berechtigungen", chatList.get(0));
     }
 
     @Test
@@ -85,7 +86,7 @@ public class CommandPermissionTest extends AbstractTest {
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
-        Assert.assertEquals("§cNicht ausreichende Berechtigungen", chatList.get(0));
+        Assert.assertEquals(ChatColor.RED + "Nicht ausreichende Berechtigungen", chatList.get(0));
     }
 
     @Test
@@ -107,6 +108,6 @@ public class CommandPermissionTest extends AbstractTest {
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
-        Assert.assertEquals("§cNicht ausreichende Berechtigungen", chatList.get(0));
+        Assert.assertEquals(ChatColor.RED + "Nicht ausreichende Berechtigungen", chatList.get(0));
     }
 }

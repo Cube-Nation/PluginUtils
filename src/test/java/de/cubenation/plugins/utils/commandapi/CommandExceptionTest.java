@@ -78,7 +78,7 @@ public class CommandExceptionTest {
             Assert.fail("expected wrong first parameter");
         } catch (CommandWarmUpException e) {
             Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterFirst.class.getName()
-                    + "] first parameter in method wrongCommad must be Player or ConsoleCommandSender but was java.lang.Integer", e.getMessage());
+                    + "] first parameter in method wrongCommad must be Player, ConsoleCommandSender, BlockCommandSender or RemoteConsoleCommandSender but was java.lang.Integer", e.getMessage());
         }
     }
 

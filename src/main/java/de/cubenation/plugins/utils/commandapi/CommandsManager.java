@@ -8,8 +8,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -52,9 +54,10 @@ public class CommandsManager {
                     throw new CommandWarmUpException(commandClass, "wrong number of paramter in method " + declaredMethod.getName() + ", expected 2 but was "
                             + parameterTypes.length);
                 }
-                if (!parameterTypes[0].equals(Player.class) && !parameterTypes[0].equals(ConsoleCommandSender.class)) {
+                if (!parameterTypes[0].equals(Player.class) && !parameterTypes[0].equals(ConsoleCommandSender.class)
+                        && !parameterTypes[0].equals(BlockCommandSender.class) && !parameterTypes[0].equals(RemoteConsoleCommandSender.class)) {
                     throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName()
-                            + " must be Player or ConsoleCommandSender but was " + parameterTypes[0].getName());
+                            + " must be Player, ConsoleCommandSender, BlockCommandSender or RemoteConsoleCommandSender but was " + parameterTypes[0].getName());
                 }
 
                 if (!parameterTypes[1].equals(String[].class)) {
@@ -150,7 +153,7 @@ public class CommandsManager {
             ((Player) sender).sendMessage(ChatColor.RED + "Befehl nicht gefunden. Versuche /" + mainCommand + " help"
                     + (!subCommand.isEmpty() ? " oder /" + mainCommand + " " + subCommand + " help" : ""));
         } else {
-            ((ConsoleCommandSender) sender).sendMessage("Befehl nicht gefunden. Versuche /" + mainCommand + " help"
+            sender.sendMessage("Befehl nicht gefunden. Versuche /" + mainCommand + " help"
                     + (!subCommand.isEmpty() ? " oder /" + mainCommand + " " + subCommand + " help" : ""));
         }
     }

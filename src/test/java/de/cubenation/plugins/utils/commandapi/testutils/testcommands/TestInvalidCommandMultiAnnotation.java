@@ -4,8 +4,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.Assert;
 
-import de.cubenation.plugins.utils.commandapi.annotation.SenderBlock;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
+import de.cubenation.plugins.utils.commandapi.annotation.SenderBlock;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderConsole;
 
 public class TestInvalidCommandMultiAnnotation {

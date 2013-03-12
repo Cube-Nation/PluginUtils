@@ -3,7 +3,6 @@ package de.cubenation.plugins.utils.commandapi.testutils.testcommands;
 import junit.framework.Assert;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlugin;
@@ -11,8 +10,8 @@ import de.cubenation.plugins.utils.commandapi.testutils.TestPlugin;
 public class TestValidCommandOtherMethod {
     private TestPlugin plugin;
 
-    public TestValidCommandOtherMethod(JavaPlugin plugin) {
-        this.plugin = (TestPlugin) plugin;
+    public TestValidCommandOtherMethod(TestPlugin plugin) {
+        this.plugin = plugin;
     }
 
     @Command(main = "test")

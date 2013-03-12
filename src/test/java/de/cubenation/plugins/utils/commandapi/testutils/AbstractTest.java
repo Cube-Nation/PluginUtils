@@ -29,10 +29,18 @@ public abstract class AbstractTest {
     }
 
     protected void executeComannd(String args) throws CommandException {
-        executeComannd(args, new TestPlayer());
+        executeComannd(commandsManager, args, new TestPlayer());
+    }
+
+    protected void executeComannd(CommandsManager commandsManager, String args) throws CommandException {
+        executeComannd(commandsManager, args, new TestPlayer());
     }
 
     protected void executeComannd(String args, CommandSender sender) throws CommandException {
+        executeComannd(commandsManager, args, sender);
+    }
+
+    protected void executeComannd(CommandsManager commandsManager, String args, CommandSender sender) throws CommandException {
         args = args.substring(1);
 
         String[] split = args.split(" ");

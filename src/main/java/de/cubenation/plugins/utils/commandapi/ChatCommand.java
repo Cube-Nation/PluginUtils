@@ -40,9 +40,9 @@ public class ChatCommand {
     private String help = "";
 
     // reflection objects
-    private Object instance;
-    private Method method;
-    private PermissionInterface permissionInterface;
+    private Object instance = null;
+    private Method method = null;
+    private PermissionInterface permissionInterface = null;
 
     public ChatCommand(Object instance, Method method) throws CommandWarmUpException {
         this.instance = instance;

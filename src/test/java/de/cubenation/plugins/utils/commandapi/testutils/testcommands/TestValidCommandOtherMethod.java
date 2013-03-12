@@ -1,6 +1,6 @@
 package de.cubenation.plugins.utils.commandapi.testutils.testcommands;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.bukkit.entity.Player;
 

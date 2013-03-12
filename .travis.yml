@@ -4,7 +4,7 @@ env:
     - SONATYPE_RELEASE_SERVER=cna-releases
     - SONATYPE_SNAPSHOT_SERVER=cna-snapshots
     - SONATYPE_USERNAME=deployment
-    - secure: "CtyeNg/kgmWSwMpbamq7fm2tmCfz0ozrQT+xDO2S8ONT7YSWAff/WuDB/jPP\n34XZM7UyiYf8DY13dWhjPtV5xg8Ro1YUNf18QIvU4nUs33zdnNOgceNNjk7H\niE2m06TxD/tib14br0eOFBjLUggxW/YtaDDKpUagquvuvW+eXdE="
+    - secure: "hD0aMholmskUgzxEqpNrFvngf3xDLMUDZdIRybH20qWn6wXvtlmxkDMH+1nA\ncVo3/OI0OAf+XadAJwS4WteICnuOgQIufvj6tCt02N/XJxBA7Ga4siVO5RK2\neJGFH/+14d0piX8Oyqs/Ighoes6Q9C7c/aGNCZDLUwWTpgdGKrc="
     
 after_script:
   - python .mvnSettings.py

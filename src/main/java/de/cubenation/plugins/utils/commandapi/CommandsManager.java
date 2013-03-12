@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import org.bukkit.ChatColor;
@@ -13,10 +14,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import de.cubenation.plugins.utils.commandapi.annotation.SenderBlock;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
+import de.cubenation.plugins.utils.commandapi.annotation.SenderBlock;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderConsole;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderPlayer;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderRemoteConsole;
@@ -24,30 +24,55 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 
 public class CommandsManager {
-    private JavaPlugin plugin;
+    private Object[] constructorParameter;
     private ArrayList<ChatCommand> commands = new ArrayList<ChatCommand>();
     private PermissionInterface permissionInterface = null;
 
-    public CommandsManager(JavaPlugin plugin) {
-        this.plugin = plugin;
+    public CommandsManager(Object... constructorParameter) {
+        this.constructorParameter = constructorParameter;
     }
 
     public void add(Class<?> commandClass) throws CommandWarmUpException {
+        add(commandClass, constructorParameter);
+    }
+
+    public void add(Class<?> commandClass, Object... constructorParameter) throws CommandWarmUpException {
         if (commandClass == null) {
             throw new CommandWarmUpException("command class could not be null");
+        }
+
+        for (Object parameter : constructorParameter) {
+            if (parameter == null) {
+                throw new CommandWarmUpException("constructor parameter could not be null");
+            }
         }
 
         try {
             Object instance = null;
             try {
-                Constructor<?> ctor = commandClass.getConstructor(JavaPlugin.class);
-                instance = ctor.newInstance(plugin);
+                List<Object> objectList = Arrays.asList(constructorParameter);
+                List<Class<?>> classList = new ArrayList<Class<?>>();
+
+                for (Object object : objectList) {
+                    Class<? extends Object> classObj = object.getClass();
+
+                    // check inline classes, to get super class
+                    Class<?> topLevel = classObj.getEnclosingClass();
+                    if (topLevel != null) {
+                        classObj = classObj.getSuperclass();
+                    }
+
+                    classList.add(classObj);
+                }
+
+                Constructor<?> ctor = commandClass.getConstructor(classList.toArray(new Class<?>[] {}));
+                instance = ctor.newInstance(constructorParameter);
             } catch (NoSuchMethodException e) {
                 try {
                     instance = commandClass.newInstance();
                 } catch (InstantiationException e1) {
                     throw new CommandWarmUpException(commandClass,
-                            "no matching constructor found, matches are empty constructors and constructors with JavaPlugin as parameter");
+                            "no matching constructor found, matches are empty constructors and constructors is specified in add() or CommandsManager()");
                 }
             }
             Method[] declaredMethods = instance.getClass().getDeclaredMethods();

@@ -1,5 +1,7 @@
 package de.cubenation.plugins.utils.commandapi;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -9,19 +11,29 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.cubenation.plugins.utils.commandapi.exception.CommandException;
+import de.cubenation.plugins.utils.commandapi.exception.CommandManagerException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
+import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
+import de.cubenation.plugins.utils.commandapi.testutils.TestCommandSender;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandEmptyMain;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandMethodException;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandMultiAnnotation;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandOtherException;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongConstructor;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterFirst;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterFirstBlock;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterFirstConsole;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterFirstParameter;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterFirstPlayer;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterFirstRemoteConsole;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterNumber;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterSecond;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMinMax;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMain;
 
-public class CommandExceptionTest {
+public class CommandExceptionTest extends AbstractTest {
     @Test
-    public void testCommandNull() {
+    public void testCommandNull() throws CommandManagerException {
         CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
         });
 
@@ -34,7 +46,7 @@ public class CommandExceptionTest {
     }
 
     @Test
-    public void testCommandMainNull() {
+    public void testCommandMainNull() throws CommandManagerException {
         CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
         });
 
@@ -47,7 +59,7 @@ public class CommandExceptionTest {
     }
 
     @Test
-    public void testCommandWrongConstructor() {
+    public void testCommandWrongConstructor() throws CommandManagerException {
         CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
         });
 
@@ -62,7 +74,7 @@ public class CommandExceptionTest {
     }
 
     @Test
-    public void testCommandWrongNumberOfMethodParameter() {
+    public void testCommandWrongNumberOfMethodParameter() throws CommandManagerException {
         CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
         });
 
@@ -76,15 +88,15 @@ public class CommandExceptionTest {
     }
 
     @Test
-    public void testCommandWrongFirstMethodParameter() {
+    public void testCommandWrongFirstParameterMethodParameter() throws CommandManagerException {
         CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
         });
 
         try {
-            commandsManager.add(TestInvalidCommandWrongMethodParameterFirst.class);
+            commandsManager.add(TestInvalidCommandWrongMethodParameterFirstParameter.class);
             Assert.fail("expected wrong first parameter");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterFirst.class.getName() + "] first parameter in method wrongCommad must be "
+            Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterFirstParameter.class.getName() + "] first parameter in method wrongCommad must be "
                     + Player.class.getSimpleName() + ", " + ConsoleCommandSender.class.getSimpleName() + ", " + BlockCommandSender.class.getSimpleName() + ", "
                     + RemoteConsoleCommandSender.class.getSimpleName() + " or " + CommandSender.class.getSimpleName() + " but was java.lang.Integer",
                     e.getMessage());
@@ -92,7 +104,7 @@ public class CommandExceptionTest {
     }
 
     @Test
-    public void testCommandWrongSecondMethodParameter() {
+    public void testCommandWrongSecondMethodParameter() throws CommandManagerException {
         CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
         });
 
@@ -106,7 +118,7 @@ public class CommandExceptionTest {
     }
 
     @Test
-    public void testCommandOtherException() {
+    public void testCommandOtherException() throws CommandManagerException {
         CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
         });
 
@@ -119,7 +131,7 @@ public class CommandExceptionTest {
     }
 
     @Test
-    public void testCommandWrongMinMax() {
+    public void testCommandWrongMinMax() throws CommandManagerException {
         CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
         });
 
@@ -133,7 +145,7 @@ public class CommandExceptionTest {
     }
 
     @Test
-    public void testCommandMultiAnnotation() {
+    public void testCommandMultiAnnotation() throws CommandManagerException {
         CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
         });
 
@@ -141,8 +153,117 @@ public class CommandExceptionTest {
             commandsManager.add(TestInvalidCommandMultiAnnotation.class);
             Assert.fail("expected wrong first parameter exception");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandMultiAnnotation.class.getName()
-                    + "] first parameter in method emptyCommand must be ConsoleCommandSender or CommandSender but was org.bukkit.entity.Player", e.getMessage());
+            Assert.assertEquals("[" + TestInvalidCommandMultiAnnotation.class.getName() + "] first parameter in method emptyCommand must be "
+                    + CommandSender.class.getSimpleName() + " cause of multi annotations are found but was " + Player.class.getName(), e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandWrongFirstConsoleMethodParameter() throws CommandManagerException {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandWrongMethodParameterFirstConsole.class);
+            Assert.fail("expected wrong first parameter");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterFirstConsole.class.getName() + "] first parameter in method wrongCommad must be "
+                    + ConsoleCommandSender.class.getSimpleName() + " but was " + Player.class.getName(), e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandWrongFirstBlockMethodParameter() throws CommandManagerException {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandWrongMethodParameterFirstBlock.class);
+            Assert.fail("expected wrong first parameter");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterFirstBlock.class.getName() + "] first parameter in method wrongCommad must be "
+                    + BlockCommandSender.class.getSimpleName() + " but was " + Player.class.getName(), e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandWrongFirstRemoveConsoleMethodParameter() throws CommandManagerException {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandWrongMethodParameterFirstRemoteConsole.class);
+            Assert.fail("expected wrong first parameter");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals(
+                    "[" + TestInvalidCommandWrongMethodParameterFirstRemoteConsole.class.getName() + "] first parameter in method wrongCommad must be "
+                            + RemoteConsoleCommandSender.class.getSimpleName() + " but was " + Player.class.getName(), e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandWrongFirstPlayerMethodParameter() throws CommandManagerException {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandWrongMethodParameterFirstPlayer.class);
+            Assert.fail("expected wrong first parameter");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterFirstPlayer.class.getName() + "] first parameter in method wrongCommad must be "
+                    + Player.class.getSimpleName() + " but was " + RemoteConsoleCommandSender.class.getName(), e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandNullConstructor() {
+        try {
+            new CommandsManager((Object) null);
+            Assert.fail("expected null command object raise exception");
+        } catch (CommandManagerException e) {
+            Assert.assertEquals("manager constructor parameter could not be null", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandNullParameter() throws CommandManagerException {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestValidCommandMain.class, (Object) null);
+            Assert.fail("expected null command object raise exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("command constructor parameter could not be null", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandCustomSender() throws CommandException {
+        commandsManager.add(TestValidCommandMain.class);
+
+        TestCommandSender sender = new TestCommandSender() {
+        };
+        try {
+            executeComannd("/test", sender);
+        } catch (CommandException e) {
+            Assert.assertEquals(CommandSender.class.getSimpleName() + " " + sender.getClass().getName() + " not supported", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandMethodException() throws CommandManagerException, CommandWarmUpException {
+        commandsManager.add(TestInvalidCommandMethodException.class);
+
+        try {
+            executeComannd("/test");
+            Assert.fail("expected exception on execute");
+        } catch (CommandException e) {
+            Assert.assertEquals("[" + TestInvalidCommandMethodException.class.getName() + "] error on execute emptyCommand", e.getMessage());
+            Assert.assertNotNull(e.getCause());
+            Assert.assertEquals(InvocationTargetException.class, e.getCause().getClass());
+            Assert.assertEquals(Exception.class, ((InvocationTargetException) e.getCause()).getTargetException().getClass());
+            Assert.assertEquals("test exception", ((Exception) ((InvocationTargetException) e.getCause()).getTargetException()).getMessage());
         }
     }
 }

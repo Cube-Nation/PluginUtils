@@ -116,4 +116,21 @@ public class CommandPermissionExternalTest extends AbstractTest {
         Assert.assertEquals(1, chatList.size());
         Assert.assertEquals(ChatColor.RED + "Nicht ausreichende Berechtigungen", chatList.get(0));
     }
+
+    @Test
+    public void testValidOneBeforePermissionCommand() throws CommandException {
+        commandsManager.setPermissionInterface(new PermissionInterface() {
+            @Override
+            public boolean hasPermission(Player player, String permissionName) {
+                return "perm1".equals(permissionName);
+            }
+        });
+        commandsManager.add(TestValidCommandOnePermission.class);
+
+        executeComannd("/test");
+
+        Assert.assertEquals(1, testValid.size());
+        Assert.assertTrue(testValid.containsKey("testOnePermissionCommand"));
+        Assert.assertEquals(new Short((short) 1), testValid.get("testOnePermissionCommand"));
+    }
 }

@@ -1,17 +1,17 @@
 package de.cubenation.plugins.utils.commandapi.exception;
 
-public class CommandWarmUpException extends CommandException {
+public class CommandExecutionException extends CommandException {
     private static final long serialVersionUID = 8842916434690301356L;
 
-    public CommandWarmUpException(String message) {
+    public CommandExecutionException(String message) {
         super(message);
     }
 
-    public CommandWarmUpException(Class<?> commandClass, String message) {
+    public CommandExecutionException(Class<?> commandClass, String message) {
         super("[" + (commandClass != null ? commandClass.getName() : "null") + "] " + message);
     }
 
-    public CommandWarmUpException(Class<?> commandClass, String message, Throwable cause) {
+    public CommandExecutionException(Class<?> commandClass, String message, Throwable cause) {
         super("[" + (commandClass != null ? commandClass.getName() : "null") + "] " + message, cause);
     }
 }

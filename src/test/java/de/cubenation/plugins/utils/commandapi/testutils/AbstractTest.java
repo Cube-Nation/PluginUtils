@@ -8,6 +8,7 @@ import org.junit.Before;
 
 import de.cubenation.plugins.utils.commandapi.CommandsManager;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
+import de.cubenation.plugins.utils.commandapi.exception.CommandManagerException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 
 public abstract class AbstractTest {
@@ -15,7 +16,7 @@ public abstract class AbstractTest {
     protected CommandsManager commandsManager;
 
     @Before
-    public void setUp() throws CommandWarmUpException {
+    public void setUp() throws CommandWarmUpException, CommandManagerException {
         commandsManager = new CommandsManager(new TestPlugin() {
             @Override
             public void doSomeThing(String string) {

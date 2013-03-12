@@ -21,15 +21,22 @@ import de.cubenation.plugins.utils.commandapi.annotation.SenderConsole;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderPlayer;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderRemoteConsole;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
+import de.cubenation.plugins.utils.commandapi.exception.CommandManagerException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 
 public class CommandsManager {
-    private Object[] constructorParameter;
+    private Object[] constructorParameter = new Object[] {};
     private ArrayList<ChatCommand> commands = new ArrayList<ChatCommand>();
     private PermissionInterface permissionInterface = null;
 
-    public CommandsManager(Object... constructorParameter) {
+    public CommandsManager(Object... constructorParameter) throws CommandManagerException {
         this.constructorParameter = constructorParameter;
+
+        for (Object parameter : constructorParameter) {
+            if (parameter == null) {
+                throw new CommandManagerException("manager constructor parameter could not be null");
+            }
+        }
     }
 
     public void add(Class<?> commandClass) throws CommandWarmUpException {
@@ -43,7 +50,7 @@ public class CommandsManager {
 
         for (Object parameter : constructorParameter) {
             if (parameter == null) {
-                throw new CommandWarmUpException("constructor parameter could not be null");
+                throw new CommandWarmUpException("command constructor parameter could not be null");
             }
         }
 
@@ -101,40 +108,47 @@ public class CommandsManager {
 
                     short annoCount = 0;
                     if (declaredMethod.isAnnotationPresent(SenderPlayer.class)) {
-                        if (!parameterTypes[0].equals(Player.class) && !parameterTypes[0].equals(CommandSender.class)) {
-                            throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName() + " must be "
-                                    + Player.class.getSimpleName() + " or " + CommandSender.class.getSimpleName() + " but was " + parameterTypes[0].getName());
-                        }
                         annoCount++;
                     }
                     if (declaredMethod.isAnnotationPresent(SenderConsole.class)) {
-                        if (!parameterTypes[0].equals(ConsoleCommandSender.class) && !parameterTypes[0].equals(CommandSender.class)) {
-                            throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName() + " must be "
-                                    + ConsoleCommandSender.class.getSimpleName() + " or " + CommandSender.class.getSimpleName() + " but was "
-                                    + parameterTypes[0].getName());
-                        }
                         annoCount++;
                     }
                     if (declaredMethod.isAnnotationPresent(SenderBlock.class)) {
-                        if (!parameterTypes[0].equals(BlockCommandSender.class) && !parameterTypes[0].equals(CommandSender.class)) {
-                            throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName() + " must be "
-                                    + BlockCommandSender.class.getSimpleName() + " or " + CommandSender.class.getSimpleName() + " but was "
-                                    + parameterTypes[0].getName());
-                        }
                         annoCount++;
                     }
                     if (declaredMethod.isAnnotationPresent(SenderRemoteConsole.class)) {
-                        if (!parameterTypes[0].equals(RemoteConsoleCommandSender.class) && !parameterTypes[0].equals(CommandSender.class)) {
-                            throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName() + " must be "
-                                    + RemoteConsoleCommandSender.class.getSimpleName() + " or " + CommandSender.class.getSimpleName() + " but was "
-                                    + parameterTypes[0].getName());
-                        }
                         annoCount++;
                     }
 
                     if (annoCount > 1 && !parameterTypes[0].equals(CommandSender.class)) {
                         throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName() + " must be "
-                                + CommandSender.class.getSimpleName() + " but was " + parameterTypes[0].getName());
+                                + CommandSender.class.getSimpleName() + " cause of multi annotations are found but was " + parameterTypes[0].getName());
+                    }
+
+                    if (annoCount == 0 || declaredMethod.isAnnotationPresent(SenderPlayer.class)) {
+                        if (!parameterTypes[0].equals(Player.class) && !parameterTypes[0].equals(CommandSender.class)) {
+                            throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName() + " must be "
+                                    + Player.class.getSimpleName() + " but was " + parameterTypes[0].getName());
+                        }
+                    }
+
+                    if (declaredMethod.isAnnotationPresent(SenderConsole.class)) {
+                        if (!parameterTypes[0].equals(ConsoleCommandSender.class) && !parameterTypes[0].equals(CommandSender.class)) {
+                            throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName() + " must be "
+                                    + ConsoleCommandSender.class.getSimpleName() + " but was " + parameterTypes[0].getName());
+                        }
+                    }
+                    if (declaredMethod.isAnnotationPresent(SenderBlock.class)) {
+                        if (!parameterTypes[0].equals(BlockCommandSender.class) && !parameterTypes[0].equals(CommandSender.class)) {
+                            throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName() + " must be "
+                                    + BlockCommandSender.class.getSimpleName() + " but was " + parameterTypes[0].getName());
+                        }
+                    }
+                    if (declaredMethod.isAnnotationPresent(SenderRemoteConsole.class)) {
+                        if (!parameterTypes[0].equals(RemoteConsoleCommandSender.class) && !parameterTypes[0].equals(CommandSender.class)) {
+                            throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName() + " must be "
+                                    + RemoteConsoleCommandSender.class.getSimpleName() + " but was " + parameterTypes[0].getName());
+                        }
                     }
 
                     ChatCommand newchatCommand = new ChatCommand(instance, declaredMethod);
@@ -156,6 +170,11 @@ public class CommandsManager {
     }
 
     public void execute(CommandSender sender, org.bukkit.command.Command cmd, String commandLabel, String[] args) throws CommandException {
+        if (!(sender instanceof Player) && !(sender instanceof ConsoleCommandSender) && !(sender instanceof BlockCommandSender)
+                && !(sender instanceof RemoteConsoleCommandSender)) {
+            throw new CommandException(CommandSender.class.getSimpleName() + " " + sender.getClass().getName() + " not supported");
+        }
+
         findAndExecuteCommand(sender, commandLabel, args);
     }
 

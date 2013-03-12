@@ -19,6 +19,7 @@ import de.cubenation.plugins.utils.commandapi.annotation.SenderPlayer;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderRemoteConsole;
 import de.cubenation.plugins.utils.commandapi.annotation.World;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
+import de.cubenation.plugins.utils.commandapi.exception.CommandExecutionException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.pluginwrapper.PermissionsExWrapper;
 
@@ -53,14 +54,22 @@ public class ChatCommand {
             if (main == null || main.isEmpty()) {
                 throw new CommandWarmUpException(instance.getClass(), "main attribute could not be empty");
             }
-            mainNames.add(main.toLowerCase());
+
+            String lowerMainCommand = main.toLowerCase();
+            if (!mainNames.contains(lowerMainCommand)) {
+                mainNames.add(lowerMainCommand);
+            }
         }
 
         for (String sub : annotation.sub()) {
             if (sub == null || sub.isEmpty()) {
                 continue;
             }
-            subNames.add(sub.toLowerCase());
+
+            String lowerSubCommand = sub.toLowerCase();
+            if (!subNames.contains(lowerSubCommand)) {
+                subNames.add(lowerSubCommand);
+            }
         }
 
         min = annotation.min();
@@ -108,7 +117,9 @@ public class ChatCommand {
                 if (permission == null || permission.isEmpty()) {
                     continue;
                 }
-                permissions.add(permission);
+                if (!permissions.contains(permission)) {
+                    permissions.add(permission);
+                }
             }
         }
 
@@ -120,7 +131,10 @@ public class ChatCommand {
                 if (world == null || world.isEmpty()) {
                     continue;
                 }
-                worlds.add(world.toLowerCase());
+                String lowerWorld = world.toLowerCase();
+                if (!worlds.contains(lowerWorld)) {
+                    worlds.add(lowerWorld);
+                }
             }
         }
     }
@@ -137,14 +151,12 @@ public class ChatCommand {
                 && mainNames.contains(mainName.toLowerCase()) && subNames.isEmpty();
     }
 
-    private boolean checkCommand(CommandSender sender, String[] args) {
+    private boolean checkCommand(CommandSender sender, String[] args) throws CommandException {
         if (isPlayerSender && sender instanceof Player) {
             return checkCommandForPlayer((Player) sender, args);
-        } else if ((isConsoleSender && sender instanceof ConsoleCommandSender) || (isBlockSender && sender instanceof BlockCommandSender)
-                || (isRemoteConsoleSender && sender instanceof RemoteConsoleCommandSender)) {
+        } else {
             return checkCommandForOther(sender, args);
         }
-        return false;
     }
 
     private boolean checkCommandForPlayer(Player sender, String[] args) {
@@ -234,7 +246,7 @@ public class ChatCommand {
         try {
             method.invoke(instance, arguments.toArray());
         } catch (Exception e) {
-            throw new CommandException(e);
+            throw new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e);
         }
     }
 

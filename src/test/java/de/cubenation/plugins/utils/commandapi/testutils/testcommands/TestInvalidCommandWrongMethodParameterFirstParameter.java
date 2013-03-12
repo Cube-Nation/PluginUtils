@@ -5,8 +5,8 @@ import org.junit.Assert;
 
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 
-public class TestInvalidCommandWrongMethodParameterFirst {
-    public TestInvalidCommandWrongMethodParameterFirst(JavaPlugin plugin) {
+public class TestInvalidCommandWrongMethodParameterFirstParameter {
+    public TestInvalidCommandWrongMethodParameterFirstParameter(JavaPlugin plugin) {
     }
 
     @Command(main = "test")

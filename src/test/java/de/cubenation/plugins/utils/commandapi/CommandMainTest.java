@@ -43,4 +43,13 @@ public class CommandMainTest extends AbstractTest {
         Assert.assertTrue(testValid.containsKey("testOtherCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testOtherCommand"));
     }
+
+    @Test
+    public void testEmptyCommand() throws CommandException {
+        commandsManager.add(TestValidCommandMain.class);
+
+        executeComannd("/");
+
+        Assert.assertEquals(0, testValid.size());
+    }
 }

@@ -14,7 +14,7 @@ public class TestValidCommandMultiWorld {
     }
 
     @Command(main = "test")
-    @World({ "world1", "world2" })
+    @World({ "world1", "world2", "" })
     public void testMultiWorldCommand(Player player, String[] args) {
         plugin.doSomeThing("testMultiWorldCommand");
     }

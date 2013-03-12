@@ -8,10 +8,14 @@ import org.junit.Test;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
+import de.cubenation.plugins.utils.commandapi.testutils.TestConsole;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelp;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpCommand;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpConsole;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpPermission;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpSub;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMain;
 
 public class CommandHelpTest extends AbstractTest {
     @Test
@@ -99,6 +103,55 @@ public class CommandHelpTest extends AbstractTest {
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testHelpCommandCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testHelpCommandCommand"));
+        Assert.assertEquals(0, chatList.size());
+    }
+
+    @Test
+    public void testEmptyHelpCommand() throws CommandException {
+        commandsManager.add(TestValidCommandMain.class);
+
+        final ArrayList<String> chatList = new ArrayList<String>();
+        executeComannd("/test help", new TestPlayer() {
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        });
+
+        Assert.assertEquals(0, testValid.size());
+        Assert.assertEquals(0, chatList.size());
+    }
+
+    @Test
+    public void testConsoleHelpCommand() throws CommandException {
+        commandsManager.add(TestValidCommandHelpConsole.class);
+
+        final ArrayList<String> chatList = new ArrayList<String>();
+        executeComannd("/test help", new TestConsole() {
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        });
+
+        Assert.assertEquals(0, testValid.size());
+        Assert.assertEquals(1, chatList.size());
+        Assert.assertEquals("/test - this is a help test", chatList.get(0));
+    }
+
+    @Test
+    public void testPermissionHelpCommand() throws CommandException {
+        commandsManager.add(TestValidCommandHelpPermission.class);
+
+        final ArrayList<String> chatList = new ArrayList<String>();
+        executeComannd("/test help", new TestPlayer() {
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        });
+
+        Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(0, chatList.size());
     }
 }

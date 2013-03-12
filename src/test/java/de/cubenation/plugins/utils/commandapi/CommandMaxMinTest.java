@@ -13,6 +13,7 @@ import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCo
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMin;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMinMaxExact;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMinMaxRange;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandNoMax;
 
 public class CommandMaxMinTest extends AbstractTest {
     @Test
@@ -40,6 +41,34 @@ public class CommandMaxMinTest extends AbstractTest {
 
         Assert.assertEquals(1, chatList.size());
         Assert.assertEquals(ChatColor.RED + "Zu viel Parameter angegeben", chatList.get(0));
+    }
+
+    @Test
+    public void testNoMaxCommand() throws CommandException {
+        commandsManager.add(TestValidCommandNoMax.class);
+
+        final ArrayList<String> chatList = new ArrayList<String>();
+        TestPlayer player = new TestPlayer() {
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        };
+
+        executeComannd("/test", player);
+        Assert.assertEquals(0, chatList.size());
+        executeComannd("/test 5", player);
+        Assert.assertEquals(1, chatList.size());
+        executeComannd("/test 5 1", player);
+        Assert.assertEquals(2, chatList.size());
+
+        Assert.assertEquals(1, testValid.size());
+        Assert.assertTrue(testValid.containsKey("testNoMaxCommand"));
+        Assert.assertEquals(new Short((short) 1), testValid.get("testNoMaxCommand"));
+
+        Assert.assertEquals(2, chatList.size());
+        Assert.assertEquals(ChatColor.RED + "Befehl unterstützt keine Parameter", chatList.get(0));
+        Assert.assertEquals(ChatColor.RED + "Befehl unterstützt keine Parameter", chatList.get(1));
     }
 
     @Test

@@ -5,12 +5,12 @@ import org.bukkit.entity.Player;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlugin;
 
-public class TestInvalidCommandMethodException {
-    public TestInvalidCommandMethodException(TestPlugin plugin) throws Exception {
+public class TestInvalidCommandMethodExceptionNoParameter {
+    public TestInvalidCommandMethodExceptionNoParameter(TestPlugin plugin) throws Exception {
     }
 
-    @Command(main = "test")
-    public void emptyCommand(Player player, String[] args) throws Exception {
+    @Command(main = "test", min = 0, max = 0)
+    public void emptyCommand(Player player) throws Exception {
         throw new Exception("test exception");
     }
 }

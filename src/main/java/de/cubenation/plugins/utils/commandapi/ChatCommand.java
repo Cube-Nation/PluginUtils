@@ -11,9 +11,9 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import de.cubenation.plugins.utils.commandapi.annotation.SenderBlock;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.annotation.CommandPermissions;
+import de.cubenation.plugins.utils.commandapi.annotation.SenderBlock;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderConsole;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderPlayer;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderRemoteConsole;
@@ -243,9 +243,28 @@ public class ChatCommand {
         }
 
         ArrayList<Object> arguments = getParameterList(sender, args);
+
         try {
             method.invoke(instance, arguments.toArray());
         } catch (Exception e) {
+            if (e instanceof IllegalArgumentException) {
+                if (args.length == 1) {
+                    try {
+                        method.invoke(instance, arguments.get(0), args[0]);
+                        return;
+                    } catch (Exception e1) {
+                        throw new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e1);
+                    }
+                } else if (args.length == 0) {
+                    try {
+                        method.invoke(instance, arguments.get(0));
+                        return;
+                    } catch (Exception e1) {
+                        throw new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e1);
+                    }
+                }
+            }
+
             throw new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e);
         }
     }

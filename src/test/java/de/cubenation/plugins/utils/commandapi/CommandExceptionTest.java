@@ -17,7 +17,9 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.TestCommandSender;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandEmptyMain;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandMethodException;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandMethodExceptionNoParameter;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandMethodExceptionString;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandMethodExceptionStringArray;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandMultiAnnotation;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandOtherException;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongConstructor;
@@ -28,6 +30,9 @@ import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalid
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterFirstRemoteConsole;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterNumber;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterSecond;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterSecondString;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterWithoutFirst;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterWithoutSecond;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMinMax;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMain;
 
@@ -98,7 +103,7 @@ public class CommandExceptionTest extends AbstractTest {
         } catch (CommandWarmUpException e) {
             Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterFirstParameter.class.getName() + "] first parameter in method wrongCommad must be "
                     + Player.class.getSimpleName() + ", " + ConsoleCommandSender.class.getSimpleName() + ", " + BlockCommandSender.class.getSimpleName() + ", "
-                    + RemoteConsoleCommandSender.class.getSimpleName() + " or " + CommandSender.class.getSimpleName() + " but was java.lang.Integer",
+                    + RemoteConsoleCommandSender.class.getSimpleName() + " or " + CommandSender.class.getSimpleName() + " but was " + Integer.class.getName(),
                     e.getMessage());
         }
     }
@@ -113,7 +118,7 @@ public class CommandExceptionTest extends AbstractTest {
             Assert.fail("expected wrong second parameter");
         } catch (CommandWarmUpException e) {
             Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterSecond.class.getName()
-                    + "] second parameter in method wrongCommad must be String[] but was java.lang.Integer", e.getMessage());
+                    + "] wrong type of paramter in method wrongCommad, expected String or String[] but was " + Integer.class.getName(), e.getMessage());
         }
     }
 
@@ -252,18 +257,92 @@ public class CommandExceptionTest extends AbstractTest {
     }
 
     @Test
-    public void testCommandMethodException() throws CommandManagerException, CommandWarmUpException {
-        commandsManager.add(TestInvalidCommandMethodException.class);
+    public void testCommandMethodExceptionStringArray() throws CommandManagerException, CommandWarmUpException {
+        commandsManager.add(TestInvalidCommandMethodExceptionStringArray.class);
 
         try {
             executeComannd("/test");
             Assert.fail("expected exception on execute");
         } catch (CommandException e) {
-            Assert.assertEquals("[" + TestInvalidCommandMethodException.class.getName() + "] error on execute emptyCommand", e.getMessage());
+            Assert.assertEquals("[" + TestInvalidCommandMethodExceptionStringArray.class.getName() + "] error on execute emptyCommand", e.getMessage());
             Assert.assertNotNull(e.getCause());
             Assert.assertEquals(InvocationTargetException.class, e.getCause().getClass());
             Assert.assertEquals(Exception.class, ((InvocationTargetException) e.getCause()).getTargetException().getClass());
             Assert.assertEquals("test exception", ((Exception) ((InvocationTargetException) e.getCause()).getTargetException()).getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandMethodExceptionString() throws CommandManagerException, CommandWarmUpException {
+        commandsManager.add(TestInvalidCommandMethodExceptionString.class);
+
+        try {
+            executeComannd("/test 5");
+            Assert.fail("expected exception on execute");
+        } catch (CommandException e) {
+            Assert.assertEquals("[" + TestInvalidCommandMethodExceptionString.class.getName() + "] error on execute emptyCommand", e.getMessage());
+            Assert.assertNotNull(e.getCause());
+            Assert.assertEquals(InvocationTargetException.class, e.getCause().getClass());
+            Assert.assertEquals(Exception.class, ((InvocationTargetException) e.getCause()).getTargetException().getClass());
+            Assert.assertEquals("test exception", ((Exception) ((InvocationTargetException) e.getCause()).getTargetException()).getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandMethodExceptionNoParameter() throws CommandManagerException, CommandWarmUpException {
+        commandsManager.add(TestInvalidCommandMethodExceptionNoParameter.class);
+
+        try {
+            executeComannd("/test");
+            Assert.fail("expected exception on execute");
+        } catch (CommandException e) {
+            Assert.assertEquals("[" + TestInvalidCommandMethodExceptionNoParameter.class.getName() + "] error on execute emptyCommand", e.getMessage());
+            Assert.assertNotNull(e.getCause());
+            Assert.assertEquals(InvocationTargetException.class, e.getCause().getClass());
+            Assert.assertEquals(Exception.class, ((InvocationTargetException) e.getCause()).getTargetException().getClass());
+            Assert.assertEquals("test exception", ((Exception) ((InvocationTargetException) e.getCause()).getTargetException()).getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandWrongSecondStringMethodParameter() throws CommandManagerException {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandWrongMethodParameterSecondString.class);
+            Assert.fail("expected wrong second parameter");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterSecondString.class.getName()
+                    + "] wrong type of paramter in method wrongCommad, expected String[] but was " + String.class.getName(), e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandWrongMissingSecondMethodParameter() throws CommandManagerException {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandWrongMethodParameterWithoutSecond.class);
+            Assert.fail("expected wrong second parameter");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterWithoutSecond.class.getName()
+                    + "] wrong number of paramter in method wrongCommad, expected 2 but was 1", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandWrongMissingAllMethodParameter() throws CommandManagerException {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandWrongMethodParameterWithoutFirst.class);
+            Assert.fail("expected missing parameter");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandWrongMethodParameterWithoutFirst.class.getName()
+                    + "] wrong number of paramter in method wrongCommad, expected 1-2 but was 0", e.getMessage());
         }
     }
 }

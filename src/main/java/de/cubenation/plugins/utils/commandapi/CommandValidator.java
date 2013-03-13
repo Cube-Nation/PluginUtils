@@ -16,7 +16,25 @@ import de.cubenation.plugins.utils.commandapi.annotation.SenderRemoteConsole;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 
 public class CommandValidator {
-    public static void validate(Class<?> commandClass, Method declaredMethod) throws CommandWarmUpException {
+    public void validate(Class<?> commandClass, Method declaredMethod) throws CommandWarmUpException {
+        validateParameterArguments(commandClass, declaredMethod);
+        validateParameterSender(commandClass, declaredMethod);
+        validateMinMax(commandClass, declaredMethod);
+    }
+
+    private void validateMinMax(Class<?> commandClass, Method declaredMethod) throws CommandWarmUpException {
+        Command commandAnno = declaredMethod.getAnnotation(Command.class);
+
+        if (commandAnno.min() < 0) {
+            throw new CommandWarmUpException("min(" + commandAnno.min() + ") attribute could not be smaller than 0");
+        }
+
+        if (commandAnno.max() >= 0 && commandAnno.min() > commandAnno.max()) {
+            throw new CommandWarmUpException("min(" + commandAnno.min() + ") attribute could not be greater than max(" + commandAnno.max() + ") attribute");
+        }
+    }
+
+    private void validateParameterArguments(Class<?> commandClass, Method declaredMethod) throws CommandWarmUpException {
         Class<?>[] parameterTypes = declaredMethod.getParameterTypes();
         Command commandAnno = declaredMethod.getAnnotation(Command.class);
 
@@ -41,6 +59,10 @@ public class CommandValidator {
             throw new CommandWarmUpException(commandClass, "wrong number of paramter in method " + declaredMethod.getName() + ", expected 1-2 but was "
                     + parameterTypes.length);
         }
+    }
+
+    private void validateParameterSender(Class<?> commandClass, Method declaredMethod) throws CommandWarmUpException {
+        Class<?>[] parameterTypes = declaredMethod.getParameterTypes();
 
         if (!parameterTypes[0].equals(Player.class) && !parameterTypes[0].equals(ConsoleCommandSender.class)
                 && !parameterTypes[0].equals(BlockCommandSender.class) && !parameterTypes[0].equals(RemoteConsoleCommandSender.class)

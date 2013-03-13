@@ -75,10 +75,6 @@ public class ChatCommand {
         min = annotation.min();
         max = annotation.max();
 
-        if (max > -1 && min > max) {
-            throw new CommandWarmUpException(instance.getClass(), "min(" + min + ") attribute could not be greater than max(" + max + ") attribute");
-        }
-
         usage = annotation.usage();
         help = annotation.help();
 
@@ -289,7 +285,7 @@ public class ChatCommand {
         return arguments;
     }
 
-    public boolean hasPlayerRight(Player player, String rightName) {
+    private boolean hasPlayerRight(Player player, String rightName) {
         boolean has = false;
 
         if (permissionInterface != null) {
@@ -310,20 +306,55 @@ public class ChatCommand {
 
         if ((mainNames.contains(mainCommand.toLowerCase()) && subCommand.isEmpty())
                 || (mainNames.contains(mainCommand.toLowerCase()) && subNames.contains(subCommand.toLowerCase()))) {
-            if (isConsoleSender || isBlockSender || isRemoteConsoleSender) {
-                sender.sendMessage("/" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " - " + help);
-            } else if (isPlayerSender) {
-                if (permissions.size() > 0) {
-                    for (String permission : permissions) {
-                        if (!hasPlayerRight((Player) sender, permission)) {
-                            return;
+            for (String main : mainNames) {
+                if (isConsoleSender || isBlockSender || isRemoteConsoleSender) {
+                    sender.sendMessage(buildHelpMessage(main, false));
+                } else if (isPlayerSender) {
+                    if (permissions.size() > 0) {
+                        for (String permission : permissions) {
+                            if (!hasPlayerRight((Player) sender, permission)) {
+                                return;
+                            }
                         }
                     }
+
+                    ((Player) sender).sendMessage(buildHelpMessage(main, true));
                 }
-                ((Player) sender).sendMessage(ChatColor.AQUA + "/" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + ChatColor.WHITE
-                        + " - " + help);
             }
         }
+    }
+
+    private String buildHelpMessage(String main, boolean isPlayer) {
+        String helpMsg = "";
+        if (isPlayer) {
+            helpMsg += ChatColor.AQUA;
+        }
+        helpMsg += "/" + main;
+
+        if (!subNames.isEmpty()) {
+            helpMsg += " ";
+
+            boolean first = true;
+            for (String sub : subNames) {
+                if (first) {
+                    first = false;
+                } else {
+                    helpMsg += "/";
+                }
+                helpMsg += sub;
+            }
+        }
+
+        if (!usage.isEmpty()) {
+            helpMsg += " " + usage;
+        }
+
+        if (isPlayer) {
+            helpMsg += ChatColor.WHITE;
+        }
+        helpMsg += " - " + help;
+
+        return helpMsg;
     }
 
     public void setPermissionInterface(PermissionInterface permissionInterface) {

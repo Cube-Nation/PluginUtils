@@ -33,6 +33,7 @@ import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalid
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterSecondString;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterWithoutFirst;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMethodParameterWithoutSecond;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMin;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestInvalidCommandWrongMinMax;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMain;
 
@@ -144,8 +145,20 @@ public class CommandExceptionTest extends AbstractTest {
             commandsManager.add(TestInvalidCommandWrongMinMax.class);
             Assert.fail("expected other exception");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandWrongMinMax.class.getName() + "] min(2) attribute could not be greater than max(1) attribute",
-                    e.getMessage());
+            Assert.assertEquals("min(2) attribute could not be greater than max(1) attribute", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandWrongMin() throws CommandManagerException {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandWrongMin.class);
+            Assert.fail("expected other exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("min(-1) attribute could not be smaller than 0", e.getMessage());
         }
     }
 

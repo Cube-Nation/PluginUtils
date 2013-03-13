@@ -24,6 +24,7 @@ public class CommandsManager {
     private Object[] constructorParameter = new Object[] {};
     private ArrayList<ChatCommand> commands = new ArrayList<ChatCommand>();
     private PermissionInterface permissionInterface = null;
+    private CommandValidator commandValidator = new CommandValidator();
 
     public CommandsManager(Object... constructorParameter) throws CommandManagerException {
         this.constructorParameter = constructorParameter;
@@ -51,6 +52,7 @@ public class CommandsManager {
         }
 
         try {
+            // create object instance
             Object instance = null;
             try {
                 List<Object> objectList = Arrays.asList(constructorParameter);
@@ -78,11 +80,13 @@ public class CommandsManager {
                             "no matching constructor found, matches are empty constructors and constructors is specified in add() or CommandsManager()");
                 }
             }
+
+            // load object methods for commands
             Method[] declaredMethods = instance.getClass().getDeclaredMethods();
             for (Method declaredMethod : declaredMethods) {
                 boolean annotationPresent = declaredMethod.isAnnotationPresent(Command.class);
                 if (annotationPresent) {
-                    CommandValidator.validate(commandClass, declaredMethod);
+                    commandValidator.validate(commandClass, declaredMethod);
 
                     ChatCommand newchatCommand = new ChatCommand(instance, declaredMethod);
                     if (permissionInterface != null) {

@@ -13,8 +13,11 @@ import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelp;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpCommand;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpConsole;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpMulti;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpPermission;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpSub;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpUsage;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpUsageConsole;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMain;
 
 public class CommandHelpTest extends AbstractTest {
@@ -33,6 +36,23 @@ public class CommandHelpTest extends AbstractTest {
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
         Assert.assertEquals(ChatColor.AQUA + "/test" + ChatColor.WHITE + " - this is a help test", chatList.get(0));
+    }
+
+    @Test
+    public void testOneHelpUsageCommand() throws CommandException {
+        commandsManager.add(TestValidCommandHelpUsage.class);
+
+        final ArrayList<String> chatList = new ArrayList<String>();
+        executeComannd("/kill help", new TestPlayer() {
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        });
+
+        Assert.assertEquals(0, testValid.size());
+        Assert.assertEquals(1, chatList.size());
+        Assert.assertEquals(ChatColor.AQUA + "/kill [Spieler]" + ChatColor.WHITE + " - this is a help test", chatList.get(0));
     }
 
     @Test
@@ -153,5 +173,40 @@ public class CommandHelpTest extends AbstractTest {
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(0, chatList.size());
+    }
+
+    @Test
+    public void testConsoleHelpCommandUsage() throws CommandException {
+        commandsManager.add(TestValidCommandHelpUsageConsole.class);
+
+        final ArrayList<String> chatList = new ArrayList<String>();
+        executeComannd("/time set help", new TestConsole() {
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        });
+
+        Assert.assertEquals(0, testValid.size());
+        Assert.assertEquals(1, chatList.size());
+        Assert.assertEquals("/time set [TIME] - this is a help test", chatList.get(0));
+    }
+
+    @Test
+    public void testConsoleHelpMultiCommand() throws CommandException {
+        commandsManager.add(TestValidCommandHelpMulti.class);
+
+        final ArrayList<String> chatList = new ArrayList<String>();
+        executeComannd("/test1 help", new TestPlayer() {
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        });
+
+        Assert.assertEquals(0, testValid.size());
+        Assert.assertEquals(2, chatList.size());
+        Assert.assertEquals(ChatColor.AQUA + "/test1 foo/bar" + ChatColor.WHITE + " - this is a help test", chatList.get(0));
+        Assert.assertEquals(ChatColor.AQUA + "/test2 foo/bar" + ChatColor.WHITE + " - this is a help test", chatList.get(1));
     }
 }

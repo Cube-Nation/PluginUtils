@@ -95,9 +95,8 @@ public class CommandsManager {
 
                     // check for duplicate commands
                     for (ChatCommand command : commands) {
-                        if (command.isEqual(newChatCommand)) {
-                            throw new CommandWarmUpException(commandClass, "command already added");
-                        }
+                        commandValidator.checkEqual(command, newChatCommand);
+                        commandValidator.checkSimilar(command, newChatCommand);
                     }
 
                     commands.add(newChatCommand);

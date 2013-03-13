@@ -5,8 +5,8 @@ import org.junit.Test;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandParameterMissing;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandParameterString;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.constructor.TestValidCommandParameterString;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.permission.TestValidCommandParameterMissing;
 
 public class CommandParameterTest extends AbstractTest {
     @Test

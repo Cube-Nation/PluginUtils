@@ -12,11 +12,11 @@ import de.cubenation.plugins.utils.commandapi.testutils.TestBlock;
 import de.cubenation.plugins.utils.commandapi.testutils.TestConsole;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
 import de.cubenation.plugins.utils.commandapi.testutils.TestRemoteConsole;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandBlock;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandConsole;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMain;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMulti;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandRemoteConsole;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.annotation.TestValidCommandBlock;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.annotation.TestValidCommandConsole;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.annotation.TestValidCommandMulti;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.annotation.TestValidCommandRemoteConsole;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestValidCommandMain;
 
 public class CommandSenderTest extends AbstractTest {
     @Test

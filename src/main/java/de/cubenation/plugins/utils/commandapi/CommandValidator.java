@@ -118,4 +118,74 @@ public class CommandValidator {
             }
         }
     }
+
+    public void checkSimilar(ChatCommand existingChatCommand, ChatCommand newChatCommand) throws CommandWarmUpException {
+        // check main
+        boolean equalMainFound = false;
+        for (String main : newChatCommand.getMainAliases()) {
+            if (existingChatCommand.getMainAliases().contains(main)) {
+                equalMainFound = true;
+                break;
+            }
+        }
+
+        if (!equalMainFound) {
+            return;
+        }
+
+        // check sub
+        boolean equalSubFound = false;
+        if (newChatCommand.getSubAliases().size() > 0 || existingChatCommand.getSubAliases().size() > 0) {
+            for (String sub : newChatCommand.getSubAliases()) {
+                if (existingChatCommand.getSubAliases().contains(sub)) {
+                    equalSubFound = true;
+                    break;
+                }
+            }
+        } else {
+            equalSubFound = true;
+        }
+
+        if (!equalSubFound) {
+            return;
+        }
+
+        // check world
+        boolean equalWorldFound = false;
+        if (existingChatCommand.getWorlds().size() > 0 && newChatCommand.getWorlds().size() > 0) {
+            for (String world : newChatCommand.getWorlds()) {
+                if (existingChatCommand.getWorlds().contains(world)) {
+                    equalWorldFound = true;
+                    break;
+                }
+            }
+        } else {
+            equalWorldFound = true;
+        }
+
+        if (!equalWorldFound) {
+            return;
+        }
+
+        // check min/max
+        if (existingChatCommand.getMinAttribute() > newChatCommand.getMaxAttribute() && newChatCommand.getMaxAttribute() >= 0) {
+            return;
+        }
+        if (newChatCommand.getMinAttribute() > existingChatCommand.getMaxAttribute() && existingChatCommand.getMaxAttribute() >= 0) {
+            return;
+        }
+
+        throw new CommandWarmUpException(newChatCommand.getInstance().getClass(), "similar command found for " + newChatCommand.getMethod().getName()
+                + " in class " + existingChatCommand.getInstance().getClass().getName() + " method " + existingChatCommand.getMethod().getName());
+    }
+
+    public void checkEqual(ChatCommand existingChatCommand, ChatCommand newChatCommand) throws CommandWarmUpException {
+        if (existingChatCommand == null || newChatCommand == null) {
+            return;
+        }
+
+        if (existingChatCommand.getMethod().equals(newChatCommand.getMethod())) {
+            throw new CommandWarmUpException(newChatCommand.getInstance().getClass(), "command already added");
+        }
+    }
 }

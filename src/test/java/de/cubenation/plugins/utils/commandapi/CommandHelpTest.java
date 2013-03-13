@@ -10,15 +10,15 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.TestConsole;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelp;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpCommand;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpConsole;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpMulti;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpPermission;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpSub;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpUsage;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandHelpUsageConsole;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMain;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.help.TestValidCommandHelp;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.help.TestValidCommandHelpCommand;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.help.TestValidCommandHelpConsole;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.help.TestValidCommandHelpMulti;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.help.TestValidCommandHelpPermission;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.help.TestValidCommandHelpSub;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.help.TestValidCommandHelpUsage;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.help.TestValidCommandHelpUsageConsole;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestValidCommandMain;
 
 public class CommandHelpTest extends AbstractTest {
     @Test

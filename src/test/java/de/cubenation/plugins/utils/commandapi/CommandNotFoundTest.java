@@ -9,8 +9,8 @@ import org.junit.Test;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMain;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMainSub;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestValidCommandMain;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestValidCommandMainSub;
 
 public class CommandNotFoundTest extends AbstractTest {
     @Test

@@ -6,10 +6,10 @@ import org.junit.Test;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlugin;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandBiggerConsturctor;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandEmptyConsturctor;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMain;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandNoConsturctor;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.constructor.TestValidCommandBiggerConsturctor;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.constructor.TestValidCommandEmptyConsturctor;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.constructor.TestValidCommandNoConsturctor;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestValidCommandMain;
 
 public class CommandConstructorTest extends AbstractTest {
     @Test

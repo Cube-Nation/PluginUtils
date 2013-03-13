@@ -361,15 +361,31 @@ public class ChatCommand {
         this.permissionInterface = permissionInterface;
     }
 
-    public boolean isEqual(ChatCommand chatCommand) {
-        if (chatCommand == null) {
-            return false;
-        }
+    public Object getInstance() {
+        return instance;
+    }
 
-        if (this.method.equals(chatCommand.method)) {
-            return true;
-        }
+    public Method getMethod() {
+        return method;
+    }
 
-        return false;
+    public ArrayList<String> getMainAliases() {
+        return mainNames;
+    }
+
+    public ArrayList<String> getSubAliases() {
+        return subNames;
+    }
+
+    public ArrayList<String> getWorlds() {
+        return worlds;
+    }
+
+    public int getMinAttribute() {
+        return min;
+    }
+
+    public int getMaxAttribute() {
+        return max;
     }
 }

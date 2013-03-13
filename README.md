@@ -10,4 +10,4 @@ Java classes.
 
 TODO 0.0.4
 ==========
-- Support multiple commands for main/sub by split min/max / permission / world
+- Support multiple commands for main/sub by split min/max / world

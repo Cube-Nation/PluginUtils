@@ -5,9 +5,9 @@ import org.junit.Test;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMain;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMultiMain;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandOtherMethod;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.annotation.TestValidCommandOtherMethod;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestValidCommandMain;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestValidCommandMultiMain;
 
 public class CommandMainTest extends AbstractTest {
     @Test

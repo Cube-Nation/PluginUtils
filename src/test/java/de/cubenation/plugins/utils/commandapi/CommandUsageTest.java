@@ -10,11 +10,11 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.TestConsole;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandUsageWith;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandUsageWithConsole;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandUsageWithExact;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandUsageWithExactConsole;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandUsageWithout;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.usage.TestValidCommandUsageWith;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.usage.TestValidCommandUsageWithConsole;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.usage.TestValidCommandUsageWithExact;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.usage.TestValidCommandUsageWithExactConsole;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.usage.TestValidCommandUsageWithout;
 
 public class CommandUsageTest extends AbstractTest {
     @Test

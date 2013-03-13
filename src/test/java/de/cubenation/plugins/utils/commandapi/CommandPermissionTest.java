@@ -9,8 +9,8 @@ import org.junit.Test;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMultiPermission;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandOnePermission;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.permission.TestValidCommandMultiPermission;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.permission.TestValidCommandOnePermission;
 
 public class CommandPermissionTest extends AbstractTest {
     @Test

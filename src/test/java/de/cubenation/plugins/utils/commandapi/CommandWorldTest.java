@@ -11,8 +11,8 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
 import de.cubenation.plugins.utils.commandapi.testutils.TestWorld;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMultiWorld;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandOneWorld;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.world.TestValidCommandMultiWorld;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.world.TestValidCommandOneWorld;
 
 public class CommandWorldTest extends AbstractTest {
     @Test

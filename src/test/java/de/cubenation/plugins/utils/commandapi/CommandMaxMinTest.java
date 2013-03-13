@@ -9,11 +9,11 @@ import org.junit.Test;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMax;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMin;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMinMaxExact;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandMinMaxRange;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.TestValidCommandNoMax;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestValidCommandMax;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestValidCommandMin;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestValidCommandMinMaxExact;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestValidCommandMinMaxRange;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestValidCommandNoMax;
 
 public class CommandMaxMinTest extends AbstractTest {
     @Test

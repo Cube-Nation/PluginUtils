@@ -5,10 +5,10 @@ import org.bukkit.entity.Player;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlugin;
 
-public class TestInvalidCommandMainSub {
+public class TestInvalidCommandMainSub1 {
     private TestPlugin plugin;
 
-    public TestInvalidCommandMainSub(TestPlugin plugin) {
+    public TestInvalidCommandMainSub1(TestPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -20,10 +20,5 @@ public class TestInvalidCommandMainSub {
     @Command(main = "test", sub = "bla")
     public void testTwoMainOneSubCommand(Player player, String[] args) {
         plugin.doSomeThing("testTwoMainOneSubCommand");
-    }
-
-    @Command(main = "test", sub = "bla")
-    public void testThreeMainOneSubCommand(Player player, String[] args) {
-        plugin.doSomeThing("testThreeMainOneSubCommand");
     }
 }

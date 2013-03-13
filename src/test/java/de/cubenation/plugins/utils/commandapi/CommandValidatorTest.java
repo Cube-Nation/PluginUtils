@@ -5,12 +5,15 @@ import org.junit.Test;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandDuplicateMain;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandDuplicateMain1;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandDuplicateMain2;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestInvalidCommandMinMax1;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestInvalidCommandMinMax2;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestInvalidCommandMinMaxOk;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestInvalidCommandMainSub;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.world.TestInvalidCommandWorld;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestInvalidCommandMainSub1;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestInvalidCommandMainSub2;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.world.TestInvalidCommandWorld1;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.world.TestInvalidCommandWorld2;
 
 public class CommandValidatorTest extends AbstractTest {
     @Test
@@ -21,13 +24,14 @@ public class CommandValidatorTest extends AbstractTest {
     }
 
     @Test
-    public void testValidateDuplicateMainCommand() {
+    public void testValidateDuplicateMainCommand() throws CommandWarmUpException {
+        commandsManager.add(TestInvalidCommandDuplicateMain1.class);
         try {
-            commandsManager.add(TestInvalidCommandDuplicateMain.class);
+            commandsManager.add(TestInvalidCommandDuplicateMain2.class);
             Assert.fail("expected exception");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandDuplicateMain.class.getName() + "] similar command found for testThreeMainCommand in class "
-                    + TestInvalidCommandDuplicateMain.class.getName() + " method testOneMainCommand", e.getMessage());
+            Assert.assertEquals("[" + TestInvalidCommandDuplicateMain2.class.getName() + "] similar command found for testThreeMainCommand in class "
+                    + TestInvalidCommandDuplicateMain1.class.getName() + " method testOneMainCommand", e.getMessage());
         }
     }
 
@@ -62,23 +66,25 @@ public class CommandValidatorTest extends AbstractTest {
 
     @Test
     public void testValidateDuplicateWorldCommand() throws CommandWarmUpException {
+        commandsManager.add(TestInvalidCommandWorld1.class);
         try {
-            commandsManager.add(TestInvalidCommandWorld.class);
+            commandsManager.add(TestInvalidCommandWorld2.class);
             Assert.fail("expected exception");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandWorld.class.getName() + "] similar command found for testFiveWorldCommand in class "
-                    + TestInvalidCommandWorld.class.getName() + " method testOneWorldCommand", e.getMessage());
+            Assert.assertEquals("[" + TestInvalidCommandWorld2.class.getName() + "] similar command found for testFiveWorldCommand in class "
+                    + TestInvalidCommandWorld1.class.getName() + " method testOneWorldCommand", e.getMessage());
         }
     }
 
     @Test
     public void testValidateDuplicateSubCommand() throws CommandWarmUpException {
+        commandsManager.add(TestInvalidCommandMainSub1.class);
         try {
-            commandsManager.add(TestInvalidCommandMainSub.class);
+            commandsManager.add(TestInvalidCommandMainSub2.class);
             Assert.fail("expected exception");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandMainSub.class.getName() + "] similar command found for testThreeMainOneSubCommand in class "
-                    + TestInvalidCommandMainSub.class.getName() + " method testTwoMainOneSubCommand", e.getMessage());
+            Assert.assertEquals("[" + TestInvalidCommandMainSub2.class.getName() + "] similar command found for testThreeMainOneSubCommand in class "
+                    + TestInvalidCommandMainSub1.class.getName() + " method testTwoMainOneSubCommand", e.getMessage());
         }
     }
 }

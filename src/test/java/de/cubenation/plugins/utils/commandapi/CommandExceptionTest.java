@@ -358,4 +358,15 @@ public class CommandExceptionTest extends AbstractTest {
                     + "] wrong number of paramter in method wrongCommad, expected 1-2 but was 0", e.getMessage());
         }
     }
+
+    @Test
+    public void testDupplicateCommand() throws CommandManagerException, CommandWarmUpException {
+        commandsManager.add(TestValidCommandMain.class);
+        try {
+            commandsManager.add(TestValidCommandMain.class);
+            Assert.fail("expected duplicate exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestValidCommandMain.class.getName() + "] command already added", e.getMessage());
+        }
+    }
 }

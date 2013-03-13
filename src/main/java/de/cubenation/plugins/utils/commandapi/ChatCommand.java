@@ -360,4 +360,16 @@ public class ChatCommand {
     public void setPermissionInterface(PermissionInterface permissionInterface) {
         this.permissionInterface = permissionInterface;
     }
+
+    public boolean isEqual(ChatCommand chatCommand) {
+        if (chatCommand == null) {
+            return false;
+        }
+
+        if (this.method.equals(chatCommand.method)) {
+            return true;
+        }
+
+        return false;
+    }
 }

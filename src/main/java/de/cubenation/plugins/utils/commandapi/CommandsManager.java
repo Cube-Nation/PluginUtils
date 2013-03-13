@@ -88,11 +88,19 @@ public class CommandsManager {
                 if (annotationPresent) {
                     commandValidator.validate(commandClass, declaredMethod);
 
-                    ChatCommand newchatCommand = new ChatCommand(instance, declaredMethod);
+                    ChatCommand newChatCommand = new ChatCommand(instance, declaredMethod);
                     if (permissionInterface != null) {
-                        newchatCommand.setPermissionInterface(permissionInterface);
+                        newChatCommand.setPermissionInterface(permissionInterface);
                     }
-                    commands.add(newchatCommand);
+
+                    // check for duplicate commands
+                    for (ChatCommand command : commands) {
+                        if (command.isEqual(newChatCommand)) {
+                            throw new CommandWarmUpException(commandClass, "command already added");
+                        }
+                    }
+
+                    commands.add(newChatCommand);
                 }
             }
         } catch (CommandWarmUpException e) {

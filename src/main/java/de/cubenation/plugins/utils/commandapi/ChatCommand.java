@@ -138,13 +138,12 @@ public class ChatCommand {
     public boolean isCommand(CommandSender sender, String mainName, String subName) {
         return ((sender instanceof Player && isPlayerSender) || (sender instanceof ConsoleCommandSender && isConsoleSender)
                 || (sender instanceof BlockCommandSender && isBlockSender) || (sender instanceof RemoteConsoleCommandSender && isRemoteConsoleSender))
-                && mainNames.contains(mainName.toLowerCase()) && subNames.contains(subName.toLowerCase());
+                && mainNames.contains(mainName.toLowerCase())
+                && ((subName.isEmpty() && subNames.isEmpty()) || (!subName.isEmpty() && subNames.contains(subName.toLowerCase())));
     }
 
     public boolean isCommand(CommandSender sender, String mainName) {
-        return ((sender instanceof Player && isPlayerSender) || (sender instanceof ConsoleCommandSender && isConsoleSender)
-                || (sender instanceof BlockCommandSender && isBlockSender) || (sender instanceof RemoteConsoleCommandSender && isRemoteConsoleSender))
-                && mainNames.contains(mainName.toLowerCase()) && subNames.isEmpty();
+        return isCommand(sender, mainName, "");
     }
 
     private boolean checkCommand(CommandSender sender, String[] args) throws CommandException {

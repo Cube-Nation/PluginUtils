@@ -178,10 +178,8 @@ public class ChatCommand {
     private boolean checkCommand(CommandSender sender, String[] args) throws CommandException {
         if (isPlayerSender && sender instanceof Player) {
             return checkCommandForPlayer((Player) sender, args);
-        } else if (isBlockSender && sender instanceof BlockCommandSender) {
-            return checkCommandForBlock((BlockCommandSender) sender, args);
         } else {
-            return checkCommandForConsole(sender, args);
+            return checkCommandForOther(sender, args);
         }
     }
 
@@ -237,7 +235,7 @@ public class ChatCommand {
         return true;
     }
 
-    private boolean checkCommandForBlock(BlockCommandSender sender, String[] args) {
+    private boolean checkCommandForOther(CommandSender sender, String[] args) {
         if (min > 0 && min > args.length) {
             sender.sendMessage("Mindest Anzahl an Parameter nicht angegeben");
             if (!usage.isEmpty()) {
@@ -260,46 +258,22 @@ public class ChatCommand {
             }
         }
 
-        if (worlds.size() > 0) {
-            String blockCurrentWorld = sender.getBlock().getWorld().getName().toLowerCase();
+        if (sender instanceof BlockCommandSender) {
+            if (worlds.size() > 0) {
+                String blockCurrentWorld = ((BlockCommandSender) sender).getBlock().getWorld().getName().toLowerCase();
 
-            if (!worlds.contains(blockCurrentWorld)) {
-                StringBuilder worldString = new StringBuilder("");
-                for (String world : worlds) {
-                    if (worldString.length() > 0) {
-                        worldString.append(", ");
+                if (!worlds.contains(blockCurrentWorld)) {
+                    StringBuilder worldString = new StringBuilder("");
+                    for (String world : worlds) {
+                        if (worldString.length() > 0) {
+                            worldString.append(", ");
+                        }
+                        worldString.append(world);
                     }
-                    worldString.append(world);
+                    sender.sendMessage("Der Block befindet sich nicht in der richtigen Spielwelt! Der Befehl kann nur in " + worldString.toString()
+                            + " verwendet werden.");
+                    return false;
                 }
-                sender.sendMessage("Der Block befindet sich nicht in der richtigen Spielwelt! Der Befehl kann nur in " + worldString.toString()
-                        + " verwendet werden.");
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean checkCommandForConsole(CommandSender sender, String[] args) {
-        if (min > 0 && min > args.length) {
-            sender.sendMessage("Mindest Anzahl an Parameter nicht angegeben");
-            if (!usage.isEmpty()) {
-                sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
-                return false;
-            }
-        }
-
-        if (max == 0 && args.length > 0) {
-            sender.sendMessage("Befehl unterstützt keine Parameter");
-            if (!usage.isEmpty()) {
-                sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
-                return false;
-            }
-        } else if (max > 0 && args.length > max) {
-            sender.sendMessage("Zu viel Parameter angegeben");
-            if (!usage.isEmpty()) {
-                sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
-                return false;
             }
         }
 

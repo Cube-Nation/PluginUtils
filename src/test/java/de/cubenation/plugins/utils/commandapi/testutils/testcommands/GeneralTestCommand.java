@@ -1,5 +1,6 @@
 package de.cubenation.plugins.utils.commandapi.testutils.testcommands;
 
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -30,6 +31,18 @@ public class GeneralTestCommand {
         plugin.doSomeThing("test2");
     }
 
+    @Command(main = "test1", min = 0, max = 0)
+    @SenderBlock
+    public void test2a(BlockCommandSender sender) {
+        plugin.doSomeThing("test2a");
+    }
+
+    @Command(main = "test2", min = 0, max = 0)
+    @SenderRemoteConsole
+    public void test2b(CommandSender sender) {
+        plugin.doSomeThing("test2b");
+    }
+
     @Command(main = "test", min = 0, max = 0)
     @SenderRemoteConsole
     @SenderBlock
@@ -53,5 +66,12 @@ public class GeneralTestCommand {
     @CommandPermissions("perm1")
     public void test6(Player player, String[] args) {
         plugin.doSomeThing("test6");
+    }
+
+    @Command(main = "test3", min = 1, max = 1)
+    @SenderBlock
+    @World({ "world3", "foo" })
+    public void test7(BlockCommandSender sender, String[] arg) {
+        plugin.doSomeThing("test7");
     }
 }

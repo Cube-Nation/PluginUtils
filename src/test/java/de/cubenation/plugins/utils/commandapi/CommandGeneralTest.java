@@ -1,11 +1,13 @@
 package de.cubenation.plugins.utils.commandapi;
 
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
+import de.cubenation.plugins.utils.commandapi.testutils.TestBlock;
 import de.cubenation.plugins.utils.commandapi.testutils.TestBlockCommandSender;
 import de.cubenation.plugins.utils.commandapi.testutils.TestConsoleCommandSender;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
@@ -140,5 +142,36 @@ public class CommandGeneralTest extends AbstractTest {
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("test6"));
         Assert.assertEquals(new Short((short) 1), testValid.get("test6"));
+    }
+
+    @Test
+    public void testGeneralCommand7() throws CommandException {
+        commandsManager.add(GeneralTestCommand.class);
+
+        executeComannd("/test3 5", new TestBlockCommandSender() {
+            @Override
+            public Block getBlock() {
+                return new TestBlock() {
+                    @Override
+                    public World getWorld() {
+                        return new TestWorld() {
+                            @Override
+                            public String getName() {
+                                return "world4";
+                            }
+                        };
+                    }
+                };
+            }
+
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        });
+
+        Assert.assertEquals(0, testValid.size());
+        Assert.assertEquals(1, chatList.size());
+        Assert.assertEquals("Der Block befindet sich nicht in der richtigen Spielwelt! Der Befehl kann nur in world3, foo verwendet werden.", chatList.get(0));
     }
 }

@@ -17,6 +17,8 @@ public class CommandConstructorTest extends AbstractTest {
         commandsManager.add(TestValidCommandEmptyConsturctor.class);
 
         executeComannd("/test");
+
+        Assert.assertEquals(0, chatList.size());
     }
 
     @Test
@@ -24,6 +26,8 @@ public class CommandConstructorTest extends AbstractTest {
         commandsManager.add(TestValidCommandNoConsturctor.class);
 
         executeComannd("/test");
+
+        Assert.assertEquals(0, chatList.size());
     }
 
     @Test
@@ -32,6 +36,7 @@ public class CommandConstructorTest extends AbstractTest {
 
         executeComannd("/test");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testOneMainCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testOneMainCommand"));
@@ -61,6 +66,7 @@ public class CommandConstructorTest extends AbstractTest {
 
         executeComannd("/test");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testBiggerConstructorCommand"));
         Assert.assertEquals(new Short((short) 2), testValid.get("testBiggerConstructorCommand"));
@@ -92,6 +98,7 @@ public class CommandConstructorTest extends AbstractTest {
 
         executeComannd(commandsManager, "/test");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testBiggerConstructorCommand"));
         Assert.assertEquals(new Short((short) 2), testValid.get("testBiggerConstructorCommand"));
@@ -104,6 +111,8 @@ public class CommandConstructorTest extends AbstractTest {
         commandsManager.add(TestValidCommandNoConsturctor.class);
 
         executeComannd(commandsManager, "/test");
+
+        Assert.assertEquals(0, chatList.size());
     }
 
     @Test
@@ -113,6 +122,8 @@ public class CommandConstructorTest extends AbstractTest {
         commandsManager.add(TestValidCommandEmptyConsturctor.class);
 
         executeComannd(commandsManager, "/test");
+
+        Assert.assertEquals(0, chatList.size());
     }
 
     @Test
@@ -132,6 +143,7 @@ public class CommandConstructorTest extends AbstractTest {
 
         executeComannd(commandsManager, "/test");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testOneMainCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testOneMainCommand"));
@@ -154,6 +166,7 @@ public class CommandConstructorTest extends AbstractTest {
 
         executeComannd(commandsManager, "/test");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testOneMainCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testOneMainCommand"));

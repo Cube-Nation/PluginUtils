@@ -1,14 +1,11 @@
 package de.cubenation.plugins.utils.commandapi;
 
-import java.util.ArrayList;
-
 import org.bukkit.ChatColor;
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
-import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestValidCommandMax;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestValidCommandMin;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestValidCommandMinMaxExact;
@@ -20,19 +17,11 @@ public class CommandMaxMinTest extends AbstractTest {
     public void testMaxCommand() throws CommandException {
         commandsManager.add(TestValidCommandMax.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        TestPlayer player = new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        };
-
-        executeComannd("/test", player);
+        executeComannd("/test");
         Assert.assertEquals(0, chatList.size());
-        executeComannd("/test 5", player);
+        executeComannd("/test 5");
         Assert.assertEquals(0, chatList.size());
-        executeComannd("/test 5 1", player);
+        executeComannd("/test 5 1");
         Assert.assertEquals(1, chatList.size());
 
         Assert.assertEquals(1, testValid.size());
@@ -47,19 +36,11 @@ public class CommandMaxMinTest extends AbstractTest {
     public void testNoMaxCommand() throws CommandException {
         commandsManager.add(TestValidCommandNoMax.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        TestPlayer player = new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        };
-
-        executeComannd("/test", player);
+        executeComannd("/test");
         Assert.assertEquals(0, chatList.size());
-        executeComannd("/test 5", player);
+        executeComannd("/test 5");
         Assert.assertEquals(1, chatList.size());
-        executeComannd("/test 5 1", player);
+        executeComannd("/test 5 1");
         Assert.assertEquals(2, chatList.size());
 
         Assert.assertEquals(1, testValid.size());
@@ -75,19 +56,11 @@ public class CommandMaxMinTest extends AbstractTest {
     public void testMinCommand() throws CommandException {
         commandsManager.add(TestValidCommandMin.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        TestPlayer player = new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        };
-
-        executeComannd("/test", player);
+        executeComannd("/test");
         Assert.assertEquals(1, chatList.size());
-        executeComannd("/test 5", player);
+        executeComannd("/test 5");
         Assert.assertEquals(1, chatList.size());
-        executeComannd("/test 5 1", player);
+        executeComannd("/test 5 1");
         Assert.assertEquals(1, chatList.size());
 
         Assert.assertEquals(1, testValid.size());
@@ -102,19 +75,11 @@ public class CommandMaxMinTest extends AbstractTest {
     public void testMinMaxExactCommand() throws CommandException {
         commandsManager.add(TestValidCommandMinMaxExact.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        TestPlayer player = new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        };
-
-        executeComannd("/test", player);
+        executeComannd("/test");
         Assert.assertEquals(1, chatList.size());
-        executeComannd("/test 5", player);
+        executeComannd("/test 5");
         Assert.assertEquals(1, chatList.size());
-        executeComannd("/test 5 1", player);
+        executeComannd("/test 5 1");
         Assert.assertEquals(2, chatList.size());
 
         Assert.assertEquals(1, testValid.size());
@@ -130,21 +95,13 @@ public class CommandMaxMinTest extends AbstractTest {
     public void testMinMaxRangeCommand() throws CommandException {
         commandsManager.add(TestValidCommandMinMaxRange.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        TestPlayer player = new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        };
-
-        executeComannd("/test", player);
+        executeComannd("/test");
         Assert.assertEquals(1, chatList.size());
-        executeComannd("/test 5", player);
+        executeComannd("/test 5");
         Assert.assertEquals(1, chatList.size());
-        executeComannd("/test 5 1", player);
+        executeComannd("/test 5 1");
         Assert.assertEquals(1, chatList.size());
-        executeComannd("/test 5 1 4", player);
+        executeComannd("/test 5 1 4");
         Assert.assertEquals(2, chatList.size());
 
         Assert.assertEquals(1, testValid.size());

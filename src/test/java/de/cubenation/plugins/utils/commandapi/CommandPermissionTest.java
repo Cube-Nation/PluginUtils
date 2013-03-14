@@ -1,7 +1,5 @@
 package de.cubenation.plugins.utils.commandapi;
 
-import java.util.ArrayList;
-
 import org.bukkit.ChatColor;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,8 +20,14 @@ public class CommandPermissionTest extends AbstractTest {
             public boolean hasPermission(String name) {
                 return "perm1".equals(name);
             }
+
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
         });
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testOnePermissionCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testOnePermissionCommand"));
@@ -38,8 +42,14 @@ public class CommandPermissionTest extends AbstractTest {
             public boolean hasPermission(String name) {
                 return "perm1".equals(name) || "perm2".equals(name);
             }
+
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
         });
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testMultiWorldCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testMultiWorldCommand"));
@@ -49,7 +59,6 @@ public class CommandPermissionTest extends AbstractTest {
     public void testInvalidOnePermissionCommand() throws CommandException {
         commandsManager.add(TestValidCommandOnePermission.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
         executeComannd("/test", new TestPlayer() {
             @Override
             public boolean hasPermission(String name) {
@@ -71,7 +80,6 @@ public class CommandPermissionTest extends AbstractTest {
     public void testOneInvalidMultiPermissionCommand() throws CommandException {
         commandsManager.add(TestValidCommandMultiPermission.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
         executeComannd("/test", new TestPlayer() {
             @Override
             public boolean hasPermission(String name) {
@@ -93,7 +101,6 @@ public class CommandPermissionTest extends AbstractTest {
     public void testInvalidMultiPermissionCommand() throws CommandException {
         commandsManager.add(TestValidCommandMultiPermission.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
         executeComannd("/test", new TestPlayer() {
             @Override
             public boolean hasPermission(String name) {

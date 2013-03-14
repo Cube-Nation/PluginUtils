@@ -1,7 +1,5 @@
 package de.cubenation.plugins.utils.commandapi;
 
-import java.util.ArrayList;
-
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.junit.Assert;
@@ -29,8 +27,14 @@ public class CommandWorldTest extends AbstractTest {
                     }
                 };
             }
+
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
         });
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testOneWorldCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testOneWorldCommand"));
@@ -61,8 +65,14 @@ public class CommandWorldTest extends AbstractTest {
                     }
                 };
             }
+
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
         });
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testMultiWorldCommand"));
         Assert.assertEquals(new Short((short) 2), testValid.get("testMultiWorldCommand"));
@@ -72,7 +82,6 @@ public class CommandWorldTest extends AbstractTest {
     public void testInvalidOneWorldCommand() throws CommandException {
         commandsManager.add(TestValidCommandOneWorld.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
         executeComannd("/test", new TestPlayer() {
             @Override
             public World getWorld() {
@@ -101,7 +110,6 @@ public class CommandWorldTest extends AbstractTest {
     public void testInvalidMultiWorldCommand() throws CommandException {
         commandsManager.add(TestValidCommandMultiWorld1.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
         executeComannd("/test", new TestPlayer() {
             @Override
             public World getWorld() {

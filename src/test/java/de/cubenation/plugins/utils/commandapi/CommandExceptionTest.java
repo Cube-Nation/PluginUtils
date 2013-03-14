@@ -15,7 +15,7 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandManagerException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
-import de.cubenation.plugins.utils.commandapi.testutils.TestCommandSender;
+import de.cubenation.plugins.utils.commandapi.testutils.TestCustomCommandSender;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandEmptyMain;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMethodExceptionNoParameter;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMethodExceptionString;
@@ -260,7 +260,7 @@ public class CommandExceptionTest extends AbstractTest {
     public void testCommandCustomSender() throws CommandException {
         commandsManager.add(TestValidCommandMain.class);
 
-        TestCommandSender sender = new TestCommandSender() {
+        TestCustomCommandSender sender = new TestCustomCommandSender() {
         };
         try {
             executeComannd("/test", sender);
@@ -283,6 +283,7 @@ public class CommandExceptionTest extends AbstractTest {
             Assert.assertEquals(Exception.class, ((InvocationTargetException) e.getCause()).getTargetException().getClass());
             Assert.assertEquals("test exception", ((Exception) ((InvocationTargetException) e.getCause()).getTargetException()).getMessage());
         }
+        Assert.assertEquals(0, chatList.size());
     }
 
     @Test
@@ -299,6 +300,7 @@ public class CommandExceptionTest extends AbstractTest {
             Assert.assertEquals(Exception.class, ((InvocationTargetException) e.getCause()).getTargetException().getClass());
             Assert.assertEquals("test exception", ((Exception) ((InvocationTargetException) e.getCause()).getTargetException()).getMessage());
         }
+        Assert.assertEquals(0, chatList.size());
     }
 
     @Test
@@ -315,6 +317,7 @@ public class CommandExceptionTest extends AbstractTest {
             Assert.assertEquals(Exception.class, ((InvocationTargetException) e.getCause()).getTargetException().getClass());
             Assert.assertEquals("test exception", ((Exception) ((InvocationTargetException) e.getCause()).getTargetException()).getMessage());
         }
+        Assert.assertEquals(0, chatList.size());
     }
 
     @Test
@@ -368,5 +371,6 @@ public class CommandExceptionTest extends AbstractTest {
         } catch (CommandWarmUpException e) {
             Assert.assertEquals("[" + TestValidCommandMain.class.getName() + "] command already added", e.getMessage());
         }
+        Assert.assertEquals(0, chatList.size());
     }
 }

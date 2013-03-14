@@ -1,5 +1,6 @@
 package de.cubenation.plugins.utils.commandapi.testutils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.command.CommandSender;
@@ -13,6 +14,7 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 
 public abstract class AbstractTest {
     protected HashMap<String, Short> testValid = new HashMap<String, Short>();
+    protected ArrayList<String> chatList = new ArrayList<String>();
     protected CommandsManager commandsManager;
 
     @Before
@@ -30,11 +32,21 @@ public abstract class AbstractTest {
     }
 
     protected void executeComannd(String args) throws CommandException {
-        executeComannd(commandsManager, args, new TestPlayer());
+        executeComannd(commandsManager, args, new TestPlayer() {
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        });
     }
 
     protected void executeComannd(CommandsManager commandsManager, String args) throws CommandException {
-        executeComannd(commandsManager, args, new TestPlayer());
+        executeComannd(commandsManager, args, new TestPlayer() {
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        });
     }
 
     protected void executeComannd(String args, CommandSender sender) throws CommandException {
@@ -55,5 +67,6 @@ public abstract class AbstractTest {
     @After
     public void tearDown() {
         testValid.clear();
+        chatList.clear();
     }
 }

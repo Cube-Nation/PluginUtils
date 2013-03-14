@@ -20,6 +20,7 @@ import de.cubenation.plugins.utils.commandapi.annotation.World;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandExecutionException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
+import de.cubenation.plugins.utils.commandapi.exception.NoPermissionException;
 
 public class ChatCommand {
     // annotation data
@@ -133,22 +134,54 @@ public class ChatCommand {
         }
     }
 
-    public boolean isCommand(CommandSender sender, String mainName, String subName) {
-        return ((sender instanceof Player && isPlayerSender) || (sender instanceof ConsoleCommandSender && isConsoleSender)
-                || (sender instanceof BlockCommandSender && isBlockSender) || (sender instanceof RemoteConsoleCommandSender && isRemoteConsoleSender))
-                && mainNames.contains(mainName.toLowerCase())
-                && ((subName.isEmpty() && subNames.isEmpty()) || (!subName.isEmpty() && subNames.contains(subName.toLowerCase())));
+    public boolean isCommandWithoutMinMaxWithoutWorld(CommandSender sender, String mainName, String subName) {
+        boolean senderArg = false || (sender instanceof Player && isPlayerSender);
+        senderArg = senderArg || (sender instanceof ConsoleCommandSender && isConsoleSender);
+        senderArg = senderArg || (sender instanceof BlockCommandSender && isBlockSender);
+        senderArg = senderArg || (sender instanceof RemoteConsoleCommandSender && isRemoteConsoleSender);
+
+        boolean mainArg = mainNames.contains(mainName.toLowerCase());
+        boolean subArg = ((subName.isEmpty() && subNames.isEmpty()) || (!subName.isEmpty() && subNames.contains(subName.toLowerCase())));
+        return senderArg && mainArg && subArg;
     }
 
-    public boolean isCommand(CommandSender sender, String mainName) {
-        return isCommand(sender, mainName, "");
+    public boolean isCommandWithoutMinMax(CommandSender sender, String mainName, String subName) {
+        boolean senderArg = false || (sender instanceof Player && isPlayerSender && (worlds.isEmpty() || worlds.contains(((Player) sender).getWorld().getName()
+                .toLowerCase())));
+        senderArg = senderArg || (sender instanceof ConsoleCommandSender && isConsoleSender);
+        senderArg = senderArg
+                || (sender instanceof BlockCommandSender && isBlockSender && (worlds.isEmpty() || worlds.contains(((BlockCommandSender) sender).getBlock()
+                        .getWorld().getName().toLowerCase())));
+        senderArg = senderArg || (sender instanceof RemoteConsoleCommandSender && isRemoteConsoleSender);
+
+        boolean mainArg = mainNames.contains(mainName.toLowerCase());
+        boolean subArg = ((subName.isEmpty() && subNames.isEmpty()) || (!subName.isEmpty() && subNames.contains(subName.toLowerCase())));
+        return senderArg && mainArg && subArg;
+    }
+
+    public boolean isExactCommand(CommandSender sender, String mainName, String subName, int argSize) {
+        boolean senderArg = false || (sender instanceof Player && isPlayerSender && (worlds.isEmpty() || worlds.contains(((Player) sender).getWorld().getName()
+                .toLowerCase())));
+        senderArg = senderArg || (sender instanceof ConsoleCommandSender && isConsoleSender);
+        senderArg = senderArg
+                || (sender instanceof BlockCommandSender && isBlockSender && (worlds.isEmpty() || worlds.contains(((BlockCommandSender) sender).getBlock()
+                        .getWorld().getName().toLowerCase())));
+        senderArg = senderArg || (sender instanceof RemoteConsoleCommandSender && isRemoteConsoleSender);
+
+        boolean mainArg = mainNames.contains(mainName.toLowerCase());
+        boolean subArg = ((subName.isEmpty() && subNames.isEmpty()) || (!subName.isEmpty() && subNames.contains(subName.toLowerCase())));
+        boolean minMax = (argSize >= min && (argSize <= max || max == -1));
+
+        return senderArg && mainArg && subArg && minMax;
     }
 
     private boolean checkCommand(CommandSender sender, String[] args) throws CommandException {
         if (isPlayerSender && sender instanceof Player) {
             return checkCommandForPlayer((Player) sender, args);
+        } else if (isBlockSender && sender instanceof BlockCommandSender) {
+            return checkCommandForBlock((BlockCommandSender) sender, args);
         } else {
-            return checkCommandForOther(sender, args);
+            return checkCommandForConsole(sender, args);
         }
     }
 
@@ -204,7 +237,50 @@ public class ChatCommand {
         return true;
     }
 
-    private boolean checkCommandForOther(CommandSender sender, String[] args) {
+    private boolean checkCommandForBlock(BlockCommandSender sender, String[] args) {
+        if (min > 0 && min > args.length) {
+            sender.sendMessage("Mindest Anzahl an Parameter nicht angegeben");
+            if (!usage.isEmpty()) {
+                sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+                return false;
+            }
+        }
+
+        if (max == 0 && args.length > 0) {
+            sender.sendMessage("Befehl unterstützt keine Parameter");
+            if (!usage.isEmpty()) {
+                sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+                return false;
+            }
+        } else if (max > 0 && args.length > max) {
+            sender.sendMessage("Zu viel Parameter angegeben");
+            if (!usage.isEmpty()) {
+                sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+                return false;
+            }
+        }
+
+        if (worlds.size() > 0) {
+            String blockCurrentWorld = sender.getBlock().getWorld().getName().toLowerCase();
+
+            if (!worlds.contains(blockCurrentWorld)) {
+                StringBuilder worldString = new StringBuilder("");
+                for (String world : worlds) {
+                    if (worldString.length() > 0) {
+                        worldString.append(", ");
+                    }
+                    worldString.append(world);
+                }
+                sender.sendMessage("Der Block befindet sich nicht in der richtigen Spielwelt! Der Befehl kann nur in " + worldString.toString()
+                        + " verwendet werden.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean checkCommandForConsole(CommandSender sender, String[] args) {
         if (min > 0 && min > args.length) {
             sender.sendMessage("Mindest Anzahl an Parameter nicht angegeben");
             if (!usage.isEmpty()) {
@@ -293,7 +369,7 @@ public class ChatCommand {
         return has;
     }
 
-    public void sendHelp(String mainCommand, String subCommand, CommandSender sender) {
+    public void sendHelp(String mainCommand, String subCommand, CommandSender sender) throws NoPermissionException {
         if (help.isEmpty()) {
             return;
         }
@@ -307,7 +383,7 @@ public class ChatCommand {
                     if (permissions.size() > 0) {
                         for (String permission : permissions) {
                             if (!hasPlayerRight((Player) sender, permission)) {
-                                return;
+                                throw new NoPermissionException();
                             }
                         }
                     }
@@ -324,7 +400,7 @@ public class ChatCommand {
             helpMsg += ChatColor.AQUA;
         }
         helpMsg += "/" + main;
-
+        // TODO: send world name too
         if (!subNames.isEmpty()) {
             helpMsg += " ";
 

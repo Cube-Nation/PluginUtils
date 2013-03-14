@@ -1,27 +1,18 @@
 package de.cubenation.plugins.utils.commandapi;
 
-import java.util.ArrayList;
-
 import org.bukkit.ChatColor;
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
-import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestValidCommandMain;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestValidCommandMainSub;
 
 public class CommandNotFoundTest extends AbstractTest {
     @Test
     public void testCommandNotFound1() throws CommandException {
-        final ArrayList<String> chatList = new ArrayList<String>();
-        executeComannd("/test1", new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test1");
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
@@ -32,13 +23,7 @@ public class CommandNotFoundTest extends AbstractTest {
     public void testCommandNotFound2() throws CommandException {
         commandsManager.add(TestValidCommandMain.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        executeComannd("/test1", new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test1");
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
@@ -49,13 +34,7 @@ public class CommandNotFoundTest extends AbstractTest {
     public void testCommandNotFound3() throws CommandException {
         commandsManager.add(TestValidCommandMain.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        executeComannd("/test1 bla", new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test1 bla");
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
@@ -66,13 +45,7 @@ public class CommandNotFoundTest extends AbstractTest {
     public void testCommandNotFound4() throws CommandException {
         commandsManager.add(TestValidCommandMain.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        executeComannd("/test1 bla foo", new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test1 bla foo");
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
@@ -83,13 +56,7 @@ public class CommandNotFoundTest extends AbstractTest {
     public void testCommandNotFound5() throws CommandException {
         commandsManager.add(TestValidCommandMainSub.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        executeComannd("/test bla1", new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test bla1");
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());

@@ -1,7 +1,5 @@
 package de.cubenation.plugins.utils.commandapi;
 
-import java.util.ArrayList;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.junit.Assert;
@@ -9,7 +7,6 @@ import org.junit.Test;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
-import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.permission.TestValidCommandMultiPermission;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.permission.TestValidCommandOnePermission;
 
@@ -26,6 +23,7 @@ public class CommandPermissionExternalTest extends AbstractTest {
 
         executeComannd("/test");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testOnePermissionCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testOnePermissionCommand"));
@@ -43,6 +41,7 @@ public class CommandPermissionExternalTest extends AbstractTest {
 
         executeComannd("/test");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testMultiWorldCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testMultiWorldCommand"));
@@ -58,13 +57,7 @@ public class CommandPermissionExternalTest extends AbstractTest {
             }
         });
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        executeComannd("/test", new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test");
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
@@ -81,13 +74,7 @@ public class CommandPermissionExternalTest extends AbstractTest {
             }
         });
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        executeComannd("/test", new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test");
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
@@ -104,13 +91,7 @@ public class CommandPermissionExternalTest extends AbstractTest {
             }
         });
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        executeComannd("/test", new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test");
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
@@ -129,6 +110,7 @@ public class CommandPermissionExternalTest extends AbstractTest {
 
         executeComannd("/test");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testOnePermissionCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testOnePermissionCommand"));

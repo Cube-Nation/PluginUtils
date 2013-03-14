@@ -19,39 +19,39 @@ public class GeneralTestCommand {
         this.plugin = plugin;
     }
 
-    @Command(main = "test1", min = 0, max = 0)
-    public void test1a(Player player) {
-        plugin.doSomeThing("test1a");
+    @Command(main = "test", min = 0, max = 0)
+    public void test1(Player player) {
+        plugin.doSomeThing("test1");
     }
 
-    @Command(main = "test1", min = 0, max = 0)
+    @Command(main = "test", min = 0, max = 0)
     @SenderConsole
-    public void test1b(ConsoleCommandSender sender) {
-        plugin.doSomeThing("test1b");
+    public void test2(ConsoleCommandSender sender) {
+        plugin.doSomeThing("test2");
     }
 
-    @Command(main = "test1", min = 0, max = 0)
+    @Command(main = "test", min = 0, max = 0)
     @SenderRemoteConsole
     @SenderBlock
-    public void test1c(CommandSender sender) {
-        plugin.doSomeThing("test1c");
+    public void test3(CommandSender sender) {
+        plugin.doSomeThing("test3");
     }
 
-    @Command(main = "test1", min = 1, max = 1)
+    @Command(main = "test", min = 1, max = 1)
     @World("world1")
-    public void test1d(Player player, String arg) {
-        plugin.doSomeThing("test1d");
+    public void test4(Player player, String arg) {
+        plugin.doSomeThing("test4");
     }
 
-    @Command(main = "test1", min = 1, max = 1)
+    @Command(main = "test", min = 1, max = 1)
     @World("world2")
-    public void test1e(Player player, String arg) {
-        plugin.doSomeThing("test1e");
+    public void test5(Player player, String arg) {
+        plugin.doSomeThing("test5");
     }
 
-    @Command(main = "test1", min = 2, max = -1)
+    @Command(main = "test", min = 2, max = -1)
     @CommandPermissions("perm1")
-    public void test1f(Player player, String[] args) {
-        plugin.doSomeThing("test1f");
+    public void test6(Player player, String[] args) {
+        plugin.doSomeThing("test6");
     }
 }

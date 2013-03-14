@@ -325,7 +325,12 @@ public class TestPlayer implements Player {
 
     @Override
     public World getWorld() {
-        return null;
+        return new TestWorld() {
+            @Override
+            public String getName() {
+                return "testWorld";
+            }
+        };
     }
 
     @Override

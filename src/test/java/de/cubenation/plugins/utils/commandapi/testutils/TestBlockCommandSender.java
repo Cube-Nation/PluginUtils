@@ -3,16 +3,14 @@ package de.cubenation.plugins.utils.commandapi.testutils;
 import java.util.Set;
 
 import org.bukkit.Server;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.conversations.Conversation;
-import org.bukkit.conversations.ConversationAbandonedEvent;
+import org.bukkit.block.Block;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
-public class TestConsole implements ConsoleCommandSender {
-
+public class TestBlockCommandSender implements BlockCommandSender {
     @Override
     public void sendMessage(String message) {
     }
@@ -94,28 +92,7 @@ public class TestConsole implements ConsoleCommandSender {
     }
 
     @Override
-    public boolean isConversing() {
-        return false;
-    }
-
-    @Override
-    public void acceptConversationInput(String input) {
-    }
-
-    @Override
-    public boolean beginConversation(Conversation conversation) {
-        return false;
-    }
-
-    @Override
-    public void abandonConversation(Conversation conversation) {
-    }
-
-    @Override
-    public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
-    }
-
-    @Override
-    public void sendRawMessage(String message) {
+    public Block getBlock() {
+        return new TestBlock();
     }
 }

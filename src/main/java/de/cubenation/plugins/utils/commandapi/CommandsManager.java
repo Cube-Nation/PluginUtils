@@ -19,6 +19,7 @@ import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandManagerException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
+import de.cubenation.plugins.utils.commandapi.exception.NoPermissionException;
 
 public class CommandsManager {
     private Object[] constructorParameter = new Object[] {};
@@ -131,13 +132,20 @@ public class CommandsManager {
             return;
         }
 
-        if (args.length > 0) {
-            subCommand = args[0];
-            if (args.length > 1 && (args[1].equalsIgnoreCase("help") || args[1].equals("?"))) {
+        Queue<String> argsQueue = new LinkedList<String>(Arrays.asList(args));
+        Queue<String> originalArgsQueue = new LinkedList<String>(argsQueue);
+
+        // get sub command
+        if (argsQueue.size() > 0) {
+            subCommand = argsQueue.poll();
+
+            // is help for sub command
+            if (argsQueue.size() > 0 && (argsQueue.peek().equalsIgnoreCase("help") || argsQueue.peek().equals("?"))) {
                 helpCommand = true;
             }
         }
 
+        // is sub command help identifier
         if (!subCommand.isEmpty() && (subCommand.equalsIgnoreCase("help") || subCommand.equals("?"))) {
             subCommand = "";
             helpCommand = true;
@@ -146,48 +154,114 @@ public class CommandsManager {
         if (helpCommand) {
             // search for defined help command
             for (ChatCommand command : commands) {
-                if (command.isCommand(sender, mainCommand, "help") || command.isCommand(sender, mainCommand, "?")) {
-                    Queue<String> argsQueue = new LinkedList<String>(Arrays.asList(args));
-
+                if (command.isCommandWithoutMinMaxWithoutWorld(sender, mainCommand, "help")
+                        || command.isCommandWithoutMinMaxWithoutWorld(sender, mainCommand, "?")) {
                     command.execute(sender, argsQueue.toArray(new String[] {}));
 
                     return;
                 }
             }
 
+            // send help for all commands
+            boolean helpFound = false;
+            boolean permissionException = false;
             for (ChatCommand command : commands) {
-                command.sendHelp(mainCommand, subCommand, sender);
-            }
-
-            return;
-        }
-
-        if (!subCommand.isEmpty()) {
-            for (ChatCommand command : commands) {
-                if (command.isCommand(sender, mainCommand, subCommand)) {
-                    Queue<String> argsQueue = new LinkedList<String>(Arrays.asList(args));
-                    argsQueue.poll();
-                    command.execute(sender, argsQueue.toArray(new String[] {}));
-                    return;
+                try {
+                    command.sendHelp(mainCommand, subCommand, sender);
+                    helpFound = true;
+                } catch (NoPermissionException e) {
+                    permissionException = true;
                 }
             }
-        }
 
-        for (ChatCommand command : commands) {
-            if (command.isCommand(sender, mainCommand)) {
-                Queue<String> argsQueue = new LinkedList<String>(Arrays.asList(args));
+            if (helpFound && permissionException) {
+                sender.sendMessage(ChatColor.RED + "Nicht ausreichende Berechtigungen");
+            }
 
-                command.execute(sender, argsQueue.toArray(new String[] {}));
+            if (helpFound) {
                 return;
             }
         }
 
-        if (sender instanceof Player) {
-            ((Player) sender).sendMessage(ChatColor.RED + "Befehl nicht gefunden. Versuche /" + mainCommand + " help"
-                    + (!subCommand.isEmpty() ? " oder /" + mainCommand + " " + subCommand + " help" : ""));
+        ChatCommand foundCommand = null;
+        boolean withSub = true;
+
+        // search exact one command with sub command
+        for (ChatCommand command : commands) {
+            if (command.isExactCommand(sender, mainCommand, subCommand, argsQueue.size())) {
+                foundCommand = command;
+                break;
+            }
+        }
+
+        // search exact one command without sub command
+        if (foundCommand == null) {
+            for (ChatCommand command : commands) {
+                if (command.isExactCommand(sender, mainCommand, "", originalArgsQueue.size())) {
+                    foundCommand = command;
+                    withSub = false;
+                    break;
+                }
+            }
+        }
+
+        // search command without min/max with sub command
+        if (foundCommand == null) {
+            for (ChatCommand command : commands) {
+                if (command.isCommandWithoutMinMax(sender, mainCommand, subCommand)) {
+                    foundCommand = command;
+                    break;
+                }
+            }
+        }
+
+        // search command without min/max without sub command
+        if (foundCommand == null) {
+            for (ChatCommand command : commands) {
+                if (command.isCommandWithoutMinMax(sender, mainCommand, "")) {
+                    foundCommand = command;
+                    withSub = false;
+                    break;
+                }
+            }
+        }
+
+        // search command without worlds with sub command
+        if (foundCommand == null) {
+            for (ChatCommand command : commands) {
+                if (command.isCommandWithoutMinMaxWithoutWorld(sender, mainCommand, subCommand)) {
+                    foundCommand = command;
+                    break;
+                }
+            }
+        }
+
+        // search command without worlds without sub command
+        if (foundCommand == null) {
+            for (ChatCommand command : commands) {
+                if (command.isCommandWithoutMinMaxWithoutWorld(sender, mainCommand, "")) {
+                    foundCommand = command;
+                    withSub = false;
+                    break;
+                }
+            }
+        }
+
+        // execute command or fail
+        if (foundCommand != null) {
+            if (withSub) {
+                foundCommand.execute(sender, argsQueue.toArray(new String[] {}));
+            } else {
+                foundCommand.execute(sender, originalArgsQueue.toArray(new String[] {}));
+            }
         } else {
-            sender.sendMessage("Befehl nicht gefunden. Versuche /" + mainCommand + " help"
-                    + (!subCommand.isEmpty() ? " oder /" + mainCommand + " " + subCommand + " help" : ""));
+            if (sender instanceof Player) {
+                ((Player) sender).sendMessage(ChatColor.RED + "Befehl nicht gefunden. Versuche /" + mainCommand + " help"
+                        + (!subCommand.isEmpty() ? " oder /" + mainCommand + " " + subCommand + " help" : ""));
+            } else {
+                sender.sendMessage("Befehl nicht gefunden. Versuche /" + mainCommand + " help"
+                        + (!subCommand.isEmpty() ? " oder /" + mainCommand + " " + subCommand + " help" : ""));
+            }
         }
     }
 

@@ -1,16 +1,13 @@
 package de.cubenation.plugins.utils.commandapi;
 
-import java.util.ArrayList;
-
 import org.bukkit.ChatColor;
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
-import de.cubenation.plugins.utils.commandapi.testutils.TestBlock;
-import de.cubenation.plugins.utils.commandapi.testutils.TestConsole;
-import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
+import de.cubenation.plugins.utils.commandapi.testutils.TestBlockCommandSender;
+import de.cubenation.plugins.utils.commandapi.testutils.TestConsoleCommandSender;
 import de.cubenation.plugins.utils.commandapi.testutils.TestRemoteConsole;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.annotation.TestValidCommandBlock;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.annotation.TestValidCommandConsole;
@@ -23,8 +20,14 @@ public class CommandSenderTest extends AbstractTest {
     public void testConsoleCommand() throws CommandException {
         commandsManager.add(TestValidCommandConsole.class);
 
-        executeComannd("/test", new TestConsole());
+        executeComannd("/test", new TestConsoleCommandSender() {
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        });
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testConsoleCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testConsoleCommand"));
@@ -34,8 +37,9 @@ public class CommandSenderTest extends AbstractTest {
     public void testPlayerCommand() throws CommandException {
         commandsManager.add(TestValidCommandMain.class);
 
-        executeComannd("/test", new TestPlayer());
+        executeComannd("/test");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testOneMainCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testOneMainCommand"));
@@ -45,8 +49,14 @@ public class CommandSenderTest extends AbstractTest {
     public void testBlockCommand() throws CommandException {
         commandsManager.add(TestValidCommandBlock.class);
 
-        executeComannd("/test", new TestBlock());
+        executeComannd("/test", new TestBlockCommandSender() {
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        });
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testBlockCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testBlockCommand"));
@@ -56,8 +66,14 @@ public class CommandSenderTest extends AbstractTest {
     public void testRemoteConsoleCommand() throws CommandException {
         commandsManager.add(TestValidCommandRemoteConsole.class);
 
-        executeComannd("/test", new TestRemoteConsole());
+        executeComannd("/test", new TestRemoteConsole() {
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        });
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testRemoteConsoleCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testRemoteConsoleCommand"));
@@ -67,8 +83,7 @@ public class CommandSenderTest extends AbstractTest {
     public void testNotConsoleCommand() throws CommandException {
         commandsManager.add(TestValidCommandMain.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        executeComannd("/test", new TestConsole() {
+        executeComannd("/test", new TestConsoleCommandSender() {
             @Override
             public void sendMessage(String message) {
                 chatList.add(message);
@@ -84,13 +99,7 @@ public class CommandSenderTest extends AbstractTest {
     public void testNotPlayerCommand() throws CommandException {
         commandsManager.add(TestValidCommandConsole.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        executeComannd("/test", new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test");
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
@@ -101,8 +110,7 @@ public class CommandSenderTest extends AbstractTest {
     public void testNotBlockCommand() throws CommandException {
         commandsManager.add(TestValidCommandMain.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        executeComannd("/test", new TestBlock() {
+        executeComannd("/test", new TestBlockCommandSender() {
             @Override
             public void sendMessage(String message) {
                 chatList.add(message);
@@ -118,7 +126,6 @@ public class CommandSenderTest extends AbstractTest {
     public void testNotRemoteConsoleCommand() throws CommandException {
         commandsManager.add(TestValidCommandMain.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
         executeComannd("/test", new TestRemoteConsole() {
             @Override
             public void sendMessage(String message) {
@@ -135,8 +142,14 @@ public class CommandSenderTest extends AbstractTest {
     public void testMultiCommand() throws CommandException {
         commandsManager.add(TestValidCommandMulti.class);
 
-        executeComannd("/test", new TestConsole());
+        executeComannd("/test", new TestConsoleCommandSender() {
+            @Override
+            public void sendMessage(String message) {
+                chatList.add(message);
+            }
+        });
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testMultiCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testMultiCommand"));

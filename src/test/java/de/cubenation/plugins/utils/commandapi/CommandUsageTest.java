@@ -1,15 +1,12 @@
 package de.cubenation.plugins.utils.commandapi;
 
-import java.util.ArrayList;
-
 import org.bukkit.ChatColor;
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
-import de.cubenation.plugins.utils.commandapi.testutils.TestConsole;
-import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
+import de.cubenation.plugins.utils.commandapi.testutils.TestConsoleCommandSender;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.usage.TestValidCommandUsageWith;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.usage.TestValidCommandUsageWithConsole;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.usage.TestValidCommandUsageWithExact;
@@ -21,13 +18,7 @@ public class CommandUsageTest extends AbstractTest {
     public void testNoUsageCommand() throws CommandException {
         commandsManager.add(TestValidCommandUsageWith.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        executeComannd("/gamemode 1 somePlayer", new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/gamemode 1 somePlayer");
 
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testUsageCommand"));
@@ -39,16 +30,8 @@ public class CommandUsageTest extends AbstractTest {
     public void testWithCustomUsageCommand() throws CommandException {
         commandsManager.add(TestValidCommandUsageWith.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        TestPlayer sender = new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        };
-
-        executeComannd("/gamemode 1", sender);
-        executeComannd("/gamemode 1 2 5", sender);
+        executeComannd("/gamemode 1");
+        executeComannd("/gamemode 1 2 5");
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(4, chatList.size());
@@ -62,15 +45,7 @@ public class CommandUsageTest extends AbstractTest {
     public void testWithExactCustomUsageCommand() throws CommandException {
         commandsManager.add(TestValidCommandUsageWithExact.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        TestPlayer sender = new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        };
-
-        executeComannd("/gamemode 1", sender);
+        executeComannd("/gamemode 1");
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(2, chatList.size());
@@ -82,13 +57,7 @@ public class CommandUsageTest extends AbstractTest {
     public void testWithGenericUsageCommand() throws CommandException {
         commandsManager.add(TestValidCommandUsageWithout.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        executeComannd("/gamemode 1", new TestPlayer() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/gamemode 1");
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
@@ -99,8 +68,7 @@ public class CommandUsageTest extends AbstractTest {
     public void testWithCustomUsageConsoleCommand() throws CommandException {
         commandsManager.add(TestValidCommandUsageWithConsole.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        TestConsole sender = new TestConsole() {
+        TestConsoleCommandSender sender = new TestConsoleCommandSender() {
             @Override
             public void sendMessage(String message) {
                 chatList.add(message);
@@ -122,8 +90,7 @@ public class CommandUsageTest extends AbstractTest {
     public void testWithExactCustomUsageConsoleCommand() throws CommandException {
         commandsManager.add(TestValidCommandUsageWithExactConsole.class);
 
-        final ArrayList<String> chatList = new ArrayList<String>();
-        TestConsole sender = new TestConsole() {
+        TestConsoleCommandSender sender = new TestConsoleCommandSender() {
             @Override
             public void sendMessage(String message) {
                 chatList.add(message);

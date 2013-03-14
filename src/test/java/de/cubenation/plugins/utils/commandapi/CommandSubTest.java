@@ -16,6 +16,7 @@ public class CommandSubTest extends AbstractTest {
 
         executeComannd("/test bla");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testOneMainOneSubCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testOneMainOneSubCommand"));
@@ -28,6 +29,7 @@ public class CommandSubTest extends AbstractTest {
         executeComannd("/test bla1");
         executeComannd("/test bla2");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testOneMainMultiSubCommand"));
         Assert.assertEquals(new Short((short) 2), testValid.get("testOneMainMultiSubCommand"));
@@ -42,6 +44,7 @@ public class CommandSubTest extends AbstractTest {
         executeComannd("/test2 bla1");
         executeComannd("/test2 bla2");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testMultiMainMultiSubCommand"));
         Assert.assertEquals(new Short((short) 4), testValid.get("testMultiMainMultiSubCommand"));

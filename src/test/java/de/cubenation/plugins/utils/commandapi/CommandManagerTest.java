@@ -1,5 +1,6 @@
 package de.cubenation.plugins.utils.commandapi;
 
+import org.bukkit.ChatColor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,5 +25,7 @@ public class CommandManagerTest extends AbstractTest {
         commandsManager.clear();
         executeComannd("/test");
         Assert.assertEquals(0, testValid.size());
+        Assert.assertEquals(1, chatList.size());
+        Assert.assertEquals(ChatColor.RED + "Befehl nicht gefunden. Versuche /test help", chatList.get(0));
     }
 }

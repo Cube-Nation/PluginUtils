@@ -15,6 +15,7 @@ public class CommandParameterTest extends AbstractTest {
 
         executeComannd("/test");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testMissingCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testMissingCommand"));
@@ -26,6 +27,7 @@ public class CommandParameterTest extends AbstractTest {
 
         executeComannd("/test 5");
 
+        Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testStringCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testStringCommand"));

@@ -120,6 +120,11 @@ public class CommandValidator {
     }
 
     public void checkSimilar(ChatCommand existingChatCommand, ChatCommand newChatCommand) throws CommandWarmUpException {
+        // check sender
+        if (!existingChatCommand.getSenderType().equals(newChatCommand.getSenderType())) {
+            return;
+        }
+
         // check main
         boolean equalMainFound = false;
         for (String main : newChatCommand.getMainAliases()) {

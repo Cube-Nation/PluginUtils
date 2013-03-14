@@ -382,4 +382,18 @@ public class ChatCommand {
     public int getMaxAttribute() {
         return max;
     }
+
+    public Class<? extends CommandSender> getSenderType() {
+        if (isMultipleSender) {
+            return CommandSender.class;
+        } else if (isBlockSender) {
+            return BlockCommandSender.class;
+        } else if (isConsoleSender) {
+            return ConsoleCommandSender.class;
+        } else if (isRemoteConsoleSender) {
+            return RemoteConsoleCommandSender.class;
+        } else {
+            return Player.class;
+        }
+    }
 }

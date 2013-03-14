@@ -350,6 +350,7 @@ public class ChatCommand {
 
         if ((mainNames.contains(mainCommand.toLowerCase()) && subCommand.isEmpty())
                 || (mainNames.contains(mainCommand.toLowerCase()) && subNames.contains(subCommand.toLowerCase()))) {
+
             for (String main : mainNames) {
                 if (isConsoleSender || isBlockSender || isRemoteConsoleSender) {
                     sender.sendMessage(buildHelpMessage(main, false));
@@ -374,7 +375,7 @@ public class ChatCommand {
             helpMsg += ChatColor.AQUA;
         }
         helpMsg += "/" + main;
-        // TODO: send world name too
+
         if (!subNames.isEmpty()) {
             helpMsg += " ";
 

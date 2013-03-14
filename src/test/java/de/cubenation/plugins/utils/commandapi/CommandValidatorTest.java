@@ -14,6 +14,7 @@ import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.T
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestInvalidCommandMainSub2;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.world.TestInvalidCommandWorld1;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.world.TestInvalidCommandWorld2;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.world.TestValidCommandMultiWorld2;
 
 public class CommandValidatorTest extends AbstractTest {
     @Test
@@ -65,7 +66,7 @@ public class CommandValidatorTest extends AbstractTest {
     }
 
     @Test
-    public void testValidateDuplicateWorldCommand() throws CommandWarmUpException {
+    public void testValidateDuplicateWorld1Command() throws CommandWarmUpException {
         commandsManager.add(TestInvalidCommandWorld1.class);
         try {
             commandsManager.add(TestInvalidCommandWorld2.class);
@@ -74,6 +75,11 @@ public class CommandValidatorTest extends AbstractTest {
             Assert.assertEquals("[" + TestInvalidCommandWorld2.class.getName() + "] similar command found for testFiveWorldCommand in class "
                     + TestInvalidCommandWorld1.class.getName() + " method testOneWorldCommand", e.getMessage());
         }
+    }
+
+    @Test
+    public void testValidateDuplicateWorld2Command() throws CommandWarmUpException {
+        commandsManager.add(TestValidCommandMultiWorld2.class);
     }
 
     @Test

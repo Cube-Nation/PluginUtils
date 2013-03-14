@@ -6,10 +6,10 @@ import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.annotation.World;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlugin;
 
-public class TestValidCommandMultiWorld {
+public class TestValidCommandMultiWorld1 {
     private TestPlugin plugin;
 
-    public TestValidCommandMultiWorld(TestPlugin plugin) {
+    public TestValidCommandMultiWorld1(TestPlugin plugin) {
         this.plugin = plugin;
     }
 

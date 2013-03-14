@@ -11,7 +11,7 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
 import de.cubenation.plugins.utils.commandapi.testutils.TestWorld;
-import de.cubenation.plugins.utils.commandapi.testutils.testcommands.world.TestValidCommandMultiWorld;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.world.TestValidCommandMultiWorld1;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.world.TestValidCommandOneWorld;
 
 public class CommandWorldTest extends AbstractTest {
@@ -38,7 +38,7 @@ public class CommandWorldTest extends AbstractTest {
 
     @Test
     public void testValidMultiWorldCommand() throws CommandException {
-        commandsManager.add(TestValidCommandMultiWorld.class);
+        commandsManager.add(TestValidCommandMultiWorld1.class);
 
         executeComannd("/test", new TestPlayer() {
             @Override
@@ -99,7 +99,7 @@ public class CommandWorldTest extends AbstractTest {
 
     @Test
     public void testInvalidMultiWorldCommand() throws CommandException {
-        commandsManager.add(TestValidCommandMultiWorld.class);
+        commandsManager.add(TestValidCommandMultiWorld1.class);
 
         final ArrayList<String> chatList = new ArrayList<String>();
         executeComannd("/test", new TestPlayer() {

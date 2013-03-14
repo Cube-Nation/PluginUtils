@@ -3,7 +3,6 @@ package de.cubenation.plugins.utils.commandapi;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -21,7 +20,6 @@ import de.cubenation.plugins.utils.commandapi.annotation.World;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandExecutionException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
-import de.cubenation.plugins.utils.commandapi.pluginwrapper.PermissionsExWrapper;
 
 public class ChatCommand {
     // annotation data
@@ -289,9 +287,6 @@ public class ChatCommand {
 
         if (permissionInterface != null) {
             has = permissionInterface.hasPermission(player, rightName);
-        } else if (Bukkit.getServer() != null && Bukkit.getServer().getPluginManager() != null
-                && Bukkit.getServer().getPluginManager().isPluginEnabled("PermissionsEx")) {
-            has = PermissionsExWrapper.hasPlayerRight(player, rightName);
         } else {
             has = player.hasPermission(rightName);
         }

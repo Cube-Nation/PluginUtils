@@ -126,6 +126,7 @@ public class CommandsManager {
     private void findAndExecuteCommand(CommandSender sender, String commandLabel, String[] args) throws CommandException {
         String mainCommand = commandLabel;
         String subCommand = "";
+        String oldHelpSubCommand = "";
         boolean helpCommand = false;
 
         if (mainCommand.isEmpty()) {
@@ -141,27 +142,34 @@ public class CommandsManager {
 
             // is help for sub command
             if (argsQueue.size() > 0 && (argsQueue.peek().equalsIgnoreCase("help") || argsQueue.peek().equals("?"))) {
+                oldHelpSubCommand = argsQueue.peek();
+                subCommand = "";
                 helpCommand = true;
             }
         }
 
         // is sub command help identifier
         if (!subCommand.isEmpty() && (subCommand.equalsIgnoreCase("help") || subCommand.equals("?"))) {
+            oldHelpSubCommand = subCommand;
             subCommand = "";
             helpCommand = true;
         }
 
+        // search for defined help command
+        boolean definedHelpFount = false;
         if (helpCommand) {
-            // search for defined help command
             for (ChatCommand command : commands) {
-                if (command.isCommandWithoutMinMaxWithoutWorld(sender, mainCommand, "help")
-                        || command.isCommandWithoutMinMaxWithoutWorld(sender, mainCommand, "?")) {
-                    command.execute(sender, argsQueue.toArray(new String[] {}));
-
-                    return;
+                if (command.isCommandWithoutMinMaxWithoutWorld(sender, mainCommand, oldHelpSubCommand)) {
+                    definedHelpFount = true;
+                    if (subCommand.isEmpty()) {
+                        subCommand = oldHelpSubCommand;
+                    }
+                    break;
                 }
             }
+        }
 
+        if (!definedHelpFount && helpCommand) {
             // send help for all commands
             boolean helpFound = false;
             boolean permissionException = false;
@@ -174,11 +182,10 @@ public class CommandsManager {
                 }
             }
 
-            if (helpFound && permissionException) {
+            if (!helpFound && permissionException) {
                 sender.sendMessage(ChatColor.RED + "Nicht ausreichende Berechtigungen");
-            }
-
-            if (helpFound) {
+                return;
+            } else if (helpFound) {
                 return;
             }
         }

@@ -80,10 +80,13 @@ public class CommandHelpTest extends AbstractTest {
         commandsManager.add(TestValidCommandHelpCommand.class);
 
         executeComannd("/test help");
+        executeComannd("/test ?");
 
-        Assert.assertEquals(1, testValid.size());
-        Assert.assertTrue(testValid.containsKey("testHelpCommandCommand"));
-        Assert.assertEquals(new Short((short) 1), testValid.get("testHelpCommandCommand"));
+        Assert.assertEquals(2, testValid.size());
+        Assert.assertTrue(testValid.containsKey("testHelpCommandCommand1"));
+        Assert.assertTrue(testValid.containsKey("testHelpCommandCommand2"));
+        Assert.assertEquals(new Short((short) 1), testValid.get("testHelpCommandCommand1"));
+        Assert.assertEquals(new Short((short) 1), testValid.get("testHelpCommandCommand2"));
         Assert.assertEquals(0, chatList.size());
     }
 

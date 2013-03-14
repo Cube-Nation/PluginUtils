@@ -13,7 +13,12 @@ public class TestValidCommandHelpCommand {
     }
 
     @Command(main = "test", sub = "help")
-    public void testHelpCommandCommand(Player player, String[] args) {
-        plugin.doSomeThing("testHelpCommandCommand");
+    public void testHelp1CommandCommand(Player player, String[] args) {
+        plugin.doSomeThing("testHelpCommandCommand1");
+    }
+
+    @Command(main = "test", sub = "?")
+    public void testHelp2CommandCommand(Player player, String[] args) {
+        plugin.doSomeThing("testHelpCommandCommand2");
     }
 }

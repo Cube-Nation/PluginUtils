@@ -145,18 +145,16 @@ public class ChatCommand {
         return senderArg && mainArg && subArg;
     }
 
-    public boolean isCommandWithoutMinMax(CommandSender sender, String mainName, String subName) {
-        boolean senderArg = false || (sender instanceof Player && isPlayerSender && (worlds.isEmpty() || worlds.contains(((Player) sender).getWorld().getName()
-                .toLowerCase())));
+    public boolean isCommandWithoutWorlds(CommandSender sender, String mainName, String subName, int argSize) {
+        boolean senderArg = false || (sender instanceof Player && isPlayerSender);
         senderArg = senderArg || (sender instanceof ConsoleCommandSender && isConsoleSender);
-        senderArg = senderArg
-                || (sender instanceof BlockCommandSender && isBlockSender && (worlds.isEmpty() || worlds.contains(((BlockCommandSender) sender).getBlock()
-                        .getWorld().getName().toLowerCase())));
+        senderArg = senderArg || (sender instanceof BlockCommandSender && isBlockSender);
         senderArg = senderArg || (sender instanceof RemoteConsoleCommandSender && isRemoteConsoleSender);
 
         boolean mainArg = mainNames.contains(mainName.toLowerCase());
         boolean subArg = ((subName.isEmpty() && subNames.isEmpty()) || (!subName.isEmpty() && subNames.contains(subName.toLowerCase())));
-        return senderArg && mainArg && subArg;
+        boolean minMax = (argSize >= min && (argSize <= max || max == -1));
+        return senderArg && mainArg && subArg && minMax;
     }
 
     public boolean isExactCommand(CommandSender sender, String mainName, String subName, int argSize) {

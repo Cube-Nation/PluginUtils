@@ -212,20 +212,20 @@ public class CommandsManager {
             }
         }
 
-        // search command without min/max with sub command
+        // search command without worlds with sub command
         if (foundCommand == null) {
             for (ChatCommand command : commands) {
-                if (command.isCommandWithoutMinMax(sender, mainCommand, subCommand)) {
+                if (command.isCommandWithoutWorlds(sender, mainCommand, subCommand, argsQueue.size())) {
                     foundCommand = command;
                     break;
                 }
             }
         }
 
-        // search command without min/max without sub command
+        // search command without worlds without sub command
         if (foundCommand == null) {
             for (ChatCommand command : commands) {
-                if (command.isCommandWithoutMinMax(sender, mainCommand, "")) {
+                if (command.isCommandWithoutWorlds(sender, mainCommand, "", originalArgsQueue.size())) {
                     foundCommand = command;
                     withSub = false;
                     break;
@@ -233,7 +233,7 @@ public class CommandsManager {
             }
         }
 
-        // search command without worlds with sub command
+        // search command without worlds and min/max, with sub command
         if (foundCommand == null) {
             for (ChatCommand command : commands) {
                 if (command.isCommandWithoutMinMaxWithoutWorld(sender, mainCommand, subCommand)) {
@@ -243,7 +243,7 @@ public class CommandsManager {
             }
         }
 
-        // search command without worlds without sub command
+        // search command without worlds and min/max, without sub command
         if (foundCommand == null) {
             for (ChatCommand command : commands) {
                 if (command.isCommandWithoutMinMaxWithoutWorld(sender, mainCommand, "")) {

@@ -6,6 +6,7 @@ import org.junit.Test;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlugin;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.annotation.TestCommandErrorHandler;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.constructor.TestValidCommandBiggerConsturctor;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.constructor.TestValidCommandEmptyConsturctor;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.constructor.TestValidCommandNoConsturctor;
@@ -170,5 +171,19 @@ public class CommandConstructorTest extends AbstractTest {
         Assert.assertEquals(1, testValid.size());
         Assert.assertTrue(testValid.containsKey("testOneMainCommand"));
         Assert.assertEquals(new Short((short) 1), testValid.get("testOneMainCommand"));
+    }
+
+    @Test
+    public void testErrorHandlerCommand() throws CommandException, InterruptedException {
+        commandsManager.add(TestCommandErrorHandler.class);
+        commandsManager.setErrorHandler(new ErrorHandler() {
+
+            @Override
+            public void onError(Exception e) {
+            }
+        });
+
+        executeComannd("/test1");
+        executeComannd("/test1 3");
     }
 }

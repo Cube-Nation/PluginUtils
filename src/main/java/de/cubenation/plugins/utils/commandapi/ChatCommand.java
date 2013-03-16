@@ -10,6 +10,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import de.cubenation.plugins.utils.commandapi.annotation.Asynchron;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.annotation.CommandPermissions;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderBlock;
@@ -37,11 +38,13 @@ public class ChatCommand {
     private int max = -1;
     private String usage = "";
     private String help = "";
+    private boolean runAsynchron = false;
 
     // reflection objects
     private Object instance = null;
     private Method method = null;
     private PermissionInterface permissionInterface = null;
+    private ErrorHandler errorHandler = null;
 
     public ChatCommand(Object instance, Method method) throws CommandWarmUpException {
         this.instance = instance;
@@ -132,6 +135,8 @@ public class ChatCommand {
                 }
             }
         }
+
+        runAsynchron = method.isAnnotationPresent(Asynchron.class);
     }
 
     public boolean isCommandWithoutMinMaxWithoutWorld(CommandSender sender, String mainName, String subName) {
@@ -278,35 +283,66 @@ public class ChatCommand {
         return true;
     }
 
-    public void execute(CommandSender sender, String[] args) throws CommandException {
+    public void execute(CommandSender sender, final String[] args) throws CommandException {
         if (!checkCommand(sender, args)) {
             return;
         }
 
-        ArrayList<Object> arguments = getParameterList(sender, args);
+        final ArrayList<Object> arguments = getParameterList(sender, args);
 
-        try {
-            method.invoke(instance, arguments.toArray());
-        } catch (Exception e) {
-            if (e instanceof IllegalArgumentException) {
-                if (args.length == 1) {
+        if (runAsynchron) {
+            new Thread("CommandRunner-" + method.getName()) {
+                @Override
+                public void run() {
                     try {
-                        method.invoke(instance, arguments.get(0), args[0]);
-                        return;
-                    } catch (Exception e1) {
-                        throw new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e1);
-                    }
-                } else if (args.length == 0) {
-                    try {
-                        method.invoke(instance, arguments.get(0));
-                        return;
-                    } catch (Exception e1) {
-                        throw new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e1);
+                        method.invoke(instance, arguments.toArray());
+                    } catch (Exception e) {
+                        if (e instanceof IllegalArgumentException) {
+                            if (args.length == 1) {
+                                try {
+                                    method.invoke(instance, arguments.get(0), args[0]);
+                                    return;
+                                } catch (Exception e1) {
+                                    errorHandler.onError(new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e1));
+                                }
+                            } else if (args.length == 0) {
+                                try {
+                                    method.invoke(instance, arguments.get(0));
+                                    return;
+                                } catch (Exception e1) {
+                                    errorHandler.onError(new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e1));
+                                }
+                            }
+                        }
+
+                        errorHandler.onError(new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e));
                     }
                 }
-            }
+            }.start();
+        } else {
+            try {
+                method.invoke(instance, arguments.toArray());
+            } catch (Exception e) {
+                if (e instanceof IllegalArgumentException) {
+                    if (args.length == 1) {
+                        try {
+                            method.invoke(instance, arguments.get(0), args[0]);
+                            return;
+                        } catch (Exception e1) {
+                            throw new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e1);
+                        }
+                    } else if (args.length == 0) {
+                        try {
+                            method.invoke(instance, arguments.get(0));
+                            return;
+                        } catch (Exception e1) {
+                            throw new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e1);
+                        }
+                    }
+                }
 
-            throw new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e);
+                throw new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e);
+            }
         }
     }
 
@@ -402,6 +438,10 @@ public class ChatCommand {
 
     public void setPermissionInterface(PermissionInterface permissionInterface) {
         this.permissionInterface = permissionInterface;
+    }
+
+    public void setErrorHandler(ErrorHandler errorHandler) {
+        this.errorHandler = errorHandler;
     }
 
     public Object getInstance() {

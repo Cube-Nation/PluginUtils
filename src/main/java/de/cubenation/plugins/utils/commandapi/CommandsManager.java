@@ -25,6 +25,7 @@ public class CommandsManager {
     private Object[] constructorParameter = new Object[] {};
     private ArrayList<ChatCommand> commands = new ArrayList<ChatCommand>();
     private PermissionInterface permissionInterface = null;
+    private ErrorHandler errorHandler = null;
     private CommandValidator commandValidator = new CommandValidator();
 
     public CommandsManager(Object... constructorParameter) throws CommandManagerException {
@@ -92,6 +93,9 @@ public class CommandsManager {
                     ChatCommand newChatCommand = new ChatCommand(instance, declaredMethod);
                     if (permissionInterface != null) {
                         newChatCommand.setPermissionInterface(permissionInterface);
+                    }
+                    if (errorHandler != null) {
+                        newChatCommand.setErrorHandler(errorHandler);
                     }
 
                     // check for duplicate commands
@@ -277,6 +281,14 @@ public class CommandsManager {
 
         for (ChatCommand command : commands) {
             command.setPermissionInterface(permissionInterface);
+        }
+    }
+
+    public void setErrorHandler(ErrorHandler errorHandler) {
+        this.errorHandler = errorHandler;
+
+        for (ChatCommand command : commands) {
+            command.setErrorHandler(errorHandler);
         }
     }
 }

@@ -17,6 +17,7 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.TestCustomCommandSender;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandEmptyMain;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandErrorHandler;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMethodExceptionNoParameter;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMethodExceptionString;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMethodExceptionStringArray;
@@ -372,5 +373,19 @@ public class CommandExceptionTest extends AbstractTest {
             Assert.assertEquals("[" + TestValidCommandMain.class.getName() + "] command already added", e.getMessage());
         }
         Assert.assertEquals(0, chatList.size());
+    }
+
+    @Test
+    public void testErrorHandlerCommand() throws CommandException, InterruptedException {
+        commandsManager.setErrorHandler(new ErrorHandler() {
+
+            @Override
+            public void onError(Exception e) {
+            }
+        });
+        commandsManager.add(TestInvalidCommandErrorHandler.class);
+
+        executeComannd("/test");
+        executeComannd("/test 3");
     }
 }

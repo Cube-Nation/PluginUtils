@@ -193,4 +193,11 @@ public class CommandValidator {
             throw new CommandWarmUpException(newChatCommand.getInstance().getClass(), "command already added");
         }
     }
+
+    public void checkAsynchronSupport(ChatCommand newChatCommand) throws CommandWarmUpException {
+        if (newChatCommand.isAsynchronCommand() && newChatCommand.getPlugin() == null) {
+            throw new CommandWarmUpException(newChatCommand.getInstance().getClass(), "Plugin not set! For asynchron command "
+                    + newChatCommand.getMethod().getName() + " the plugin must set in command manager or command");
+        }
+    }
 }

@@ -3,6 +3,7 @@ package de.cubenation.plugins.utils.commandapi.testutils;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.junit.After;
 import org.junit.Before;
@@ -19,6 +20,10 @@ public abstract class AbstractTest {
 
     @Before
     public void setUp() throws CommandWarmUpException, CommandManagerException {
+        if (Bukkit.getServer() == null) {
+            Bukkit.setServer(new TestServer());
+        }
+
         commandsManager = new CommandsManager(new TestPlugin() {
             @Override
             public void doSomeThing(String string) {

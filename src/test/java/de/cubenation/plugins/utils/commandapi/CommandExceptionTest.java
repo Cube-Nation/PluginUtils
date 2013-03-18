@@ -16,6 +16,8 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandManagerException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.TestCustomCommandSender;
+import de.cubenation.plugins.utils.commandapi.testutils.TestPlugin;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.annotation.TestCommandErrorHandler;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandEmptyMain;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandErrorHandler;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMethodExceptionNoParameter;
@@ -387,5 +389,32 @@ public class CommandExceptionTest extends AbstractTest {
 
         executeComannd("/test");
         executeComannd("/test 3");
+    }
+
+    @Test
+    public void testPluginCommand() throws CommandManagerException, CommandWarmUpException {
+        TestPlugin plugin = new TestPlugin() {
+            @Override
+            public void doSomeThing(String string) {
+            }
+        };
+
+        CommandsManager commandsManager = new CommandsManager();
+        try {
+            commandsManager.add(TestCommandErrorHandler.class);
+            Assert.fail("expected exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestCommandErrorHandler.class.getName()
+                    + "] Plugin not set! For asynchron command oneCommand the plugin must set in command manager or command", e.getMessage());
+        }
+        commandsManager.setPlugin(plugin);
+        commandsManager.add(TestCommandErrorHandler.class);
+
+        commandsManager = new CommandsManager(plugin);
+        commandsManager.add(TestCommandErrorHandler.class);
+        commandsManager.setPlugin(plugin);
+
+        commandsManager = new CommandsManager();
+        commandsManager.add(TestCommandErrorHandler.class, plugin);
     }
 }

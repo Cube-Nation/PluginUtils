@@ -3,12 +3,14 @@ package de.cubenation.plugins.utils.commandapi;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import de.cubenation.plugins.utils.commandapi.annotation.Asynchron;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
@@ -39,6 +41,7 @@ public class ChatCommand {
     private String usage = "";
     private String help = "";
     private boolean runAsynchron = false;
+    private JavaPlugin plugin = null;
 
     // reflection objects
     private Object instance = null;
@@ -291,7 +294,7 @@ public class ChatCommand {
         final ArrayList<Object> arguments = getParameterList(sender, args);
 
         if (runAsynchron) {
-            new Thread("CommandRunner-" + method.getName()) {
+            Thread task = new Thread("CommandRunner-" + method.getName()) {
                 @Override
                 public void run() {
                     try {
@@ -318,7 +321,9 @@ public class ChatCommand {
                         errorHandler.onError(new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e));
                     }
                 }
-            }.start();
+            };
+
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
         } else {
             try {
                 method.invoke(instance, arguments.toArray());
@@ -484,5 +489,17 @@ public class ChatCommand {
         } else {
             return Player.class;
         }
+    }
+
+    public void setPlugin(JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public JavaPlugin getPlugin() {
+        return plugin;
+    }
+
+    public boolean isAsynchronCommand() {
+        return runAsynchron;
     }
 }

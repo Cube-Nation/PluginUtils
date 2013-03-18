@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
@@ -27,6 +28,7 @@ public class CommandsManager {
     private PermissionInterface permissionInterface = null;
     private ErrorHandler errorHandler = null;
     private CommandValidator commandValidator = new CommandValidator();
+    private JavaPlugin plugin;
 
     public CommandsManager(Object... constructorParameter) throws CommandManagerException {
         this.constructorParameter = constructorParameter;
@@ -56,12 +58,17 @@ public class CommandsManager {
         try {
             // create object instance
             Object instance = null;
+            JavaPlugin localPlugin = plugin;
             try {
                 List<Object> objectList = Arrays.asList(constructorParameter);
                 List<Class<?>> classList = new ArrayList<Class<?>>();
 
                 for (Object object : objectList) {
                     Class<? extends Object> classObj = object.getClass();
+
+                    if (object instanceof JavaPlugin) {
+                        localPlugin = (JavaPlugin) object;
+                    }
 
                     // check inline classes, to get super class
                     Class<?> topLevel = classObj.getEnclosingClass();
@@ -97,12 +104,16 @@ public class CommandsManager {
                     if (errorHandler != null) {
                         newChatCommand.setErrorHandler(errorHandler);
                     }
+                    if (localPlugin != null) {
+                        newChatCommand.setPlugin(localPlugin);
+                    }
 
                     // check for duplicate commands
                     for (ChatCommand command : commands) {
                         commandValidator.checkEqual(command, newChatCommand);
                         commandValidator.checkSimilar(command, newChatCommand);
                     }
+                    commandValidator.checkAsynchronSupport(newChatCommand);
 
                     commands.add(newChatCommand);
                 }
@@ -289,6 +300,14 @@ public class CommandsManager {
 
         for (ChatCommand command : commands) {
             command.setErrorHandler(errorHandler);
+        }
+    }
+
+    public void setPlugin(JavaPlugin plugin) {
+        this.plugin = plugin;
+
+        for (ChatCommand command : commands) {
+            command.setPlugin(plugin);
         }
     }
 }

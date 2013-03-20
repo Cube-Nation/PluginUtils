@@ -76,6 +76,11 @@ public class ChatService {
         Bukkit.getScheduler().runTask(plugin, new Thread("ChatService->chat") {
             @Override
             public void run() {
+                if (resource == null) {
+                    plugin.getLogger().severe("i18n support is disabled");
+                    return;
+                }
+
                 if (constructorParameter.length > 0) {
                     MessageFormat formatter = new MessageFormat("");
                     formatter.setLocale(resource.getLocale());
@@ -89,6 +94,11 @@ public class ChatService {
     }
 
     public void chatSynchron(Player player, String resourceString, Object... constructorParameter) {
+        if (resource == null) {
+            plugin.getLogger().severe("i18n support is disabled");
+            return;
+        }
+
         if (constructorParameter.length > 0) {
             MessageFormat formatter = new MessageFormat("");
             formatter.setLocale(resource.getLocale());

@@ -3,6 +3,7 @@ package de.cubenation.plugins.utils.chatapi;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,7 +23,7 @@ import de.cubenation.plugins.utils.chatapi.Chatter.PermissionChatTextAsynchron;
 import de.cubenation.plugins.utils.permissionapi.PermissionInterface;
 
 public class ChatService {
-    private static final Locale defaultLocale = Locale.getDefault();
+    private static final Locale defaultLocale = Locale.GERMANY;
 
     private JavaPlugin plugin;
     private ResourceBundle resource = null;
@@ -58,21 +59,28 @@ public class ChatService {
             String configLang = plugin.getConfig().getString("lang");
             if (configLang != null && !configLang.isEmpty()) {
                 locale = new Locale(configLang);
+                plugin.getLogger().info("set default i18n language from config to: " + locale);
             } else {
                 locale = defaultLocale;
+                plugin.getLogger().info("set default i18n language to: " + locale);
             }
-            plugin.getLogger().info("set default i18n language to: " + locale);
         }
 
         try {
-            resource = ResourceBundle.getBundle(resourceName, locale);
+            resource = ResourceBundle.getBundle(resourceName, locale, plugin.getClass().getClassLoader(), new UTF8Control());
         } catch (MissingResourceException e) {
-            locale.getCountry();
-            locale.getLanguage();
-            plugin.getLogger().warning(
-                    "could not load one of the i18n resource files: " + resourceName + ".properties, " + resourceName + "_" + locale.getCountry()
-                            + ".properties, " + resourceName + "_" + locale.getLanguage() + ".properties, " + resourceName + "_" + locale.getLanguage() + "_"
-                            + locale.getCountry() + ".properties");
+            plugin.getLogger().log(
+                    Level.WARNING,
+                    "could not load one of the i18n resource files: "
+                            + resourceName
+                            + ".properties, "
+                            + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? resourceName + "_" + locale.getCountry() + ".properties, " : "")
+                            + resourceName
+                            + "_"
+                            + locale.getLanguage()
+                            + ".properties, "
+                            + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? resourceName + "_" + locale.getLanguage() + "_"
+                                    + locale.getCountry() + ".properties" : ""), e);
             plugin.getLogger().warning("i18n disabled");
         }
     }

@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.cubenation.plugins.utils.chatapi.ColorParser;
-import de.cubenation.plugins.utils.chatapi.UTF8Converter;
 
 public class ChatResourceAsynchron {
     public static void chat(final JavaPlugin plugin, final ResourceBundle resource, final Player player, final String resourceString, final Object... parameter) {
@@ -34,12 +33,12 @@ public class ChatResourceAsynchron {
                     if (parameter.length > 0) {
                         MessageFormat formatter = new MessageFormat("");
                         formatter.setLocale(resource.getLocale());
-                        String outputString = ColorParser.replaceColor(UTF8Converter.convert(resource.getString(resourceString)));
+                        String outputString = ColorParser.replaceColor(resource.getString(resourceString));
                         formatter.applyPattern(outputString);
                         String formatedOutputString = formatter.format(parameter);
                         player.sendMessage(formatedOutputString);
                     } else {
-                        String outputString = ColorParser.replaceColor(UTF8Converter.convert(resource.getString(resourceString)));
+                        String outputString = ColorParser.replaceColor(resource.getString(resourceString));
                         player.sendMessage(outputString);
                     }
                 } catch (NullPointerException e) {

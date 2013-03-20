@@ -13,3 +13,4 @@ PermissionApi
 
 ChatApi
 ==========
+Message resource files must have UTF-8 encoding too.

@@ -24,6 +24,7 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandExecutionException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.exception.NoPermissionException;
+import de.cubenation.plugins.utils.permissionapi.PermissionInterface;
 
 public class ChatCommand {
     // annotation data

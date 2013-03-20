@@ -1,4 +1,4 @@
-package de.cubenation.plugins.utils.commandapi;
+package de.cubenation.plugins.utils.permissionapi;
 
 import org.bukkit.entity.Player;
 

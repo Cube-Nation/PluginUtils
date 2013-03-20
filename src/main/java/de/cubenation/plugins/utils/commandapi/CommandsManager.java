@@ -21,6 +21,7 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandManagerException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.exception.NoPermissionException;
+import de.cubenation.plugins.utils.permissionapi.PermissionInterface;
 
 public class CommandsManager {
     private Object[] constructorParameter = new Object[] {};

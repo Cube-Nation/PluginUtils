@@ -9,6 +9,7 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.permission.TestValidCommandMultiPermission;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.permission.TestValidCommandOnePermission;
+import de.cubenation.plugins.utils.permissionapi.PermissionInterface;
 
 public class CommandPermissionExternalTest extends AbstractTest {
     @Test

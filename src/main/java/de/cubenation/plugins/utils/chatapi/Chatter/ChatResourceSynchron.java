@@ -29,10 +29,34 @@ public class ChatResourceSynchron {
             String outputString = ColorParser.replaceColor(resource.getString(resourceString));
             formatter.applyPattern(outputString);
             String formatedOutputString = formatter.format(parameter);
-            player.sendMessage(formatedOutputString);
+
+            formatedOutputString = formatedOutputString.replace("\r\n", "\n").replace("\r", "\n");
+
+            if (formatedOutputString.contains("\n")) {
+                for (String msg : formatedOutputString.split("\n")) {
+                    if (msg.trim().isEmpty()) {
+                        continue;
+                    }
+                    player.sendMessage(msg);
+                }
+            } else {
+                player.sendMessage(formatedOutputString);
+            }
         } else {
             String outputString = resource.getString(resourceString);
-            player.sendMessage(outputString);
+
+            outputString = outputString.replace("\r\n", "\n").replace("\r", "\n");
+
+            if (outputString.contains("\n")) {
+                for (String msg : outputString.split("\n")) {
+                    if (msg.trim().isEmpty()) {
+                        continue;
+                    }
+                    player.sendMessage(msg);
+                }
+            } else {
+                player.sendMessage(outputString);
+            }
         }
     }
 }

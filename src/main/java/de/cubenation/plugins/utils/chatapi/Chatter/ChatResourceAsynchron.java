@@ -21,7 +21,7 @@ public class ChatResourceAsynchron {
             return;
         }
 
-        Bukkit.getScheduler().runTask(plugin, new Thread("ChatService->chat") {
+        Bukkit.getScheduler().runTask(plugin, new Thread("ChatService->ChatResourceAsynchron") {
             @Override
             public void run() {
                 if (resource == null) {
@@ -36,17 +36,39 @@ public class ChatResourceAsynchron {
                         String outputString = ColorParser.replaceColor(resource.getString(resourceString));
                         formatter.applyPattern(outputString);
                         String formatedOutputString = formatter.format(parameter);
-                        player.sendMessage(formatedOutputString);
+
+                        formatedOutputString = formatedOutputString.replace("\r\n", "\n").replace("\r", "\n");
+                        if (formatedOutputString.contains("\n")) {
+                            for (String msg : formatedOutputString.split("\n")) {
+                                if (msg.trim().isEmpty()) {
+                                    continue;
+                                }
+                                player.sendMessage(msg);
+                            }
+                        } else {
+                            player.sendMessage(formatedOutputString);
+                        }
                     } else {
                         String outputString = ColorParser.replaceColor(resource.getString(resourceString));
-                        player.sendMessage(outputString);
+
+                        outputString = outputString.replace("\r\n", "\n").replace("\r", "\n");
+                        if (outputString.contains("\n")) {
+                            for (String msg : outputString.split("\n")) {
+                                if (msg.trim().isEmpty()) {
+                                    continue;
+                                }
+                                player.sendMessage(msg);
+                            }
+                        } else {
+                            player.sendMessage(outputString);
+                        }
                     }
                 } catch (NullPointerException e) {
-                    plugin.getLogger().log(Level.SEVERE, "error on ChatService->chat(" + player.getName() + ", " + resourceString + ")", e);
+                    plugin.getLogger().log(Level.SEVERE, "error on ChatService->ChatResourceAsynchron(" + player.getName() + ", " + resourceString + ")", e);
                 } catch (MissingResourceException e) {
-                    plugin.getLogger().log(Level.SEVERE, "error on ChatService->chat(" + player.getName() + ", " + resourceString + ")", e);
+                    plugin.getLogger().log(Level.SEVERE, "error on ChatService->ChatResourceAsynchron(" + player.getName() + ", " + resourceString + ")", e);
                 } catch (ClassCastException e) {
-                    plugin.getLogger().log(Level.SEVERE, "error on ChatService->chat(" + player.getName() + ", " + resourceString + ")", e);
+                    plugin.getLogger().log(Level.SEVERE, "error on ChatService->ChatResourceAsynchron(" + player.getName() + ", " + resourceString + ")", e);
                 }
             }
         });

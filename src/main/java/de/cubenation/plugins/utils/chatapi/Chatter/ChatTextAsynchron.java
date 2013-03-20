@@ -17,7 +17,17 @@ public class ChatTextAsynchron {
         Bukkit.getScheduler().runTask(plugin, new Thread("ChatService->ChatTextAsynchron") {
             @Override
             public void run() {
-                player.sendMessage(message);
+                String messageNew = message.replace("\r\n", "\n").replace("\r", "\n");
+                if (messageNew.contains("\n")) {
+                    for (String msg : messageNew.split("\n")) {
+                        if (msg.trim().isEmpty()) {
+                            continue;
+                        }
+                        player.sendMessage(msg);
+                    }
+                } else {
+                    player.sendMessage(message);
+                }
             }
         });
     }

@@ -12,6 +12,17 @@ public class ChatTextSynchron {
             return;
         }
 
-        player.sendMessage(message);
+        message = message.replace("\r\n", "\n").replace("\r", "\n");
+
+        if (message.contains("\n")) {
+            for (String msg : message.split("\n")) {
+                if (msg.trim().isEmpty()) {
+                    continue;
+                }
+                player.sendMessage(msg);
+            }
+        } else {
+            player.sendMessage(message);
+        }
     }
 }

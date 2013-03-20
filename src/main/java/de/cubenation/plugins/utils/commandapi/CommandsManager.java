@@ -37,6 +37,9 @@ public class CommandsManager {
             if (parameter == null) {
                 throw new CommandManagerException("manager constructor parameter could not be null");
             }
+            if (parameter instanceof JavaPlugin) {
+                plugin = (JavaPlugin) parameter;
+            }
         }
     }
 

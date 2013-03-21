@@ -1,0 +1,10 @@
+author: twonky4
+database: false
+main: de.cubenation.plugins.utils.PluginUtils
+name: PluginUtils
+startup: postworld
+url: http://www.cube-nation.de/
+version: '${project.version}'
+
+softdepend:
+  - PermissionsEx

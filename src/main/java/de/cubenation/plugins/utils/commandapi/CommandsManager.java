@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -16,6 +15,7 @@ import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.cubenation.plugins.utils.chatapi.ChatService;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandManagerException;
@@ -24,6 +24,7 @@ import de.cubenation.plugins.utils.commandapi.exception.NoPermissionException;
 import de.cubenation.plugins.utils.permissionapi.PermissionInterface;
 
 public class CommandsManager {
+    private static ChatService chatService;
     private Object[] constructorParameter = new Object[] {};
     private ArrayList<ChatCommand> commands = new ArrayList<ChatCommand>();
     private PermissionInterface permissionInterface = null;
@@ -101,7 +102,7 @@ public class CommandsManager {
                 if (annotationPresent) {
                     commandValidator.validate(commandClass, declaredMethod);
 
-                    ChatCommand newChatCommand = new ChatCommand(instance, declaredMethod);
+                    ChatCommand newChatCommand = new ChatCommand(instance, declaredMethod, chatService);
                     if (permissionInterface != null) {
                         newChatCommand.setPermissionInterface(permissionInterface);
                     }
@@ -202,7 +203,7 @@ public class CommandsManager {
             }
 
             if (!helpFound && permissionException) {
-                sender.sendMessage(ChatColor.RED + "Nicht ausreichende Berechtigungen");
+                chatService.one(sender, "all.noPermission");
                 return;
             } else if (helpFound) {
                 return;
@@ -282,11 +283,17 @@ public class CommandsManager {
             }
         } else {
             if (sender instanceof Player) {
-                ((Player) sender).sendMessage(ChatColor.RED + "Befehl nicht gefunden. Versuche /" + mainCommand + " help"
-                        + (!subCommand.isEmpty() ? " oder /" + mainCommand + " " + subCommand + " help" : ""));
+                if (!subCommand.isEmpty()) {
+                    chatService.one(sender, "player.commandNotFoundSub", mainCommand, subCommand);
+                } else {
+                    chatService.one(sender, "player.commandNotFound", mainCommand);
+                }
             } else {
-                sender.sendMessage("Befehl nicht gefunden. Versuche /" + mainCommand + " help"
-                        + (!subCommand.isEmpty() ? " oder /" + mainCommand + " " + subCommand + " help" : ""));
+                if (!subCommand.isEmpty()) {
+                    chatService.one(sender, "other.commandNotFoundSub", mainCommand, subCommand);
+                } else {
+                    chatService.one(sender, "other.commandNotFound", mainCommand);
+                }
             }
         }
     }
@@ -313,5 +320,9 @@ public class CommandsManager {
         for (ChatCommand command : commands) {
             command.setPlugin(plugin);
         }
+    }
+
+    public static void setOwnChatService(ChatService chatService) {
+        CommandsManager.chatService = chatService;
     }
 }

@@ -1,11 +1,11 @@
 package de.cubenation.plugins.utils.chatapi.Chatter;
 
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public class ChatTextSynchron {
-    public static void chat(Player player, String message) {
-        if (player == null) {
-            throw new NullPointerException("player is null");
+    public static void chat(CommandSender sender, String message) {
+        if (sender == null) {
+            throw new NullPointerException("sender is null");
         }
 
         if (message == null || message.isEmpty()) {
@@ -19,10 +19,10 @@ public class ChatTextSynchron {
                 if (msg.trim().isEmpty()) {
                     continue;
                 }
-                player.sendMessage(msg);
+                sender.sendMessage(msg);
             }
         } else {
-            player.sendMessage(message);
+            sender.sendMessage(message);
         }
     }
 }

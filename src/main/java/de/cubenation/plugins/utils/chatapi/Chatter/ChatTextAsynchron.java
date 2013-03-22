@@ -1,13 +1,13 @@
 package de.cubenation.plugins.utils.chatapi.Chatter;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ChatTextAsynchron {
-    public static void chat(final JavaPlugin plugin, final Player player, final String message) {
-        if (player == null) {
-            throw new NullPointerException("player is null");
+    public static void chat(final JavaPlugin plugin, final CommandSender sender, final String message) {
+        if (sender == null) {
+            throw new NullPointerException("sender is null");
         }
 
         if (message == null || message.isEmpty()) {
@@ -23,10 +23,10 @@ public class ChatTextAsynchron {
                         if (msg.trim().isEmpty()) {
                             continue;
                         }
-                        player.sendMessage(msg);
+                        sender.sendMessage(msg);
                     }
                 } else {
-                    player.sendMessage(message);
+                    sender.sendMessage(message);
                 }
             }
         });

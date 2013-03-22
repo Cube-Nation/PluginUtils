@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.cubenation.plugins.utils</groupId>
 	<artifactId>PluginUtils</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 	<name>PluginUtils</name>
 	<url>http://www.cube-nation.de/</url>
 	<properties>
@@ -34,6 +34,8 @@
 				<directory>${basedir}/src/main/resources</directory>
 				<filtering>true</filtering>
 				<includes>
+					<include>PluginUtils_messages_de.properties</include>
+					<include>config.yml</include>
 					<include>plugin.yml</include>
 				</includes>
 			</resource>

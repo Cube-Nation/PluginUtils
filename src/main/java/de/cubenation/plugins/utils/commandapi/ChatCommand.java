@@ -12,6 +12,7 @@ import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.cubenation.plugins.utils.chatapi.ChatService;
 import de.cubenation.plugins.utils.commandapi.annotation.Asynchron;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.annotation.CommandPermissions;
@@ -49,8 +50,9 @@ public class ChatCommand {
     private Method method = null;
     private PermissionInterface permissionInterface = null;
     private ErrorHandler errorHandler = null;
+    private ChatService chatService;
 
-    public ChatCommand(Object instance, Method method) throws CommandWarmUpException {
+    public ChatCommand(Object instance, Method method, ChatService chatService) throws CommandWarmUpException {
         this.instance = instance;
         this.method = method;
 
@@ -141,6 +143,8 @@ public class ChatCommand {
         }
 
         runAsynchron = method.isAnnotationPresent(Asynchron.class);
+
+        this.chatService = chatService;
     }
 
     public boolean isCommandWithoutMinMaxWithoutWorld(CommandSender sender, String mainName, String subName) {
@@ -194,30 +198,30 @@ public class ChatCommand {
         if (permissions.size() > 0) {
             for (String permission : permissions) {
                 if (!hasPlayerRight(sender, permission)) {
-                    sender.sendMessage(ChatColor.RED + "Nicht ausreichende Berechtigungen");
+                    chatService.one(sender, "all.noPermission");
                     return false;
                 }
             }
         }
 
         if (min > 0 && min > args.length) {
-            sender.sendMessage(ChatColor.RED + "Mindest Anzahl an Parameter nicht angegeben");
+            chatService.one(sender, "player.parameterMissing");
             if (!usage.isEmpty()) {
-                sender.sendMessage(ChatColor.RED + "Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+                chatService.one(sender, "player.commandUsage", mainNames.get(0), (!subNames.isEmpty() ? subNames.get(0) + " " : ""), usage);
             }
             return false;
         }
 
         if (max == 0 && args.length > 0) {
-            sender.sendMessage(ChatColor.RED + "Befehl unterstützt keine Parameter");
+            chatService.one(sender, "player.parameterNo");
             if (!usage.isEmpty()) {
-                sender.sendMessage(ChatColor.RED + "Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+                chatService.one(sender, "player.commandUsage", mainNames.get(0), (!subNames.isEmpty() ? subNames.get(0) + " " : ""), usage);
             }
             return false;
         } else if (max > 0 && args.length > max) {
-            sender.sendMessage(ChatColor.RED + "Zu viel Parameter angegeben");
+            chatService.one(sender, "player.parameterToMany");
             if (!usage.isEmpty()) {
-                sender.sendMessage(ChatColor.RED + "Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+                chatService.one(sender, "player.commandUsage", mainNames.get(0), (!subNames.isEmpty() ? subNames.get(0) + " " : ""), usage);
             }
             return false;
         }
@@ -233,8 +237,7 @@ public class ChatCommand {
                     }
                     worldString.append(world);
                 }
-                sender.sendMessage(ChatColor.RED + "Du befindest dich nicht in der richtigen Spielwelt! Der Befehl kann nur in " + worldString.toString()
-                        + " verwendet werden.");
+                chatService.one(sender, "player.wrongWorld", worldString.toString());
                 return false;
             }
         }
@@ -244,23 +247,23 @@ public class ChatCommand {
 
     private boolean checkCommandForOther(CommandSender sender, String[] args) {
         if (min > 0 && min > args.length) {
-            sender.sendMessage("Mindest Anzahl an Parameter nicht angegeben");
+            chatService.one(sender, "other.parameterMissing");
             if (!usage.isEmpty()) {
-                sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+                chatService.one(sender, "other.commandUsage", mainNames.get(0), (!subNames.isEmpty() ? subNames.get(0) + " " : ""), usage);
                 return false;
             }
         }
 
         if (max == 0 && args.length > 0) {
-            sender.sendMessage("Befehl unterstützt keine Parameter");
+            chatService.one(sender, "other.parameterNo");
             if (!usage.isEmpty()) {
-                sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+                chatService.one(sender, "other.commandUsage", mainNames.get(0), (!subNames.isEmpty() ? subNames.get(0) + " " : ""), usage);
                 return false;
             }
         } else if (max > 0 && args.length > max) {
-            sender.sendMessage("Zu viel Parameter angegeben");
+            chatService.one(sender, "other.parameterToMany");
             if (!usage.isEmpty()) {
-                sender.sendMessage("Befehlssyntax: /" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + usage);
+                chatService.one(sender, "other.commandUsage", mainNames.get(0), (!subNames.isEmpty() ? subNames.get(0) + " " : ""), usage);
                 return false;
             }
         }
@@ -277,8 +280,7 @@ public class ChatCommand {
                         }
                         worldString.append(world);
                     }
-                    sender.sendMessage("Der Block befindet sich nicht in der richtigen Spielwelt! Der Befehl kann nur in " + worldString.toString()
-                            + " verwendet werden.");
+                    chatService.one(sender, "block.wrongWorld", worldString.toString());
                     return false;
                 }
             }
@@ -393,7 +395,7 @@ public class ChatCommand {
 
             for (String main : mainNames) {
                 if (isConsoleSender || isBlockSender || isRemoteConsoleSender) {
-                    sender.sendMessage(buildHelpMessage(main, false));
+                    chatService.one(sender, "all.helpMessage", buildHelpMessage(main, false));
                 } else if (isPlayerSender) {
                     if (permissions.size() > 0) {
                         for (String permission : permissions) {
@@ -403,7 +405,7 @@ public class ChatCommand {
                         }
                     }
 
-                    ((Player) sender).sendMessage(buildHelpMessage(main, true));
+                    chatService.one(sender, "all.helpMessage", buildHelpMessage(main, true));
                 }
             }
         }

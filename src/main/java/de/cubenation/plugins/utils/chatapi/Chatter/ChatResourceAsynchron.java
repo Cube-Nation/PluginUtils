@@ -6,15 +6,16 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.cubenation.plugins.utils.chatapi.ColorParser;
 
 public class ChatResourceAsynchron {
-    public static void chat(final JavaPlugin plugin, final ResourceBundle resource, final Player player, final String resourceString, final Object... parameter) {
-        if (player == null) {
-            throw new NullPointerException("player is null");
+    public static void chat(final JavaPlugin plugin, final ResourceBundle resource, final CommandSender sender, final String resourceString,
+            final Object... parameter) {
+        if (sender == null) {
+            throw new NullPointerException("sender is null");
         }
 
         if (resourceString == null || resourceString.isEmpty()) {
@@ -43,10 +44,10 @@ public class ChatResourceAsynchron {
                                 if (msg.trim().isEmpty()) {
                                     continue;
                                 }
-                                player.sendMessage(msg);
+                                sender.sendMessage(msg);
                             }
                         } else {
-                            player.sendMessage(formatedOutputString);
+                            sender.sendMessage(formatedOutputString);
                         }
                     } else {
                         String outputString = ColorParser.replaceColor(resource.getString(resourceString));
@@ -57,18 +58,18 @@ public class ChatResourceAsynchron {
                                 if (msg.trim().isEmpty()) {
                                     continue;
                                 }
-                                player.sendMessage(msg);
+                                sender.sendMessage(msg);
                             }
                         } else {
-                            player.sendMessage(outputString);
+                            sender.sendMessage(outputString);
                         }
                     }
                 } catch (NullPointerException e) {
-                    plugin.getLogger().log(Level.SEVERE, "error on ChatService->ChatResourceAsynchron(" + player.getName() + ", " + resourceString + ")", e);
+                    plugin.getLogger().log(Level.SEVERE, "error on ChatService->ChatResourceAsynchron(" + sender.getName() + ", " + resourceString + ")", e);
                 } catch (MissingResourceException e) {
-                    plugin.getLogger().log(Level.SEVERE, "error on ChatService->ChatResourceAsynchron(" + player.getName() + ", " + resourceString + ")", e);
+                    plugin.getLogger().log(Level.SEVERE, "error on ChatService->ChatResourceAsynchron(" + sender.getName() + ", " + resourceString + ")", e);
                 } catch (ClassCastException e) {
-                    plugin.getLogger().log(Level.SEVERE, "error on ChatService->ChatResourceAsynchron(" + player.getName() + ", " + resourceString + ")", e);
+                    plugin.getLogger().log(Level.SEVERE, "error on ChatService->ChatResourceAsynchron(" + sender.getName() + ", " + resourceString + ")", e);
                 }
             }
         });

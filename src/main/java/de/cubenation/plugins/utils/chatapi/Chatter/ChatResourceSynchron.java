@@ -3,15 +3,15 @@ package de.cubenation.plugins.utils.chatapi.Chatter;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.cubenation.plugins.utils.chatapi.ColorParser;
 
 public class ChatResourceSynchron {
-    public static void chat(JavaPlugin plugin, ResourceBundle resource, Player player, String resourceString, Object... parameter) {
-        if (player == null) {
-            throw new NullPointerException("player is null");
+    public static void chat(JavaPlugin plugin, ResourceBundle resource, CommandSender sender, String resourceString, Object... parameter) {
+        if (sender == null) {
+            throw new NullPointerException("sender is null");
         }
 
         if (resourceString == null || resourceString.isEmpty()) {
@@ -37,10 +37,10 @@ public class ChatResourceSynchron {
                     if (msg.trim().isEmpty()) {
                         continue;
                     }
-                    player.sendMessage(msg);
+                    sender.sendMessage(msg);
                 }
             } else {
-                player.sendMessage(formatedOutputString);
+                sender.sendMessage(formatedOutputString);
             }
         } else {
             String outputString = resource.getString(resourceString);
@@ -52,10 +52,10 @@ public class ChatResourceSynchron {
                     if (msg.trim().isEmpty()) {
                         continue;
                     }
-                    player.sendMessage(msg);
+                    sender.sendMessage(msg);
                 }
             } else {
-                player.sendMessage(outputString);
+                sender.sendMessage(outputString);
             }
         }
     }

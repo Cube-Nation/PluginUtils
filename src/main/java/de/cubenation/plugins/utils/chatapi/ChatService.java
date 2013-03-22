@@ -5,7 +5,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.cubenation.plugins.utils.chatapi.Chatter.BroadcastResourceAsynchron;
@@ -69,36 +69,39 @@ public class ChatService {
         try {
             resource = ResourceBundle.getBundle(resourceName, locale, plugin.getClass().getClassLoader(), new UTF8Control());
         } catch (MissingResourceException e) {
-            plugin.getLogger().log(
-                    Level.WARNING,
-                    "could not load one of the i18n resource files: "
-                            + resourceName
-                            + ".properties, "
-                            + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? resourceName + "_" + locale.getCountry() + ".properties, " : "")
-                            + resourceName
-                            + "_"
-                            + locale.getLanguage()
-                            + ".properties, "
-                            + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? resourceName + "_" + locale.getLanguage() + "_"
-                                    + locale.getCountry() + ".properties" : ""), e);
-            plugin.getLogger().warning("i18n disabled");
+            if (plugin.getLogger() != null) {
+                plugin.getLogger().log(
+                        Level.WARNING,
+                        "could not load one of the i18n resource files: "
+                                + resourceName
+                                + ".properties, "
+                                + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? resourceName + "_" + locale.getCountry() + ".properties, "
+                                        : "")
+                                + resourceName
+                                + "_"
+                                + locale.getLanguage()
+                                + ".properties, "
+                                + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? resourceName + "_" + locale.getLanguage() + "_"
+                                        + locale.getCountry() + ".properties" : ""), e);
+                plugin.getLogger().warning("i18n disabled");
+            }
         }
     }
 
-    public void oneText(Player player, String message) {
-        ChatTextAsynchron.chat(plugin, player, message);
+    public void oneText(CommandSender sender, String message) {
+        ChatTextAsynchron.chat(plugin, sender, message);
     }
 
-    public void oneTextSync(Player player, String message) {
-        ChatTextSynchron.chat(player, message);
+    public void oneTextSync(CommandSender sender, String message) {
+        ChatTextSynchron.chat(sender, message);
     }
 
-    public void one(Player player, String resourceString, Object... parameter) {
-        ChatResourceAsynchron.chat(plugin, resource, player, resourceString, parameter);
+    public void one(CommandSender sender, String resourceString, Object... parameter) {
+        ChatResourceAsynchron.chat(plugin, resource, sender, resourceString, parameter);
     }
 
-    public void oneSync(Player player, String resourceString, Object... parameter) {
-        ChatResourceSynchron.chat(plugin, resource, player, resourceString, parameter);
+    public void oneSync(CommandSender sender, String resourceString, Object... parameter) {
+        ChatResourceSynchron.chat(plugin, resource, sender, resourceString, parameter);
     }
 
     public void allText(String message) {
@@ -133,20 +136,20 @@ public class ChatService {
         allPerms(resourceString, new String[] { permission }, parameter);
     }
 
-    public void oneTextPerms(Player player, String message, String[] permissions) {
-        PermissionChatTextAsynchron.chat(plugin, permissionInterface, player, message, permissions);
+    public void oneTextPerms(CommandSender sender, String message, String[] permissions) {
+        PermissionChatTextAsynchron.chat(plugin, permissionInterface, sender, message, permissions);
     }
 
-    public void onePerms(Player player, String resourceString, String[] permissions, Object... parameter) {
-        PermissionChatResourceAsynchron.chat(plugin, resource, permissionInterface, player, resourceString, permissions, parameter);
+    public void onePerms(CommandSender sender, String resourceString, String[] permissions, Object... parameter) {
+        PermissionChatResourceAsynchron.chat(plugin, resource, permissionInterface, sender, resourceString, permissions, parameter);
     }
 
-    public void oneTextPerm(Player player, String message, String permission) {
-        oneTextPerms(player, message, new String[] { permission });
+    public void oneTextPerm(CommandSender sender, String message, String permission) {
+        oneTextPerms(sender, message, new String[] { permission });
     }
 
-    public void onePerm(Player player, String resourceString, String permission, Object... parameter) {
-        onePerms(player, resourceString, new String[] { permission }, parameter);
+    public void onePerm(CommandSender sender, String resourceString, String permission, Object... parameter) {
+        onePerms(sender, resourceString, new String[] { permission }, parameter);
     }
 
     public void setPermissionInterface(PermissionInterface permissionInterface) {

@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -141,6 +142,65 @@ public class CommandsManager {
         }
 
         findAndExecuteCommand(sender, commandLabel, args);
+    }
+
+    public List<String> getTabCompleteList(CommandSender sender, org.bukkit.command.Command cmd, String commandLabel, String[] args) {
+        if (args.length == 0) {
+            return null;
+        }
+
+        if (args.length == 1 && args[0].length() > 0) {
+            HashMap<String, String> tabArray = new HashMap<String, String>();
+            for (ChatCommand command : commands) {
+                ArrayList<String> permissions = command.getPermissions();
+
+                boolean hasAllPermission = true;
+                if (sender instanceof Player) {
+                    for (String permission : permissions) {
+                        if (!hasPlayerRight((Player) sender, permission)) {
+                            hasAllPermission = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (!hasAllPermission) {
+                    continue;
+                }
+
+                ArrayList<String> mainAliases = command.getMainAliases();
+                if (!mainAliases.contains(commandLabel.toLowerCase())) {
+                    continue;
+                }
+
+                ArrayList<String> subAliases = command.getSubAliases();
+                for (String subAlias : subAliases) {
+                    if (subAlias.startsWith(args[0].toLowerCase())) {
+                        tabArray.put(subAlias, subAlias);
+                    }
+                }
+            }
+            if (!tabArray.containsKey("help") && "help".startsWith(args[0].toLowerCase()) && !"help".equalsIgnoreCase(args[0])) {
+                tabArray.put("help", "help");
+            }
+            return Arrays.asList(tabArray.keySet().toArray(new String[] {}));
+        } else if (args.length == 2 && args[1].length() > 0 && "help".startsWith(args[1].toLowerCase())) {
+            ArrayList<String> tabArray = new ArrayList<String>();
+            tabArray.add("help");
+            return tabArray;
+        }
+        return null;
+    }
+
+    private boolean hasPlayerRight(Player player, String rightName) {
+        boolean has = false;
+
+        if (permissionInterface != null) {
+            has = permissionInterface.hasPermission(player, rightName);
+        } else {
+            has = player.hasPermission(rightName);
+        }
+        return has;
     }
 
     private void findAndExecuteCommand(CommandSender sender, String commandLabel, String[] args) throws CommandException {

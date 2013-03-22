@@ -505,4 +505,12 @@ public class ChatCommand {
     public boolean isAsynchronCommand() {
         return runAsynchron;
     }
+
+    public ArrayList<String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(ArrayList<String> permissions) {
+        this.permissions = permissions;
+    }
 }

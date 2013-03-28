@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -152,6 +153,7 @@ public class CommandsManager {
         if (args.length == 1 && args[0].length() > 0) {
             // for example: /warn add
             HashMap<String, String> tabArray = new HashMap<String, String>();
+            boolean addPlayer = false;
             for (ChatCommand command : commands) {
                 ArrayList<String> permissions = command.getPermissions();
 
@@ -174,9 +176,10 @@ public class CommandsManager {
                     continue;
                 }
 
-                // if command without exists without sub command, exit for user list
+                // if command without exists without sub command, exit for user
+                // list
                 if (command.getSubAliases().size() == 0) {
-                    return null;
+                    addPlayer = true;
                 }
 
                 ArrayList<String> subAliases = command.getSubAliases();
@@ -188,6 +191,12 @@ public class CommandsManager {
             }
             if (!tabArray.containsKey("help") && "help".startsWith(args[0].toLowerCase()) && !"help".equalsIgnoreCase(args[0])) {
                 tabArray.put("help", "help");
+            }
+
+            if (addPlayer) {
+                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                    tabArray.put(player.getName(), player.getName());
+                }
             }
             return Arrays.asList(tabArray.keySet().toArray(new String[] {}));
         } else if (args.length == 2 && args[1].length() > 0 && "help".startsWith(args[1].toLowerCase())) {

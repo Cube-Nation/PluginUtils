@@ -150,6 +150,7 @@ public class CommandsManager {
         }
 
         if (args.length == 1 && args[0].length() > 0) {
+            // for example: /warn add
             HashMap<String, String> tabArray = new HashMap<String, String>();
             for (ChatCommand command : commands) {
                 ArrayList<String> permissions = command.getPermissions();
@@ -173,6 +174,11 @@ public class CommandsManager {
                     continue;
                 }
 
+                // if command without exists without sub command, exit for user list
+                if (command.getSubAliases().size() == 0) {
+                    return null;
+                }
+
                 ArrayList<String> subAliases = command.getSubAliases();
                 for (String subAlias : subAliases) {
                     if (subAlias.startsWith(args[0].toLowerCase())) {
@@ -185,6 +191,7 @@ public class CommandsManager {
             }
             return Arrays.asList(tabArray.keySet().toArray(new String[] {}));
         } else if (args.length == 2 && args[1].length() > 0 && "help".startsWith(args[1].toLowerCase())) {
+            // for example: /warn add help
             ArrayList<String> tabArray = new ArrayList<String>();
             tabArray.add("help");
             return tabArray;

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.cubenation.plugins.utils</groupId>
 	<artifactId>PluginUtils</artifactId>
-	<version>0.1.2</version>
+	<version>0.1.3-SNAPSHOT</version>
 	<name>PluginUtils</name>
 	<url>http://www.cube-nation.de/</url>
 	<properties>

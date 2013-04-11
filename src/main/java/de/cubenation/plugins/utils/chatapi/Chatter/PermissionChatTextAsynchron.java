@@ -10,7 +10,7 @@ import de.cubenation.plugins.utils.permissionapi.PermissionInterface;
 public class PermissionChatTextAsynchron {
     public static void chat(JavaPlugin plugin, final PermissionInterface permissionInterface, final CommandSender sender, final String message,
             final String[] permissions) {
-        Bukkit.getScheduler().runTask(plugin, new Thread("ChatService->PermissionChatTextAsynchron") {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Thread("ChatService->PermissionChatTextAsynchron") {
             @Override
             public void run() {
                 if (sender instanceof Player) {

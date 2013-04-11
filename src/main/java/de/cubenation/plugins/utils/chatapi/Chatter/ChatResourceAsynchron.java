@@ -22,7 +22,7 @@ public class ChatResourceAsynchron {
             return;
         }
 
-        Bukkit.getScheduler().runTask(plugin, new Thread("ChatService->ChatResourceAsynchron") {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Thread("ChatService->ChatResourceAsynchron") {
             @Override
             public void run() {
                 if (resource == null) {

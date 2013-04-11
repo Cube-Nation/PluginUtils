@@ -14,7 +14,7 @@ public class ChatTextAsynchron {
             return;
         }
 
-        Bukkit.getScheduler().runTask(plugin, new Thread("ChatService->ChatTextAsynchron") {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Thread("ChatService->ChatTextAsynchron") {
             @Override
             public void run() {
                 String messageNew = message.replace("\r\n", "\n").replace("\r", "\n");

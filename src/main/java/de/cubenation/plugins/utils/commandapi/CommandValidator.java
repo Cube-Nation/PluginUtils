@@ -2,7 +2,6 @@ package de.cubenation.plugins.utils.commandapi;
 
 import java.lang.reflect.Method;
 
-import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
@@ -64,15 +63,6 @@ public class CommandValidator {
     private void validateParameterSender(Class<?> commandClass, Method declaredMethod) throws CommandWarmUpException {
         Class<?>[] parameterTypes = declaredMethod.getParameterTypes();
 
-        if (!parameterTypes[0].equals(Player.class) && !parameterTypes[0].equals(ConsoleCommandSender.class)
-                && !parameterTypes[0].equals(BlockCommandSender.class) && !parameterTypes[0].equals(RemoteConsoleCommandSender.class)
-                && !parameterTypes[0].equals(CommandSender.class)) {
-            throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName() + " must be " + Player.class.getSimpleName()
-                    + ", " + ConsoleCommandSender.class.getSimpleName() + ", " + BlockCommandSender.class.getSimpleName() + ", "
-                    + RemoteConsoleCommandSender.class.getSimpleName() + " or " + CommandSender.class.getSimpleName() + " but was "
-                    + parameterTypes[0].getName());
-        }
-
         short annoCount = 0;
         if (declaredMethod.isAnnotationPresent(SenderPlayer.class)) {
             annoCount++;
@@ -103,12 +93,6 @@ public class CommandValidator {
             if (!parameterTypes[0].equals(ConsoleCommandSender.class) && !parameterTypes[0].equals(CommandSender.class)) {
                 throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName() + " must be "
                         + ConsoleCommandSender.class.getSimpleName() + " but was " + parameterTypes[0].getName());
-            }
-        }
-        if (declaredMethod.isAnnotationPresent(SenderBlock.class)) {
-            if (!parameterTypes[0].equals(BlockCommandSender.class) && !parameterTypes[0].equals(CommandSender.class)) {
-                throw new CommandWarmUpException(commandClass, "first parameter in method " + declaredMethod.getName() + " must be "
-                        + BlockCommandSender.class.getSimpleName() + " but was " + parameterTypes[0].getName());
             }
         }
         if (declaredMethod.isAnnotationPresent(SenderRemoteConsole.class)) {

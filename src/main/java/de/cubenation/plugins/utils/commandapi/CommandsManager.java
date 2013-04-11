@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Queue;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
@@ -137,11 +136,6 @@ public class CommandsManager {
     }
 
     public void execute(CommandSender sender, org.bukkit.command.Command cmd, String commandLabel, String[] args) throws CommandException {
-        if (!(sender instanceof Player) && !(sender instanceof ConsoleCommandSender) && !(sender instanceof BlockCommandSender)
-                && !(sender instanceof RemoteConsoleCommandSender)) {
-            throw new CommandException(CommandSender.class.getSimpleName() + " " + sender.getClass().getName() + " not supported");
-        }
-
         findAndExecuteCommand(sender, commandLabel, args);
     }
 

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
@@ -150,7 +149,6 @@ public class ChatCommand {
     public boolean isCommandWithoutMinMaxWithoutWorld(CommandSender sender, String mainName, String subName) {
         boolean senderArg = false || (sender instanceof Player && isPlayerSender);
         senderArg = senderArg || (sender instanceof ConsoleCommandSender && isConsoleSender);
-        senderArg = senderArg || (sender instanceof BlockCommandSender && isBlockSender);
         senderArg = senderArg || (sender instanceof RemoteConsoleCommandSender && isRemoteConsoleSender);
 
         boolean mainArg = mainNames.contains(mainName.toLowerCase());
@@ -161,7 +159,6 @@ public class ChatCommand {
     public boolean isCommandWithoutWorlds(CommandSender sender, String mainName, String subName, int argSize) {
         boolean senderArg = false || (sender instanceof Player && isPlayerSender);
         senderArg = senderArg || (sender instanceof ConsoleCommandSender && isConsoleSender);
-        senderArg = senderArg || (sender instanceof BlockCommandSender && isBlockSender);
         senderArg = senderArg || (sender instanceof RemoteConsoleCommandSender && isRemoteConsoleSender);
 
         boolean mainArg = mainNames.contains(mainName.toLowerCase());
@@ -174,9 +171,7 @@ public class ChatCommand {
         boolean senderArg = false || (sender instanceof Player && isPlayerSender && (worlds.isEmpty() || worlds.contains(((Player) sender).getWorld().getName()
                 .toLowerCase())));
         senderArg = senderArg || (sender instanceof ConsoleCommandSender && isConsoleSender);
-        senderArg = senderArg
-                || (sender instanceof BlockCommandSender && isBlockSender && (worlds.isEmpty() || worlds.contains(((BlockCommandSender) sender).getBlock()
-                        .getWorld().getName().toLowerCase())));
+
         senderArg = senderArg || (sender instanceof RemoteConsoleCommandSender && isRemoteConsoleSender);
 
         boolean mainArg = mainNames.contains(mainName.toLowerCase());
@@ -268,24 +263,6 @@ public class ChatCommand {
             }
         }
 
-        if (sender instanceof BlockCommandSender) {
-            if (worlds.size() > 0) {
-                String blockCurrentWorld = ((BlockCommandSender) sender).getBlock().getWorld().getName().toLowerCase();
-
-                if (!worlds.contains(blockCurrentWorld)) {
-                    StringBuilder worldString = new StringBuilder("");
-                    for (String world : worlds) {
-                        if (worldString.length() > 0) {
-                            worldString.append(", ");
-                        }
-                        worldString.append(world);
-                    }
-                    chatService.one(sender, "block.wrongWorld", worldString.toString());
-                    return false;
-                }
-            }
-        }
-
         return true;
     }
 
@@ -326,7 +303,7 @@ public class ChatCommand {
                 }
             };
 
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
+            Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, task);
         } else {
             try {
                 method.invoke(instance, arguments.toArray());
@@ -363,8 +340,6 @@ public class ChatCommand {
                 arguments.add((ConsoleCommandSender) sender);
             } else if (isPlayerSender) {
                 arguments.add((Player) sender);
-            } else if (isBlockSender) {
-                arguments.add((BlockCommandSender) sender);
             } else if (isRemoteConsoleSender) {
                 arguments.add((RemoteConsoleCommandSender) sender);
             }
@@ -483,8 +458,6 @@ public class ChatCommand {
     public Class<? extends CommandSender> getSenderType() {
         if (isMultipleSender) {
             return CommandSender.class;
-        } else if (isBlockSender) {
-            return BlockCommandSender.class;
         } else if (isConsoleSender) {
             return ConsoleCommandSender.class;
         } else if (isRemoteConsoleSender) {

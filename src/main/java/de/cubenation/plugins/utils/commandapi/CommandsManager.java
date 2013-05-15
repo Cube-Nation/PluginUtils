@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.BlockCommandSender;
@@ -121,8 +122,12 @@ public class CommandsManager {
                         commandValidator.checkSimilar(command, newChatCommand);
                     }
                     commandValidator.checkAsynchronSupport(newChatCommand);
-
                     commands.add(newChatCommand);
+                    if (plugin != null && plugin.getLogger() != null) {
+                        plugin.getLogger().log(Level.INFO, "add command: " + newChatCommand);
+                    } else {
+                        Bukkit.getLogger().log(Level.INFO, "add command: " + newChatCommand);
+                    }
                 }
             }
         } catch (CommandWarmUpException e) {

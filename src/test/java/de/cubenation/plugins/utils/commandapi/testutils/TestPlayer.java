@@ -19,6 +19,7 @@ import org.bukkit.Note;
 import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.Statistic;
+import org.bukkit.WeatherType;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.conversations.Conversation;
@@ -46,6 +47,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 public class TestPlayer implements Player {
@@ -966,4 +968,49 @@ public class TestPlayer implements Player {
     public void setTexturePack(String url) {
     }
 
+    @Override
+    public String getCustomName() {
+        return null;
+    }
+
+    @Override
+    public boolean isCustomNameVisible() {
+        return false;
+    }
+
+    @Override
+    public void setCustomName(String arg0) {
+    }
+
+    @Override
+    public void setCustomNameVisible(boolean arg0) {
+    }
+
+    @Override
+    public WeatherType getPlayerWeather() {
+        return null;
+    }
+
+    @Override
+    public Scoreboard getScoreboard() {
+        return null;
+    }
+
+    @Override
+    @Deprecated
+    public boolean isOnGround() {
+        return false;
+    }
+
+    @Override
+    public void resetPlayerWeather() {
+    }
+
+    @Override
+    public void setPlayerWeather(WeatherType arg0) {
+    }
+
+    @Override
+    public void setScoreboard(Scoreboard arg0) throws IllegalArgumentException, IllegalStateException {
+    }
 }

@@ -513,4 +513,51 @@ public class ChatCommand {
     public void setPermissions(ArrayList<String> permissions) {
         this.permissions = permissions;
     }
+
+    @Override
+    public String toString() {
+        String type = "[NONE]";
+
+        if (isConsoleSender) {
+            type = "[CONSOLE]";
+        }
+        if (isBlockSender) {
+            type = "[BLOCK]";
+        }
+        if (isPlayerSender) {
+            type = "[PLAYER]";
+        }
+        if (isRemoteConsoleSender) {
+            type = "[REMOTECONSOLE]";
+        }
+        if (isMultipleSender) {
+            type = "[MULTI]";
+        }
+
+        String perm = "";
+        if (permissions.size() > 0) {
+            for (String permission : permissions) {
+                if (perm.length() > 0) {
+                    perm += ", ";
+                }
+                perm += permission;
+            }
+
+            perm = " [permission: " + perm + "]";
+        }
+
+        String world = "";
+        if (worlds.size() > 0) {
+            for (String w : worlds) {
+                if (world.length() > 0) {
+                    world += ", ";
+                }
+                world += w;
+            }
+
+            world = " [world: " + world + "]";
+        }
+
+        return "/" + mainNames.get(0) + (subNames.size() > 0 ? " " + subNames.get(0) : "") + " " + type + perm + world;
+    }
 }

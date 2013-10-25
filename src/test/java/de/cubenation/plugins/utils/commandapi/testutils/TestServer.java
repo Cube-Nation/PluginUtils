@@ -45,6 +45,7 @@ import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 
 public class TestServer implements Server {
     private final static Logger log = Logger.getLogger("TestServer");
+    private Player[] onlinePlayers = null;
 
     @Override
     public void sendPluginMessage(Plugin source, String channel, byte[] message) {
@@ -72,7 +73,11 @@ public class TestServer implements Server {
 
     @Override
     public Player[] getOnlinePlayers() {
-        return null;
+        return onlinePlayers;
+    }
+
+    public void setOnlinePlayers(Player[] onlinePlayers) {
+        this.onlinePlayers = onlinePlayers;
     }
 
     @Override

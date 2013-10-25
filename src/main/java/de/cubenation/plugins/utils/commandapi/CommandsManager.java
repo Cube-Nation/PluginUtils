@@ -150,12 +150,14 @@ public class CommandsManager {
         findAndExecuteCommand(sender, commandLabel, args);
     }
 
+    /**
+     * TODO: Have to review for Bug <a
+     * href="https://github.com/Cube-Nation/CNWarn/issues/7">CNWarn#7</a>
+     */
     public List<String> getTabCompleteList(CommandSender sender, org.bukkit.command.Command cmd, String commandLabel, String[] args) {
         if (args.length == 0) {
             return null;
-        }
-
-        if (args.length == 1 && args[0].length() > 0) {
+        } else if (args.length == 1 && args[0].length() > 0) {
             // for example: /warn add
             HashMap<String, String> tabArray = new HashMap<String, String>();
             boolean addPlayer = false;
@@ -181,8 +183,7 @@ public class CommandsManager {
                     continue;
                 }
 
-                // if command without exists without sub command, exit for user
-                // list
+                // if command exists without sub command, return user list
                 if (command.getSubAliases().size() == 0) {
                     addPlayer = true;
                 }
@@ -200,7 +201,9 @@ public class CommandsManager {
 
             if (addPlayer) {
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    tabArray.put(player.getName(), player.getName());
+                    if (player.getName().toLowerCase().startsWith(args[0].toLowerCase())) {
+                        tabArray.put(player.getName(), player.getName());
+                    }
                 }
             }
             return Arrays.asList(tabArray.keySet().toArray(new String[] {}));

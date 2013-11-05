@@ -17,6 +17,7 @@ import de.cubenation.plugins.utils.commandapi.testutils.testcommands.help.TestVa
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.help.TestValidCommandHelpUsageConsole;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.help.TestValidCommandHelpWorld;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestValidCommandMain;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestValidCommandMainSubMulti;
 
 public class CommandHelpTest extends AbstractTest {
     @Test
@@ -165,5 +166,27 @@ public class CommandHelpTest extends AbstractTest {
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
         Assert.assertEquals(ChatColor.AQUA + "/test" + ChatColor.WHITE + " - this is a help test", chatList.get(0));
+    }
+
+    @Test
+    public void testSubHelpDirectCommandMulti1() throws CommandException {
+        commandsManager.add(TestValidCommandMainSubMulti.class);
+
+        executeComannd("/test one help");
+
+        Assert.assertEquals(0, testValid.size());
+        Assert.assertEquals(1, chatList.size());
+        Assert.assertEquals(ChatColor.AQUA + "/test one" + ChatColor.WHITE + " - this is a help test 1", chatList.get(0));
+    }
+
+    @Test
+    public void testSubHelpDirectCommandMulti2() throws CommandException {
+        commandsManager.add(TestValidCommandMainSubMulti.class);
+
+        executeComannd("/test two help");
+
+        Assert.assertEquals(0, testValid.size());
+        Assert.assertEquals(1, chatList.size());
+        Assert.assertEquals(ChatColor.AQUA + "/test two" + ChatColor.WHITE + " - this is a help test 2", chatList.get(0));
     }
 }

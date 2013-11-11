@@ -51,9 +51,18 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 public class TestPlayer implements Player {
+    private String name = null;
+
+    public TestPlayer(String name) {
+        this.name = name;
+    }
+
+    public TestPlayer() {
+    }
+
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
@@ -224,15 +233,6 @@ public class TestPlayer implements Player {
 
     @Override
     public void setMaximumNoDamageTicks(int ticks) {
-    }
-
-    @Override
-    public int getLastDamage() {
-        return 0;
-    }
-
-    @Override
-    public void setLastDamage(int damage) {
     }
 
     @Override
@@ -490,32 +490,6 @@ public class TestPlayer implements Player {
 
     @Override
     public void removeMetadata(String metadataKey, Plugin owningPlugin) {
-    }
-
-    @Override
-    public void damage(int amount) {
-    }
-
-    @Override
-    public void damage(int amount, Entity source) {
-    }
-
-    @Override
-    public int getHealth() {
-        return 0;
-    }
-
-    @Override
-    public void setHealth(int health) {
-    }
-
-    @Override
-    public int getMaxHealth() {
-        return 0;
-    }
-
-    @Override
-    public void setMaxHealth(int health) {
     }
 
     @Override
@@ -1012,5 +986,112 @@ public class TestPlayer implements Player {
 
     @Override
     public void setScoreboard(Scoreboard arg0) throws IllegalArgumentException, IllegalStateException {
+    }
+
+    @Override
+    public int _INVALID_getLastDamage() {
+        return 0;
+    }
+
+    @Override
+    public void _INVALID_setLastDamage(int arg0) {
+    }
+
+    @Override
+    public double getLastDamage() {
+        return 0;
+    }
+
+    @Override
+    public void setLastDamage(double arg0) {
+    }
+
+    @Override
+    public void _INVALID_damage(int arg0) {
+    }
+
+    @Override
+    public void _INVALID_damage(int arg0, Entity arg1) {
+    }
+
+    @Override
+    public int _INVALID_getHealth() {
+        return 0;
+    }
+
+    @Override
+    public int _INVALID_getMaxHealth() {
+        return 0;
+    }
+
+    @Override
+    public void _INVALID_setHealth(int arg0) {
+    }
+
+    @Override
+    public void _INVALID_setMaxHealth(int arg0) {
+    }
+
+    @Override
+    public void damage(double arg0) {
+    }
+
+    @Override
+    public void damage(double arg0, Entity arg1) {
+    }
+
+    @Override
+    public double getHealth() {
+        return 0;
+    }
+
+    @Override
+    public double getMaxHealth() {
+        return 0;
+    }
+
+    @Override
+    public void setHealth(double arg0) {
+    }
+
+    @Override
+    public void setMaxHealth(double arg0) {
+    }
+
+    @Override
+    public Entity getLeashHolder() throws IllegalStateException {
+        return null;
+    }
+
+    @Override
+    public boolean isLeashed() {
+        return false;
+    }
+
+    @Override
+    public boolean setLeashHolder(Entity arg0) {
+        return false;
+    }
+
+    @Override
+    public double getHealthScale() {
+        return 0;
+    }
+
+    @Override
+    public boolean isHealthScaled() {
+        return false;
+    }
+
+    @Override
+    public void playSound(Location arg0, String arg1, float arg2, float arg3) {
+    }
+
+    @Override
+    public void setHealthScale(double arg0) throws IllegalArgumentException {
+    }
+
+    @Override
+    public void setHealthScaled(boolean arg0) {
     }
 }

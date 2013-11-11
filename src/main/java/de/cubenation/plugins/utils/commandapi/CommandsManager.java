@@ -153,10 +153,9 @@ public class CommandsManager {
     public List<String> getTabCompleteList(CommandSender sender, org.bukkit.command.Command cmd, String commandLabel, String[] args) {
         if (args.length == 0) {
             return null;
-        }
-
-        if (args.length == 1 && args[0].length() > 0) {
-            // for example: /warn add
+        } else if (args.length == 1) {
+            // for example: /warn add or /warn
+            String firstArg = args[0];
             HashMap<String, String> tabArray = new HashMap<String, String>();
             boolean addPlayer = false;
             for (ChatCommand command : commands) {
@@ -181,30 +180,32 @@ public class CommandsManager {
                     continue;
                 }
 
-                // if command without exists without sub command, exit for user
-                // list
+                // if command exists without sub command, return user list
                 if (command.getSubAliases().size() == 0) {
                     addPlayer = true;
                 }
 
                 ArrayList<String> subAliases = command.getSubAliases();
                 for (String subAlias : subAliases) {
-                    if (subAlias.startsWith(args[0].toLowerCase())) {
+                    if (subAlias.startsWith(firstArg.toLowerCase())) {
                         tabArray.put(subAlias, subAlias);
                     }
                 }
             }
-            if (!tabArray.containsKey("help") && "help".startsWith(args[0].toLowerCase()) && !"help".equalsIgnoreCase(args[0])) {
+
+            if (addPlayer && !tabArray.containsKey("help") && "help".startsWith(firstArg.toLowerCase()) && !"help".equalsIgnoreCase(firstArg)) {
                 tabArray.put("help", "help");
             }
 
             if (addPlayer) {
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    tabArray.put(player.getName(), player.getName());
+                    if (player.getName().toLowerCase().startsWith(firstArg.toLowerCase())) {
+                        tabArray.put(player.getName(), player.getName());
+                    }
                 }
             }
             return Arrays.asList(tabArray.keySet().toArray(new String[] {}));
-        } else if (args.length == 2 && args[1].length() > 0 && "help".startsWith(args[1].toLowerCase())) {
+        } else if (args.length == 2 && !args[1].isEmpty() && "help".startsWith(args[1].toLowerCase())) {
             // for example: /warn add help
             ArrayList<String> tabArray = new ArrayList<String>();
             tabArray.add("help");
@@ -243,29 +244,27 @@ public class CommandsManager {
 
             // is help for sub command
             if (argsQueue.size() > 0 && (argsQueue.peek().equalsIgnoreCase("help") || argsQueue.peek().equals("?"))) {
-                oldHelpSubCommand = argsQueue.peek();
-                subCommand = "";
                 helpCommand = true;
             }
         }
 
         // is sub command help identifier
+        // search for defined help command
+        boolean definedHelpFount = false;
         if (!subCommand.isEmpty() && (subCommand.equalsIgnoreCase("help") || subCommand.equals("?"))) {
             oldHelpSubCommand = subCommand;
             subCommand = "";
             helpCommand = true;
-        }
 
-        // search for defined help command
-        boolean definedHelpFount = false;
-        if (helpCommand) {
-            for (ChatCommand command : commands) {
-                if (command.isCommandWithoutMinMaxWithoutWorld(sender, mainCommand, oldHelpSubCommand)) {
-                    definedHelpFount = true;
-                    if (subCommand.isEmpty()) {
-                        subCommand = oldHelpSubCommand;
+            if (helpCommand) {
+                for (ChatCommand command : commands) {
+                    if (command.isCommandWithoutMinMaxWithoutWorld(sender, mainCommand, oldHelpSubCommand)) {
+                        definedHelpFount = true;
+                        if (subCommand.isEmpty()) {
+                            subCommand = oldHelpSubCommand;
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }

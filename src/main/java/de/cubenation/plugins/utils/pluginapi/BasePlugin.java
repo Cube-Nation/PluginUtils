@@ -69,13 +69,15 @@ public abstract class BasePlugin extends JavaPlugin {
 
         startCustomServices();
 
+        initialCustomEventListeners();
+
         registerCustomEventListeners();
 
         try {
             commandsManager = new CommandsManager(this);
             commandsManager.setPermissionInterface(permissionService);
             commandsManager.setErrorHandler(errorHandler);
-            addCommands();
+            registerCommandSets();
         } catch (CommandWarmUpException e) {
             getLogger().log(Level.SEVERE, "error on register command", e);
         } catch (CommandManagerException e) {
@@ -167,7 +169,7 @@ public abstract class BasePlugin extends JavaPlugin {
         getLogger().log(Level.SEVERE, "error on plugin", thrown);
     }
 
-    private void addCommands() throws CommandWarmUpException {
+    private void registerCommandSets() throws CommandWarmUpException {
         List<CommandSet> commandSets = new ArrayList<CommandSet>();
 
         registerCommands(commandSets);
@@ -197,6 +199,9 @@ public abstract class BasePlugin extends JavaPlugin {
     }
 
     protected void registerCommands(List<CommandSet> list) {
+    }
+
+    protected void initialCustomEventListeners() {
     }
 
     protected void registerCustomEventListeners(List<Listener> list) {

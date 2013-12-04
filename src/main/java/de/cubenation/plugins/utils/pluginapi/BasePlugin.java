@@ -53,14 +53,14 @@ public abstract class BasePlugin extends JavaPlugin {
             };
         }
 
+        saveDefaultConfig();
+        reloadConfig();
+
         customDatabaseServer = getCustomDatabaseServer();
         if (customDatabaseServer == null) {
             setupDatabase();
         }
         migrateOldData();
-
-        saveDefaultConfig();
-        reloadConfig();
 
         permissionService = new PermissionService();
         chatService = new ChatService(this, permissionService);

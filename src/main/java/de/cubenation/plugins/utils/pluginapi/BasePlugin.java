@@ -91,6 +91,17 @@ public abstract class BasePlugin extends JavaPlugin {
         postEnableAction();
     }
 
+    @Override
+    public final void onDisable() {
+        commandsManager.clear();
+
+        stopCustomServices();
+
+        saveConfig();
+
+        getLogger().info("unloaded");
+    }
+
     private void startScheduleTasks() {
         List<ScheduleTask> scheduledTasks = new ArrayList<ScheduleTask>();
 
@@ -112,9 +123,6 @@ public abstract class BasePlugin extends JavaPlugin {
         for (Listener customEvent : customEvents) {
             getServer().getPluginManager().registerEvents(customEvent, this);
         }
-    }
-
-    protected void migrateOldData() {
     }
 
     private void setupDatabase() {
@@ -153,17 +161,6 @@ public abstract class BasePlugin extends JavaPlugin {
     @Override
     public final List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         return commandsManager.getTabCompleteList(sender, command, alias, args);
-    }
-
-    @Override
-    public final void onDisable() {
-        commandsManager.clear();
-
-        stopCustomServices();
-
-        saveConfig();
-
-        getLogger().info("unloaded");
     }
 
     public final void onError(Throwable thrown) {
@@ -206,6 +203,9 @@ public abstract class BasePlugin extends JavaPlugin {
     }
 
     protected void registerDatabaseModel(List<Class<?>> list) {
+    }
+
+    protected void migrateOldData() {
     }
 
     protected EbeanServer getCustomDatabaseServer() {

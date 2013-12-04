@@ -177,9 +177,8 @@ public class CommandConstructorTest extends AbstractTest {
     public void testErrorHandlerCommand() throws CommandException, InterruptedException {
         commandsManager.add(TestCommandErrorHandler.class);
         commandsManager.setErrorHandler(new ErrorHandler() {
-
             @Override
-            public void onError(Exception e) {
+            public void onError(Throwable thrown) {
             }
         });
 

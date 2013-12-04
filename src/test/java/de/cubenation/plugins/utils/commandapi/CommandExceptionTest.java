@@ -380,9 +380,8 @@ public class CommandExceptionTest extends AbstractTest {
     @Test
     public void testErrorHandlerCommand() throws CommandException, InterruptedException {
         commandsManager.setErrorHandler(new ErrorHandler() {
-
             @Override
-            public void onError(Exception e) {
+            public void onError(Throwable thrown) {
             }
         });
         commandsManager.add(TestInvalidCommandErrorHandler.class);

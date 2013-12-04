@@ -1,5 +1,6 @@
 package de.cubenation.plugins.utils.commandapi.testutils;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scheduler.BukkitWorker;
 import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.util.CachedServerIcon;
 
 import com.avaje.ebean.config.DataSourceConfig;
 import com.avaje.ebean.config.ServerConfig;
@@ -579,6 +581,21 @@ public class TestServer implements Server {
 
     @Override
     public ScoreboardManager getScoreboardManager() {
+        return null;
+    }
+
+    @Override
+    public CachedServerIcon getServerIcon() {
+        return null;
+    }
+
+    @Override
+    public CachedServerIcon loadServerIcon(File arg0) throws IllegalArgumentException, Exception {
+        return null;
+    }
+
+    @Override
+    public CachedServerIcon loadServerIcon(BufferedImage arg0) throws IllegalArgumentException, Exception {
         return null;
     }
 }

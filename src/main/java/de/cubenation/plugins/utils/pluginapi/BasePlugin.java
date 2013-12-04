@@ -41,7 +41,7 @@ public abstract class BasePlugin extends JavaPlugin {
 
     @Override
     public final void onEnable() {
-        preEnableAction();
+        preEnableActions();
 
         errorHandler = createCustomErrorHandler();
         if (errorHandler == null) {
@@ -88,7 +88,7 @@ public abstract class BasePlugin extends JavaPlugin {
 
         startScheduleTasks();
 
-        postEnableAction();
+        postEnableActions();
     }
 
     @Override
@@ -181,10 +181,10 @@ public abstract class BasePlugin extends JavaPlugin {
         return null;
     }
 
-    protected void preEnableAction() {
+    protected void preEnableActions() {
     }
 
-    protected void postEnableAction() {
+    protected void postEnableActions() {
     }
 
     protected void initialCustomServices() {

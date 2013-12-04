@@ -1,19 +1,11 @@
 package de.cubenation.plugins.utils;
 
-import org.bukkit.plugin.java.JavaPlugin;
-
-import de.cubenation.plugins.utils.chatapi.ChatService;
 import de.cubenation.plugins.utils.commandapi.CommandsManager;
+import de.cubenation.plugins.utils.pluginapi.BasePlugin;
 
-public class PluginUtils extends JavaPlugin {
-    private ChatService chatService;
-
+public class PluginUtils extends BasePlugin {
     @Override
-    public void onEnable() {
-        saveDefaultConfig();
-        reloadConfig();
-
-        chatService = new ChatService(this);
+    protected void postEnableActions() {
         CommandsManager.setOwnChatService(chatService);
     }
 }

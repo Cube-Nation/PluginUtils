@@ -1,6 +1,10 @@
 PluginUtils
 ==========
-Contains useful classes for Bukkit.
+Contains useful classes for Bukkit plugins.
+
+ChatApi
+==========
+Message resource files must have UTF-8 encoding too.
 
 CommandApi
 ==========
@@ -10,10 +14,41 @@ Java classes.
 
 PermissionApi
 ==========
+Simple permission interface for easy use. Bukkit core permission methods is used, if PermissionEx plugin is not available.
 
-ChatApi
+PluginApi
 ==========
-Message resource files must have UTF-8 encoding too.
+New base class `BasePlugin` for Bukkit plugins with standard services (PermissionService, ChatService, CommandsManager).
+For easy extend, overwrite following hook methods:
+- preEnableActions
+- postEnableActions
+- initialCustomServices
+- startCustomServices
+- stopCustomServices
+- registerCommands
+- initialCustomEventListeners
+- registerCustomEventListeners
+- registerDatabaseModel
+- migrateOldData
+- getCustomDatabaseServer
+- registerScheduledTasks
+- createCustomErrorHandler
+
+WrapperApi
+==========
+Use WrapperApi for better third party plugin integration. So it wouldn't need `depend` configuration in plugin.yml.
+Before use, check WrapperManager.isPluginEnabled if plugin is available.
+  
+Available wrapper classes:
+- LWC
+- PermissionsEx
+- VanishNoPacket
+- WorldEdit
+- WorldGuard (in progress)
+- LogBlock (in progress)
+- dynmap (in progress)
+- Vault (in progress)
+- Shopkeepers (in progress)
 
 ---
 

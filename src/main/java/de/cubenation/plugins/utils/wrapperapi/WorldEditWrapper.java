@@ -2,6 +2,10 @@ package de.cubenation.plugins.utils.wrapperapi;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -39,6 +43,17 @@ public class WorldEditWrapper {
         return null;
     }
 
+    public static ServerInterface getServerInterface() {
+        if (worldEditPlugin == null) {
+            loadPlugin();
+        }
+
+        if (worldEditPlugin != null) {
+            return new ServerInterface(worldEditPlugin.getServerInterface());
+        }
+        return null;
+    }
+
     public static com.sk89q.worldedit.bukkit.WorldEditPlugin loadPlugin() {
         if (worldEditPlugin == null) {
             worldEditPlugin = (com.sk89q.worldedit.bukkit.WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
@@ -64,6 +79,10 @@ public class WorldEditWrapper {
                 throw new IncompleteRegionException(e);
             }
         }
+
+        public RegionSelector getRegionSelector(LocalWorld bWorld) {
+            return new RegionSelector(localSession.getRegionSelector(bWorld.localWorld));
+        }
     }
 
     public static class Region {
@@ -82,6 +101,58 @@ public class WorldEditWrapper {
         }
     }
 
+    public static class BlockVector {
+        public com.sk89q.worldedit.BlockVector blockVector;
+
+        public BlockVector(com.sk89q.worldedit.BlockVector blockVector) {
+            this.blockVector = blockVector;
+        }
+
+        public BlockVector(int x, int y, int z) {
+            blockVector = new com.sk89q.worldedit.BlockVector(x, y, z);
+        }
+
+        public int getBlockX() {
+            return blockVector.getBlockX();
+        }
+
+        public int getBlockZ() {
+            return blockVector.getBlockZ();
+        }
+
+        public double getX() {
+            return blockVector.getX();
+        }
+
+        public double getY() {
+            return blockVector.getY();
+        }
+
+        public double getZ() {
+            return blockVector.getZ();
+        }
+
+        public int getBlockY() {
+            return blockVector.getBlockY();
+        }
+    }
+
+    public static class BlockVector2D {
+        com.sk89q.worldedit.BlockVector2D blockVector2D;
+
+        public BlockVector2D(com.sk89q.worldedit.BlockVector2D blockVector2D) {
+            this.blockVector2D = blockVector2D;
+        }
+
+        public int getBlockX() {
+            return blockVector2D.getBlockX();
+        }
+
+        public int getBlockZ() {
+            return blockVector2D.getBlockZ();
+        }
+    }
+
     public static class EditSession {
         private com.sk89q.worldedit.EditSession editSession;
 
@@ -92,16 +163,83 @@ public class WorldEditWrapper {
         public EditSession(LocalWorld world, int maxBlocks) {
             editSession = new com.sk89q.worldedit.EditSession(world.localWorld, maxBlocks);
         }
+
+        public EditSession(BukkitWorld bWorld, int maxBlocks) {
+            editSession = new com.sk89q.worldedit.EditSession(bWorld.localWorld, maxBlocks);
+        }
+
+        public void setBlock(BlockVector blockVector, BaseBlock cobble) throws MaxChangedBlocksException {
+            try {
+                editSession.setBlock(blockVector.blockVector, cobble.baseBlock);
+            } catch (com.sk89q.worldedit.MaxChangedBlocksException e) {
+                throw new MaxChangedBlocksException(e);
+            }
+        }
+
+        public void flushQueue() {
+            editSession.flushQueue();
+        }
+
+        public int getBlockType(Vector pt) {
+            return editSession.getBlockType(pt.vector);
+        }
+
+        public void setBlock(BlockVector vector, SignBlock welcomeSign) throws MaxChangedBlocksException {
+            try {
+                editSession.setBlock(vector.blockVector, welcomeSign.signBlock);
+            } catch (com.sk89q.worldedit.MaxChangedBlocksException e) {
+                throw new MaxChangedBlocksException(e);
+            }
+        }
+
+        public void replaceBlocks(CuboidRegion restoreRegion, HashSet<BaseBlock> newHashSet, BaseBlock baseBlock) throws MaxChangedBlocksException {
+            HashSet<com.sk89q.worldedit.blocks.BaseBlock> map = new HashSet<com.sk89q.worldedit.blocks.BaseBlock>();
+
+            Iterator<BaseBlock> iterator = newHashSet.iterator();
+            while (iterator.hasNext()) {
+                map.add(iterator.next().baseBlock);
+            }
+
+            try {
+                editSession.replaceBlocks(restoreRegion.cuboidRegion, map, baseBlock.baseBlock);
+            } catch (com.sk89q.worldedit.MaxChangedBlocksException e) {
+                throw new MaxChangedBlocksException(e);
+            }
+        }
+    }
+
+    public static class SignBlock {
+        private com.sk89q.worldedit.blocks.SignBlock signBlock;
+
+        public SignBlock(int signPost, int i, String[] strings) {
+            signBlock = new com.sk89q.worldedit.blocks.SignBlock(signPost, i, strings);
+        }
+    }
+
+    public static class BaseBlock {
+        private com.sk89q.worldedit.blocks.BaseBlock baseBlock;
+
+        public BaseBlock(int i, int j) {
+            baseBlock = new com.sk89q.worldedit.blocks.BaseBlock(i, j);
+        }
+
+        public BaseBlock(int i) {
+            baseBlock = new com.sk89q.worldedit.blocks.BaseBlock(i);
+        }
     }
 
     public static class BukkitWorld extends LocalWorld {
         public BukkitWorld(World world) {
-            localWorld = new com.sk89q.worldedit.bukkit.BukkitWorld(world);
+            super(new com.sk89q.worldedit.bukkit.BukkitWorld(world));
         }
     }
 
     public static class LocalWorld {
         protected com.sk89q.worldedit.LocalWorld localWorld;
+
+        public LocalWorld(com.sk89q.worldedit.LocalWorld localWorld) {
+            this.localWorld = localWorld;
+        }
     }
 
     public static class BlockBag {
@@ -222,6 +360,160 @@ public class WorldEditWrapper {
 
         public World getWorld() {
             return selection.getWorld();
+        }
+    }
+
+    public static class CuboidRegion {
+        private com.sk89q.worldedit.regions.CuboidRegion cuboidRegion;
+
+        public CuboidRegion(BlockVector minimumPoint, BlockVector maximumPoint) {
+            cuboidRegion = new com.sk89q.worldedit.regions.CuboidRegion(minimumPoint.blockVector, maximumPoint.blockVector);
+        }
+    }
+
+    public static class RegionSelector {
+        private com.sk89q.worldedit.regions.RegionSelector regionSelector;
+
+        public RegionSelector(com.sk89q.worldedit.regions.RegionSelector regionSelector) {
+            this.regionSelector = regionSelector;
+        }
+
+        public void clear() {
+            regionSelector.clear();
+        }
+
+        public void selectPrimary(BlockVector minimumPoint) {
+            regionSelector.selectPrimary(minimumPoint.blockVector);
+        }
+
+        public void selectSecondary(BlockVector maximumPoint) {
+            regionSelector.selectSecondary(maximumPoint.blockVector);
+        }
+
+        public void learnChanges() {
+            regionSelector.learnChanges();
+        }
+
+        public void explainRegionAdjust(BukkitPlayer bPlayer, LocalSession session) {
+            regionSelector.explainRegionAdjust(bPlayer.localPlayer, session.localSession);
+        }
+    }
+
+    public static class ChunkStore {
+        private com.sk89q.worldedit.data.ChunkStore chunkStore;
+
+        public ChunkStore(com.sk89q.worldedit.data.ChunkStore chunkStore) {
+            this.chunkStore = chunkStore;
+        }
+
+        public void close() throws IOException {
+            chunkStore.close();
+        }
+    }
+
+    public static class Vector2D {
+        private com.sk89q.worldedit.Vector2D vector2D;
+
+        public Vector2D(com.sk89q.worldedit.Vector2D vector2D) {
+            this.vector2D = vector2D;
+        }
+    }
+
+    public static class SnapshotRestore {
+        private com.sk89q.worldedit.snapshots.SnapshotRestore snapshotRestore;
+
+        public SnapshotRestore(ChunkStore chunkStore, CuboidRegion restoreRegion) {
+            snapshotRestore = new com.sk89q.worldedit.snapshots.SnapshotRestore(chunkStore.chunkStore, restoreRegion.cuboidRegion);
+        }
+
+        public void restore(EditSession session) throws MaxChangedBlocksException {
+            try {
+                snapshotRestore.restore(session.editSession);
+            } catch (com.sk89q.worldedit.MaxChangedBlocksException e) {
+                throw new MaxChangedBlocksException(e);
+            }
+        }
+
+        public boolean hadTotalFailure() {
+            return snapshotRestore.hadTotalFailure();
+        }
+
+        public List<Vector2D> getErrorChunks() {
+            List<Vector2D> list = new ArrayList<Vector2D>();
+            for (com.sk89q.worldedit.Vector2D errorChunk : snapshotRestore.getErrorChunks()) {
+                list.add(new Vector2D(errorChunk));
+            }
+
+            return list;
+        }
+
+        public List<Vector2D> getMissingChunks() {
+            List<Vector2D> list = new ArrayList<Vector2D>();
+            for (com.sk89q.worldedit.Vector2D errorChunk : snapshotRestore.getMissingChunks()) {
+                list.add(new Vector2D(errorChunk));
+            }
+
+            return list;
+        }
+
+        public String getLastErrorMessage() {
+            return snapshotRestore.getLastErrorMessage();
+        }
+    }
+
+    public static class BlockID {
+        public static final int FENCE = com.sk89q.worldedit.blocks.BlockID.FENCE;
+        public static final int TORCH = com.sk89q.worldedit.blocks.BlockID.TORCH;
+        public static final int AIR = com.sk89q.worldedit.blocks.BlockID.AIR;
+        public static final int LEAVES = com.sk89q.worldedit.blocks.BlockID.LEAVES;
+        public static final int LOG = com.sk89q.worldedit.blocks.BlockID.LOG;
+        public static final int LONG_GRASS = com.sk89q.worldedit.blocks.BlockID.LONG_GRASS;
+        public static final int DEAD_BUSH = com.sk89q.worldedit.blocks.BlockID.DEAD_BUSH;
+        public static final int RED_FLOWER = com.sk89q.worldedit.blocks.BlockID.RED_FLOWER;
+        public static final int YELLOW_FLOWER = com.sk89q.worldedit.blocks.BlockID.YELLOW_FLOWER;
+        public static final int SAPLING = com.sk89q.worldedit.blocks.BlockID.SAPLING;
+        public static final int REED = com.sk89q.worldedit.blocks.BlockID.REED;
+        public static final int SNOW = com.sk89q.worldedit.blocks.BlockID.SNOW;
+        public static final int VINE = com.sk89q.worldedit.blocks.BlockID.VINE;
+        public static final int SIGN_POST = com.sk89q.worldedit.blocks.BlockID.SIGN_POST;
+        public static final int CHEST = com.sk89q.worldedit.blocks.BlockID.CHEST;
+    };
+
+    public static class ServerInterface {
+        private com.sk89q.worldedit.ServerInterface serverInterface;
+
+        public ServerInterface(com.sk89q.worldedit.ServerInterface serverInterface) {
+            this.serverInterface = serverInterface;
+        }
+    }
+
+    public static class LocalPlayer {
+        protected com.sk89q.worldedit.LocalPlayer localPlayer;
+    }
+
+    public static class BukkitPlayer extends LocalPlayer {
+        public BukkitPlayer(ServerInterface serverInterface, Player player) {
+            localPlayer = new com.sk89q.worldedit.bukkit.BukkitPlayer(worldEditPlugin, serverInterface.serverInterface, player);
+        }
+
+        public LocalWorld getWorld() {
+            return new LocalWorld(localPlayer.getWorld());
+        }
+    }
+
+    public static class Snapshot {
+        private com.sk89q.worldedit.snapshots.Snapshot snapshot;
+
+        public Snapshot(com.sk89q.worldedit.snapshots.Snapshot snapshot) {
+            this.snapshot = snapshot;
+        }
+
+        public ChunkStore getChunkStore() throws DataException, IOException {
+            try {
+                return new ChunkStore(snapshot.getChunkStore());
+            } catch (com.sk89q.worldedit.data.DataException e) {
+                throw new DataException(e);
+            }
         }
     }
 }

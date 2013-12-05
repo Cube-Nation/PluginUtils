@@ -7,12 +7,12 @@ url: http://www.cube-nation.de/
 version: '${project.version}'
 
 softdepend:
+  - dynmap
+  - LogBlock
+  - LWC
   - PermissionsEx
+  - Shopkeepers
+  - VanishNoPacket
+  - Vault
   - WorldEdit
   - WorldGuard
-  - VanishNoPacket
-  - LWC
-  - LogBlock
-  - dynmap
-  - Vault
-  - Shopkeepers

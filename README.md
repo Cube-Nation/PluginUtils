@@ -36,19 +36,19 @@ For easy extend, overwrite following hook methods:
 
 WrapperApi
 ==========
-Use WrapperApi for better third party plugin integration. So it wouldn't need `depend` configuration in plugin.yml.
+Use WrapperApi for third party plugin integration. So it wouldn't need `depend` configuration in plugin.yml.
 Before use, check WrapperManager.isPluginEnabled if plugin is available.
   
 Available wrapper classes:
+- dynmap (in progress)
+- LogBlock (in progress)
 - LWC
 - PermissionsEx
+- Shopkeepers
 - VanishNoPacket
+- Vault (in progress)
 - WorldEdit
 - WorldGuard (in progress)
-- LogBlock (in progress)
-- dynmap (in progress)
-- Vault (in progress)
-- Shopkeepers (in progress)
 
 ---
 

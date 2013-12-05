@@ -8,3 +8,11 @@ version: '${project.version}'
 
 softdepend:
   - PermissionsEx
+  - WorldEdit
+  - WorldGuard
+  - VanishNoPacket
+  - LWC
+  - LogBlock
+  - dynmap
+  - Vault
+  - Shopkeepers

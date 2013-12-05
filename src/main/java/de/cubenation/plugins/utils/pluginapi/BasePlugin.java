@@ -99,6 +99,8 @@ public abstract class BasePlugin extends JavaPlugin {
 
         stopCustomServices();
 
+        getServer().getScheduler().cancelTasks(this);
+
         saveConfig();
 
         getLogger().info("unloaded");

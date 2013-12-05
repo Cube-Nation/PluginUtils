@@ -6,15 +6,24 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 
-import com.griefcraft.lwc.LWC;
-import com.griefcraft.lwc.LWCPlugin;
-
 public class LWCWrapper {
-    private static LWC lwcPlugin = null;
+    private static com.griefcraft.lwc.LWC lwcPlugin = null;
     private static Logger log;
 
     public static void setLogger(Logger log) {
         LWCWrapper.log = log;
+    }
+
+    public static com.griefcraft.lwc.LWC loadPlugin() {
+        if (lwcPlugin == null) {
+            com.griefcraft.lwc.LWCPlugin lwc = (com.griefcraft.lwc.LWCPlugin) Bukkit.getServer().getPluginManager().getPlugin("LWC");
+            if (lwc == null) {
+                log.info("LWC not found");
+                return null;
+            }
+            lwcPlugin = lwc.getLWC();
+        }
+        return lwcPlugin;
     }
 
     public static List<Protection> loadProtections(String arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6) {
@@ -36,31 +45,17 @@ public class LWCWrapper {
         return null;
     }
 
-    public static LWC loadPlugin() {
-        if (lwcPlugin == null) {
-            LWCPlugin lwc = (LWCPlugin) Bukkit.getServer().getPluginManager().getPlugin("LWC");
-            if (lwc == null) {
-                log.info("LWC not found");
-                return null;
-            }
-            lwcPlugin = lwc.getLWC();
-        }
-        return lwcPlugin;
-    }
-
-    public static class Protection extends com.griefcraft.model.Protection {
+    public static class Protection {
         private com.griefcraft.model.Protection protection;
 
         public Protection(com.griefcraft.model.Protection protection) {
             this.protection = protection;
         }
 
-        @Override
         public String getOwner() {
             return protection.getOwner();
         }
 
-        @Override
         public void remove() {
             protection.remove();
         }

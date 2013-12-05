@@ -5,25 +5,23 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import ru.tehkode.permissions.PermissionManager;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
-
 public class PermissionsExWrapper {
-    private static PermissionManager permissionManager;
+    private static ru.tehkode.permissions.PermissionManager permissionManager;
     private static Logger log;
 
     public static void setLogger(Logger log) {
         PermissionsExWrapper.log = log;
     }
 
-    public static PermissionManager loadPlugin() {
+    public static ru.tehkode.permissions.PermissionManager loadPlugin() {
         if (permissionManager == null) {
-            PermissionsEx permissions = (PermissionsEx) Bukkit.getServer().getPluginManager().getPlugin("PermissionsEx");
+            ru.tehkode.permissions.bukkit.PermissionsEx permissions = (ru.tehkode.permissions.bukkit.PermissionsEx) Bukkit.getServer().getPluginManager()
+                    .getPlugin("PermissionsEx");
             if (permissions == null) {
                 log.info("PermissionsEx not found");
                 return null;
             }
-            permissionManager = PermissionsEx.getPermissionManager();
+            permissionManager = ru.tehkode.permissions.bukkit.PermissionsEx.getPermissionManager();
         }
         return permissionManager;
     }

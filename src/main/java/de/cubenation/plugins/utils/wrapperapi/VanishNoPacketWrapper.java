@@ -4,11 +4,9 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.kitteh.vanish.VanishManager;
-import org.kitteh.vanish.VanishPlugin;
 
 public class VanishNoPacketWrapper {
-    private static VanishManager vanishManager = null;
+    private static org.kitteh.vanish.VanishManager vanishManager = null;
     private static Logger log;
 
     public static void setLogger(Logger log) {
@@ -26,9 +24,9 @@ public class VanishNoPacketWrapper {
         return false;
     }
 
-    public static VanishManager loadPlugin() {
+    public static org.kitteh.vanish.VanishManager loadPlugin() {
         if (vanishManager == null) {
-            VanishPlugin vanishPlugin = (VanishPlugin) Bukkit.getServer().getPluginManager().getPlugin("VanishNoPacket");
+            org.kitteh.vanish.VanishPlugin vanishPlugin = (org.kitteh.vanish.VanishPlugin) Bukkit.getServer().getPluginManager().getPlugin("VanishNoPacket");
             if (vanishPlugin == null) {
                 log.info("VanishPlugin not found");
                 return null;

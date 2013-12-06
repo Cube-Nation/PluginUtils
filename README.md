@@ -41,7 +41,7 @@ Before use, check WrapperManager.isPluginEnabled if plugin is available.
   
 Available wrapper classes:
 - dynmap (finished)
-- LogBlock (not finished)
+- LogBlock (finished)
 - LWC (not finished)
 - PermissionsEx (not finished)
 - Shopkeepers (not finished)

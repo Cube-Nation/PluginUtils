@@ -18,15 +18,13 @@ public class ShopkeepersWrapper {
         ShopkeepersWrapper.log = log;
     }
 
-    public static com.nisovin.shopkeepers.ShopkeepersPlugin loadPlugin() {
+    public static void loadPlugin() {
         if (shopkeepersPlugin == null) {
             shopkeepersPlugin = (com.nisovin.shopkeepers.ShopkeepersPlugin) Bukkit.getServer().getPluginManager().getPlugin("Shopkeepers");
             if (shopkeepersPlugin == null) {
                 log.info("Shopkeepers not found");
-                return null;
             }
         }
-        return shopkeepersPlugin;
     }
 
     public static void removeActiveShopkeeper(String id) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {

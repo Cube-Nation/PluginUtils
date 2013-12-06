@@ -54,15 +54,13 @@ public class WorldEditWrapper {
         return null;
     }
 
-    public static com.sk89q.worldedit.bukkit.WorldEditPlugin loadPlugin() {
+    public static void loadPlugin() {
         if (worldEditPlugin == null) {
             worldEditPlugin = (com.sk89q.worldedit.bukkit.WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
             if (worldEditPlugin == null) {
                 log.info("WorldEdit not found");
-                return null;
             }
         }
-        return worldEditPlugin;
     }
 
     public static class LocalSession {
@@ -416,6 +414,10 @@ public class WorldEditWrapper {
 
         public Vector2D(com.sk89q.worldedit.Vector2D vector2D) {
             this.vector2D = vector2D;
+        }
+
+        public Vector2D add(Vector2D other) {
+            return new Vector2D(this.vector2D.add(other.vector2D));
         }
     }
 

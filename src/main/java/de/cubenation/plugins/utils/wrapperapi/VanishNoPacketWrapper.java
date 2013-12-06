@@ -24,15 +24,15 @@ public class VanishNoPacketWrapper {
         return false;
     }
 
-    public static org.kitteh.vanish.VanishManager loadPlugin() {
+    public static void loadPlugin() {
         if (vanishManager == null) {
             org.kitteh.vanish.VanishPlugin vanishPlugin = (org.kitteh.vanish.VanishPlugin) Bukkit.getServer().getPluginManager().getPlugin("VanishNoPacket");
             if (vanishPlugin == null) {
                 log.info("VanishPlugin not found");
-                return null;
+                vanishManager = null;
+                return;
             }
             vanishManager = vanishPlugin.getManager();
         }
-        return vanishManager;
     }
 }

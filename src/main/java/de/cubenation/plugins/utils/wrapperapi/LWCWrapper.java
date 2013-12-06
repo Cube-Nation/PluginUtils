@@ -14,16 +14,16 @@ public class LWCWrapper {
         LWCWrapper.log = log;
     }
 
-    public static com.griefcraft.lwc.LWC loadPlugin() {
+    public static void loadPlugin() {
         if (lwcPlugin == null) {
             com.griefcraft.lwc.LWCPlugin lwc = (com.griefcraft.lwc.LWCPlugin) Bukkit.getServer().getPluginManager().getPlugin("LWC");
             if (lwc == null) {
                 log.info("LWC not found");
-                return null;
+                lwcPlugin = null;
+                return;
             }
             lwcPlugin = lwc.getLWC();
         }
-        return lwcPlugin;
     }
 
     public static List<Protection> loadProtections(String arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6) {

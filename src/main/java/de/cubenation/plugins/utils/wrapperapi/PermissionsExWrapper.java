@@ -13,17 +13,17 @@ public class PermissionsExWrapper {
         PermissionsExWrapper.log = log;
     }
 
-    public static ru.tehkode.permissions.PermissionManager loadPlugin() {
+    public static void loadPlugin() {
         if (permissionManager == null) {
             ru.tehkode.permissions.bukkit.PermissionsEx permissions = (ru.tehkode.permissions.bukkit.PermissionsEx) Bukkit.getServer().getPluginManager()
                     .getPlugin("PermissionsEx");
             if (permissions == null) {
                 log.info("PermissionsEx not found");
-                return null;
+                permissionManager = null;
+                return;
             }
             permissionManager = ru.tehkode.permissions.bukkit.PermissionsEx.getPermissionManager();
         }
-        return permissionManager;
     }
 
     public static boolean hasPermission(Player player, String rightName) {

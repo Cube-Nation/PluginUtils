@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -15,10 +14,6 @@ import org.bukkit.entity.Player;
 
 import de.cubenation.plugins.utils.wrapperapi.WorldEditWrapper.BlockVector;
 import de.cubenation.plugins.utils.wrapperapi.WorldEditWrapper.BlockVector2D;
-import de.cubenation.plugins.utils.wrapperapi.WorldGuardWrapper.ApplicableRegionSet;
-import de.cubenation.plugins.utils.wrapperapi.WorldGuardWrapper.ProtectedCuboidRegion;
-import de.cubenation.plugins.utils.wrapperapi.WorldGuardWrapper.ProtectedRegion;
-import de.cubenation.plugins.utils.wrapperapi.WorldGuardWrapper.StateFlag;
 
 public class WorldGuardWrapper {
     private static com.sk89q.worldguard.bukkit.WorldGuardPlugin worldGuardPlugin = null;
@@ -28,15 +23,13 @@ public class WorldGuardWrapper {
         WorldGuardWrapper.log = log;
     }
 
-    public static com.sk89q.worldguard.bukkit.WorldGuardPlugin loadPlugin() {
+    public static void loadPlugin() {
         if (worldGuardPlugin == null) {
             worldGuardPlugin = (com.sk89q.worldguard.bukkit.WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
             if (worldGuardPlugin == null) {
                 log.info("WorldGuard not found");
-                return null;
             }
         }
-        return worldGuardPlugin;
     }
 
     public static class ProtectedRegion {
@@ -69,12 +62,42 @@ public class WorldGuardWrapper {
             protectedRegion.setMembers(defaultDomain.defaultDomain);
         }
 
-        public Object getFlag(StateFlag build) {
-            return protectedRegion.getFlag(build.stateFlag);
+        public Object getFlag(Flag param) {
+            com.sk89q.worldguard.protection.flags.Flag<?> convParam = null;
+            if (param.getName().equals("BUILD")) {
+                convParam = com.sk89q.worldguard.protection.flags.DefaultFlag.BUILD;
+            } else if (param.getName().equals("GREET_MESSAGE")) {
+                convParam = com.sk89q.worldguard.protection.flags.DefaultFlag.GREET_MESSAGE;
+            }
+
+            Object flag = protectedRegion.getFlag(convParam);
+
+            if (param.getName().equals("BUILD")) {
+                if (flag.equals(com.sk89q.worldguard.protection.flags.StateFlag.State.ALLOW)) {
+                    return StateFlag.State.ALLOW;
+                } else if (flag.equals(com.sk89q.worldguard.protection.flags.StateFlag.State.DENY)) {
+                    return StateFlag.State.DENY;
+                }
+            } else if (param.getName().equals("GREET_MESSAGE")) {
+                return (String) flag;
+            }
+
+            return null;
         }
 
-        public void setFlag(StateFlag build, Object object) {
-            protectedRegion.setFlag(build.stateFlag, object);
+        public void setFlag(Flag param1, Object param2) {
+            if (param1.getName().equals("BUILD")) {
+                com.sk89q.worldguard.protection.flags.StateFlag.State convParam = null;
+                if (param2.equals(StateFlag.State.ALLOW)) {
+                    convParam = com.sk89q.worldguard.protection.flags.StateFlag.State.ALLOW;
+                } else if (param2.equals(StateFlag.State.DENY)) {
+                    convParam = com.sk89q.worldguard.protection.flags.StateFlag.State.DENY;
+                }
+
+                protectedRegion.setFlag(com.sk89q.worldguard.protection.flags.DefaultFlag.BUILD, convParam);
+            } else if (param1.getName().equals("GREET_MESSAGE")) {
+                protectedRegion.setFlag(com.sk89q.worldguard.protection.flags.DefaultFlag.GREET_MESSAGE, (String) param2);
+            }
         }
 
         public DefaultDomain getOwners() {
@@ -233,14 +256,33 @@ public class WorldGuardWrapper {
     }
 
     public static class DefaultFlag {
-        public static StateFlag GREET_MESSAGE;
-        public static StateFlag BUILD;
+        public static StringFlag GREET_MESSAGE = new StringFlag() {
+            @Override
+            public String getName() {
+                return "GREET_MESSAGE";
+            }
+        };
+        public static StateFlag BUILD = new StateFlag() {
+            @Override
+            public String getName() {
+                return "BUILD";
+            }
+        };
     }
 
-    public static class StateFlag {
+    public static class Flag {
+        public String getName() {
+            return "";
+        }
+    }
+
+    public static class StateFlag extends Flag {
         public enum State {
             DENY, ALLOW
         }
+    }
+
+    public static class StringFlag extends Flag {
     }
 
     @SuppressWarnings("serial")

@@ -3,6 +3,7 @@ package de.cubenation.plugins.utils.commandapi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -53,17 +54,17 @@ public class CommandTabCompleteTest extends AbstractTest {
 
         assertNotNull(tabCompleteList);
         assertEquals(11, tabCompleteList.size());
-        assertEquals("help", tabCompleteList.get(0));
-        assertEquals(testPlayer2.getName(), tabCompleteList.get(1));
-        assertEquals("check", tabCompleteList.get(2));
-        assertEquals("search", tabCompleteList.get(3));
-        assertEquals("accept", tabCompleteList.get(4));
-        assertEquals("list", tabCompleteList.get(5));
-        assertEquals("del", tabCompleteList.get(6));
-        assertEquals("delall", tabCompleteList.get(7));
-        assertEquals(testPlayer1.getName(), tabCompleteList.get(8));
-        assertEquals("confirm", tabCompleteList.get(9));
-        assertEquals("info", tabCompleteList.get(10));
+        assertTrue(tabCompleteList.contains("help"));
+        assertTrue(tabCompleteList.contains(testPlayer2.getName()));
+        assertTrue(tabCompleteList.contains("check"));
+        assertTrue(tabCompleteList.contains("search"));
+        assertTrue(tabCompleteList.contains("accept"));
+        assertTrue(tabCompleteList.contains("list"));
+        assertTrue(tabCompleteList.contains("del"));
+        assertTrue(tabCompleteList.contains("delall"));
+        assertTrue(tabCompleteList.contains(testPlayer1.getName()));
+        assertTrue(tabCompleteList.contains("confirm"));
+        assertTrue(tabCompleteList.contains("info"));
     }
 
     @Test
@@ -74,14 +75,14 @@ public class CommandTabCompleteTest extends AbstractTest {
 
         assertNotNull(tabCompleteList);
         assertEquals(8, tabCompleteList.size());
-        assertEquals("check", tabCompleteList.get(0));
-        assertEquals("search", tabCompleteList.get(1));
-        assertEquals("accept", tabCompleteList.get(2));
-        assertEquals("list", tabCompleteList.get(3));
-        assertEquals("del", tabCompleteList.get(4));
-        assertEquals("delall", tabCompleteList.get(5));
-        assertEquals("confirm", tabCompleteList.get(6));
-        assertEquals("info", tabCompleteList.get(7));
+        assertTrue(tabCompleteList.contains("check"));
+        assertTrue(tabCompleteList.contains("search"));
+        assertTrue(tabCompleteList.contains("accept"));
+        assertTrue(tabCompleteList.contains("list"));
+        assertTrue(tabCompleteList.contains("del"));
+        assertTrue(tabCompleteList.contains("delall"));
+        assertTrue(tabCompleteList.contains("confirm"));
+        assertTrue(tabCompleteList.contains("info"));
     }
 
     @Test
@@ -137,7 +138,8 @@ public class CommandTabCompleteTest extends AbstractTest {
         assertNotNull(tabCompleteList);
         assertEquals(2, tabCompleteList.size());
         assertEquals("check", tabCompleteList.get(0));
-        assertEquals(testPlayer1.getName(), tabCompleteList.get(1));
+        assertTrue(tabCompleteList.contains("check"));
+        assertTrue(tabCompleteList.contains(testPlayer1.getName()));
     }
 
     @Test

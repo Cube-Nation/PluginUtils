@@ -25,6 +25,7 @@ For easy extend, overwrite following hook methods:
 - initialCustomServices
 - startCustomServices
 - stopCustomServices
+- preCommandAction
 - registerCommands
 - initialCustomEventListeners
 - registerCustomEventListeners

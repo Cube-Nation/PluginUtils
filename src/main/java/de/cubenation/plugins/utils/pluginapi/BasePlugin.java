@@ -154,11 +154,18 @@ public abstract class BasePlugin extends JavaPlugin {
     @Override
     public final boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         try {
+            preCommandAction(sender, command, label, args);
+        } catch (CommandIgnoreException e) {
+            return true;
+        }
+
+        try {
             commandsManager.execute(sender, command, label, args);
         } catch (CommandException e) {
             getLogger().log(Level.SEVERE, "error on command", e);
             return false;
         }
+
         return true;
     }
 
@@ -198,6 +205,9 @@ public abstract class BasePlugin extends JavaPlugin {
     }
 
     protected void stopCustomServices() {
+    }
+
+    protected void preCommandAction(CommandSender sender, Command command, String label, String[] args) throws CommandIgnoreException {
     }
 
     protected void registerCommands(List<CommandSet> list) {

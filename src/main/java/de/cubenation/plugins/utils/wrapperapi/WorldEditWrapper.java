@@ -361,7 +361,7 @@ public class WorldEditWrapper {
     }
 
     public static class Selection {
-        private com.sk89q.worldedit.bukkit.selections.Selection selection;
+        public com.sk89q.worldedit.bukkit.selections.Selection selection;
 
         public Selection(com.sk89q.worldedit.bukkit.selections.Selection selection) {
             this.selection = selection;
@@ -552,15 +552,21 @@ public class WorldEditWrapper {
 
     public static class LocalConfiguration {
         private com.sk89q.worldedit.LocalConfiguration configuration;
-        public SnapshotRepository snapshotRepo;
 
         public LocalConfiguration(com.sk89q.worldedit.LocalConfiguration configuration) {
             this.configuration = configuration;
-            snapshotRepo = new SnapshotRepository(configuration.snapshotRepo);
         }
 
         public File getWorkingDirectory() {
             return configuration.getWorkingDirectory();
+        }
+
+        public SnapshotRepository getSnapshotRepo() {
+            return new SnapshotRepository(configuration.snapshotRepo);
+        }
+
+        public void setSnapshotRepo(SnapshotRepository snapshotRepo) {
+            configuration.snapshotRepo = snapshotRepo.snapshotRepo;
         }
     }
 

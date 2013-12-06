@@ -44,8 +44,11 @@ public class WorldGuardWrapper {
             List<com.sk89q.worldedit.BlockVector2D> points = protectedRegion.getPoints();
 
             List<BlockVector2D> list = new ArrayList<WorldEditWrapper.BlockVector2D>();
-            for (com.sk89q.worldedit.BlockVector2D point : points) {
-                list.add(new BlockVector2D(point));
+
+            if (WrapperManager.isPluginEnabled(WrapperManager.Plugins.WORLD_EDIT)) {
+                for (com.sk89q.worldedit.BlockVector2D point : points) {
+                    list.add(new BlockVector2D(point));
+                }
             }
 
             return list;
@@ -110,10 +113,17 @@ public class WorldGuardWrapper {
         }
 
         public BlockVector getMinimumPoint() {
+            if (!WrapperManager.isPluginEnabled(WrapperManager.Plugins.WORLD_EDIT)) {
+                return null;
+            }
             return new BlockVector(protectedRegion.getMinimumPoint());
         }
 
         public BlockVector getMaximumPoint() {
+            if (!WrapperManager.isPluginEnabled(WrapperManager.Plugins.WORLD_EDIT)) {
+                return null;
+            }
+
             return new BlockVector(protectedRegion.getMaximumPoint());
         }
 
@@ -266,7 +276,9 @@ public class WorldGuardWrapper {
 
     public static class ProtectedCuboidRegion extends ProtectedRegion {
         public ProtectedCuboidRegion(String string, BlockVector fromV, BlockVector toV) {
-            super(new com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion(string, fromV.blockVector, toV.blockVector));
+            super(new com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion(string,
+                    (!WrapperManager.isPluginEnabled(WrapperManager.Plugins.WORLD_EDIT) ? null : fromV.blockVector),
+                    (!WrapperManager.isPluginEnabled(WrapperManager.Plugins.WORLD_EDIT) ? null : toV.blockVector)));
         }
 
         public void setOwners(DefaultDomain owner) {

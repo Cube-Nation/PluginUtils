@@ -15,6 +15,16 @@ public class ScheduleTask {
         this(task, start, null);
     }
 
+    public ScheduleTask(Runnable task, Integer start, Integer repeat) {
+        this.task = task;
+        this.start = (long) start.intValue();
+        this.repeat = (long) repeat.intValue();
+    }
+
+    public ScheduleTask(Runnable task, Integer start) {
+        this(task, start, null);
+    }
+
     public Runnable getTask() {
         return task;
     }

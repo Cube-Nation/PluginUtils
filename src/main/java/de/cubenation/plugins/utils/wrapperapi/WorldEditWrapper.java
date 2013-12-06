@@ -443,13 +443,13 @@ public class WorldEditWrapper {
     public static class SnapshotRestore {
         private com.sk89q.worldedit.snapshots.SnapshotRestore snapshotRestore;
 
-        public SnapshotRestore(ChunkStore chunkStore, CuboidRegion restoreRegion) {
-            snapshotRestore = new com.sk89q.worldedit.snapshots.SnapshotRestore(chunkStore.chunkStore, restoreRegion.cuboidRegion);
+        public SnapshotRestore(ChunkStore chunkStore, EditSession session, CuboidRegion restoreRegion) {
+            snapshotRestore = new com.sk89q.worldedit.snapshots.SnapshotRestore(chunkStore.chunkStore, session.editSession, restoreRegion.cuboidRegion);
         }
 
-        public void restore(EditSession session) throws MaxChangedBlocksException {
+        public void restore() throws MaxChangedBlocksException {
             try {
-                snapshotRestore.restore(session.editSession);
+                snapshotRestore.restore();
             } catch (com.sk89q.worldedit.MaxChangedBlocksException e) {
                 throw new MaxChangedBlocksException(e);
             }

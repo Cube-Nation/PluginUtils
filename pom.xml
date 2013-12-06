@@ -14,6 +14,10 @@
 			<id>cna-public-repos</id>
 			<url>http://nexus.cube-nation.de/content/groups/public/</url>
 		</repository>
+		<repository>
+			<id>sk89q-repo</id>
+			<url>http://maven.sk89q.com/repo/</url>
+		</repository>
 	</repositories>
 	<distributionManagement>
 		<repository>
@@ -85,7 +89,7 @@
 		<dependency>
 			<groupId>com.sk89q</groupId>
 			<artifactId>worldedit</artifactId>
-			<version>5.5.8</version>
+			<version>5.5.9</version>
 		</dependency>
 		<dependency>
 			<groupId>de.diddiz.LogBlock</groupId>

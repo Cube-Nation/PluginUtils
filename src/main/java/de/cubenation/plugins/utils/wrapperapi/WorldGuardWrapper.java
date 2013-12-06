@@ -25,9 +25,10 @@ public class WorldGuardWrapper {
 
     public static void loadPlugin() {
         if (worldGuardPlugin == null) {
-            worldGuardPlugin = (com.sk89q.worldguard.bukkit.WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+            worldGuardPlugin = (com.sk89q.worldguard.bukkit.WorldGuardPlugin) Bukkit.getServer().getPluginManager()
+                    .getPlugin(WrapperManager.Plugins.WORLD_GUARD.getName());
             if (worldGuardPlugin == null) {
-                log.info("WorldGuard not found");
+                log.info(WrapperManager.Plugins.WORLD_GUARD.getName() + " not found");
             }
         }
     }
@@ -139,8 +140,26 @@ public class WorldGuardWrapper {
         }
     }
 
+    public static boolean canBuild(Player player, Block clickedBlock) {
+        if (worldGuardPlugin == null) {
+            loadPlugin();
+        }
+
+        if (worldGuardPlugin != null) {
+            return worldGuardPlugin.canBuild(player, clickedBlock);
+        }
+        return false;
+    }
+
     public static GlobalRegionManager getGlobalRegionManager() {
-        return new GlobalRegionManager(worldGuardPlugin.getGlobalRegionManager());
+        if (worldGuardPlugin == null) {
+            loadPlugin();
+        }
+
+        if (worldGuardPlugin != null) {
+            return new GlobalRegionManager(worldGuardPlugin.getGlobalRegionManager());
+        }
+        return null;
     }
 
     public static class GlobalRegionManager {
@@ -180,6 +199,14 @@ public class WorldGuardWrapper {
 
         public ApplicableRegionSet getApplicableRegions(ProtectedRegion newRegion) {
             return new ApplicableRegionSet(regionManager.getApplicableRegions(newRegion.protectedRegion));
+        }
+
+        public void save() throws ProtectionDatabaseException {
+            try {
+                regionManager.save();
+            } catch (com.sk89q.worldguard.protection.databases.ProtectionDatabaseException e) {
+                throw new ProtectionDatabaseException(e);
+            }
         }
     }
 
@@ -288,6 +315,13 @@ public class WorldGuardWrapper {
     @SuppressWarnings("serial")
     public static class UnsupportedIntersectionException extends Exception {
         public UnsupportedIntersectionException(com.sk89q.worldguard.protection.UnsupportedIntersectionException e) {
+            super(e);
+        }
+    }
+
+    @SuppressWarnings("serial")
+    public static class ProtectionDatabaseException extends Exception {
+        public ProtectionDatabaseException(com.sk89q.worldguard.protection.databases.ProtectionDatabaseException e) {
             super(e);
         }
     }

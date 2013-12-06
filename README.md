@@ -40,15 +40,15 @@ Use WrapperApi for third party plugin integration. So it wouldn't need `depend` 
 Before use, check WrapperManager.isPluginEnabled if plugin is available.
   
 Available wrapper classes:
-- dynmap (in progress)
-- LogBlock (in progress)
+- dynmap
+- LogBlock
 - LWC
 - PermissionsEx
 - Shopkeepers
 - VanishNoPacket
-- Vault (in progress)
+- Vault
 - WorldEdit
-- WorldGuard (in progress)
+- WorldGuard
 
 ---
 

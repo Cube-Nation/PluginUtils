@@ -16,9 +16,10 @@ public class LWCWrapper {
 
     public static void loadPlugin() {
         if (lwcPlugin == null) {
-            com.griefcraft.lwc.LWCPlugin lwc = (com.griefcraft.lwc.LWCPlugin) Bukkit.getServer().getPluginManager().getPlugin("LWC");
+            com.griefcraft.lwc.LWCPlugin lwc = (com.griefcraft.lwc.LWCPlugin) Bukkit.getServer().getPluginManager()
+                    .getPlugin(WrapperManager.Plugins.LWC.getName());
             if (lwc == null) {
-                log.info("LWC not found");
+                log.info(WrapperManager.Plugins.LWC.getName() + " not found");
                 lwcPlugin = null;
                 return;
             }

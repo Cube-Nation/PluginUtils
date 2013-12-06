@@ -20,9 +20,10 @@ public class ShopkeepersWrapper {
 
     public static void loadPlugin() {
         if (shopkeepersPlugin == null) {
-            shopkeepersPlugin = (com.nisovin.shopkeepers.ShopkeepersPlugin) Bukkit.getServer().getPluginManager().getPlugin("Shopkeepers");
+            shopkeepersPlugin = (com.nisovin.shopkeepers.ShopkeepersPlugin) Bukkit.getServer().getPluginManager()
+                    .getPlugin(WrapperManager.Plugins.SHOPKEEPERS.getName());
             if (shopkeepersPlugin == null) {
-                log.info("Shopkeepers not found");
+                log.info(WrapperManager.Plugins.SHOPKEEPERS.getName() + " not found");
             }
         }
     }

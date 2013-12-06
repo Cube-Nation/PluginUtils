@@ -21,6 +21,27 @@ public class WorldEditWrapper {
         WorldEditWrapper.log = log;
     }
 
+    public static void loadPlugin() {
+        if (worldEditPlugin == null) {
+            worldEditPlugin = (com.sk89q.worldedit.bukkit.WorldEditPlugin) Bukkit.getServer().getPluginManager()
+                    .getPlugin(WrapperManager.Plugins.WORLD_EDIT.getName());
+            if (worldEditPlugin == null) {
+                log.info(WrapperManager.Plugins.WORLD_EDIT.getName() + " not found");
+            }
+        }
+    }
+
+    public static WorldEdit getWorldEdit() {
+        if (worldEditPlugin == null) {
+            loadPlugin();
+        }
+
+        if (worldEditPlugin != null) {
+            return new WorldEdit(worldEditPlugin.getWorldEdit());
+        }
+        return null;
+    }
+
     public static Selection getSelection(Player player) {
         if (worldEditPlugin == null) {
             loadPlugin();
@@ -52,15 +73,6 @@ public class WorldEditWrapper {
             return new ServerInterface(worldEditPlugin.getServerInterface());
         }
         return null;
-    }
-
-    public static void loadPlugin() {
-        if (worldEditPlugin == null) {
-            worldEditPlugin = (com.sk89q.worldedit.bukkit.WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
-            if (worldEditPlugin == null) {
-                log.info("WorldEdit not found");
-            }
-        }
     }
 
     public static class LocalSession {
@@ -328,6 +340,13 @@ public class WorldEditWrapper {
     }
 
     @SuppressWarnings("serial")
+    public static class InvalidSnapshotException extends Exception {
+        public InvalidSnapshotException(com.sk89q.worldedit.snapshots.InvalidSnapshotException e) {
+            super(e);
+        }
+    }
+
+    @SuppressWarnings("serial")
     public static class DataException extends Exception {
         public DataException(com.sk89q.worldedit.data.DataException e) {
             super(e);
@@ -515,6 +534,48 @@ public class WorldEditWrapper {
                 return new ChunkStore(snapshot.getChunkStore());
             } catch (com.sk89q.worldedit.data.DataException e) {
                 throw new DataException(e);
+            }
+        }
+    }
+
+    public static class WorldEdit {
+        private com.sk89q.worldedit.WorldEdit worldEdit;
+
+        public WorldEdit(com.sk89q.worldedit.WorldEdit worldEdit) {
+            this.worldEdit = worldEdit;
+        }
+
+        public LocalConfiguration getConfiguration() {
+            return new LocalConfiguration(worldEdit.getConfiguration());
+        }
+    }
+
+    public static class LocalConfiguration {
+        private com.sk89q.worldedit.LocalConfiguration configuration;
+        public SnapshotRepository snapshotRepo;
+
+        public LocalConfiguration(com.sk89q.worldedit.LocalConfiguration configuration) {
+            this.configuration = configuration;
+            snapshotRepo = new SnapshotRepository(configuration.snapshotRepo);
+        }
+
+        public File getWorkingDirectory() {
+            return configuration.getWorkingDirectory();
+        }
+    }
+
+    public static class SnapshotRepository {
+        private com.sk89q.worldedit.snapshots.SnapshotRepository snapshotRepo;
+
+        public SnapshotRepository(com.sk89q.worldedit.snapshots.SnapshotRepository snapshotRepo) {
+            this.snapshotRepo = snapshotRepo;
+        }
+
+        public Snapshot getSnapshot(String baseName) throws InvalidSnapshotException {
+            try {
+                return new Snapshot(snapshotRepo.getSnapshot(baseName));
+            } catch (com.sk89q.worldedit.snapshots.InvalidSnapshotException e) {
+                throw new InvalidSnapshotException(e);
             }
         }
     }

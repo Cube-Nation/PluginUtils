@@ -26,9 +26,9 @@ public class WorldGuardWrapper {
     public static void loadPlugin() {
         if (worldGuardPlugin == null) {
             worldGuardPlugin = (com.sk89q.worldguard.bukkit.WorldGuardPlugin) Bukkit.getServer().getPluginManager()
-                    .getPlugin(WrapperManager.Plugins.WORLD_GUARD.getName());
+                    .getPlugin(WrapperManager.PLUGIN_NAME_WORLD_GUARD);
             if (worldGuardPlugin == null) {
-                log.info(WrapperManager.Plugins.WORLD_GUARD.getName() + " not found");
+                log.info(WrapperManager.PLUGIN_NAME_WORLD_GUARD + " not found");
             }
         }
     }
@@ -45,7 +45,7 @@ public class WorldGuardWrapper {
 
             List<BlockVector2D> list = new ArrayList<WorldEditWrapper.BlockVector2D>();
 
-            if (WrapperManager.isPluginEnabled(WrapperManager.Plugins.WORLD_EDIT)) {
+            if (WrapperManager.isPluginEnabled(WrapperManager.PLUGIN_NAME_WORLD_EDIT)) {
                 for (com.sk89q.worldedit.BlockVector2D point : points) {
                     list.add(new BlockVector2D(point));
                 }
@@ -113,14 +113,14 @@ public class WorldGuardWrapper {
         }
 
         public BlockVector getMinimumPoint() {
-            if (!WrapperManager.isPluginEnabled(WrapperManager.Plugins.WORLD_EDIT)) {
+            if (!WrapperManager.isPluginEnabled(WrapperManager.PLUGIN_NAME_WORLD_EDIT)) {
                 return null;
             }
             return new BlockVector(protectedRegion.getMinimumPoint());
         }
 
         public BlockVector getMaximumPoint() {
-            if (!WrapperManager.isPluginEnabled(WrapperManager.Plugins.WORLD_EDIT)) {
+            if (!WrapperManager.isPluginEnabled(WrapperManager.PLUGIN_NAME_WORLD_EDIT)) {
                 return null;
             }
 
@@ -277,8 +277,8 @@ public class WorldGuardWrapper {
     public static class ProtectedCuboidRegion extends ProtectedRegion {
         public ProtectedCuboidRegion(String string, BlockVector fromV, BlockVector toV) {
             super(new com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion(string,
-                    (!WrapperManager.isPluginEnabled(WrapperManager.Plugins.WORLD_EDIT) ? null : fromV.blockVector),
-                    (!WrapperManager.isPluginEnabled(WrapperManager.Plugins.WORLD_EDIT) ? null : toV.blockVector)));
+                    (!WrapperManager.isPluginEnabled(WrapperManager.PLUGIN_NAME_WORLD_EDIT) ? null : fromV.blockVector),
+                    (!WrapperManager.isPluginEnabled(WrapperManager.PLUGIN_NAME_WORLD_EDIT) ? null : toV.blockVector)));
         }
 
         public void setOwners(DefaultDomain owner) {

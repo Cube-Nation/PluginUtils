@@ -24,9 +24,9 @@ public class WorldEditWrapper {
     public static void loadPlugin() {
         if (worldEditPlugin == null) {
             worldEditPlugin = (com.sk89q.worldedit.bukkit.WorldEditPlugin) Bukkit.getServer().getPluginManager()
-                    .getPlugin(WrapperManager.Plugins.WORLD_EDIT.getName());
+                    .getPlugin(WrapperManager.PLUGIN_NAME_WORLD_EDIT);
             if (worldEditPlugin == null) {
-                log.info(WrapperManager.Plugins.WORLD_EDIT.getName() + " not found");
+                log.info(WrapperManager.PLUGIN_NAME_WORLD_EDIT + " not found");
             }
         }
     }

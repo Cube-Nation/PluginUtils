@@ -2,7 +2,10 @@ package de.cubenation.plugins.utils.commandapi;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.BlockCommandSender;
@@ -16,6 +19,7 @@ import de.cubenation.plugins.utils.chatapi.ChatService;
 import de.cubenation.plugins.utils.commandapi.annotation.Asynchron;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.annotation.CommandPermissions;
+import de.cubenation.plugins.utils.commandapi.annotation.NeededPlugin;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderBlock;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderConsole;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderPlayer;
@@ -26,12 +30,14 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandExecutionExceptio
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.exception.NoPermissionException;
 import de.cubenation.plugins.utils.permissionapi.PermissionInterface;
+import de.cubenation.plugins.utils.wrapperapi.WrapperManager;
 
 public class ChatCommand {
     // annotation data
     private ArrayList<String> mainNames = new ArrayList<String>();
     private ArrayList<String> subNames = new ArrayList<String>();
     private ArrayList<String> permissions = new ArrayList<String>();
+    private ArrayList<String> neededPlugins = new ArrayList<String>();
     private ArrayList<String> worlds = new ArrayList<String>();
     private boolean isConsoleSender = false;
     private boolean isBlockSender = false;
@@ -63,6 +69,10 @@ public class ChatCommand {
                 throw new CommandWarmUpException(instance.getClass(), "main attribute could not be empty");
             }
 
+            if (main.contains(" ")) {
+                throw new CommandWarmUpException(instance.getClass(), "main attribute could contain spaces");
+            }
+
             String lowerMainCommand = main.toLowerCase();
             if (!mainNames.contains(lowerMainCommand)) {
                 mainNames.add(lowerMainCommand);
@@ -72,6 +82,10 @@ public class ChatCommand {
         for (String sub : annotation.sub()) {
             if (sub == null || sub.isEmpty()) {
                 continue;
+            }
+
+            if (sub.contains(" ")) {
+                throw new CommandWarmUpException(instance.getClass(), "sub attribute could contain spaces");
             }
 
             String lowerSubCommand = sub.toLowerCase();
@@ -144,6 +158,20 @@ public class ChatCommand {
 
         runAsynchron = method.isAnnotationPresent(Asynchron.class);
 
+        boolean checkPluginNeededAnnotation = method.isAnnotationPresent(NeededPlugin.class);
+        if (checkPluginNeededAnnotation) {
+            NeededPlugin checkPluginNeeded = method.getAnnotation(NeededPlugin.class);
+
+            for (String pluginNeeded : checkPluginNeeded.value()) {
+                if (pluginNeeded == null || pluginNeeded.isEmpty()) {
+                    continue;
+                }
+                if (!neededPlugins.contains(pluginNeeded)) {
+                    neededPlugins.add(pluginNeeded);
+                }
+            }
+        }
+
         this.chatService = chatService;
     }
 
@@ -195,6 +223,23 @@ public class ChatCommand {
     }
 
     private boolean checkCommandForPlayer(Player sender, String[] args) {
+        if (neededPlugins.size() > 0) {
+            for (String neededPlugin : neededPlugins) {
+                if (WrapperManager.isPluginEnabled(neededPlugin)) {
+                    chatService.one(sender, "player.neededPluginMissing");
+
+                    if (plugin != null) {
+                        Logger logger = plugin.getLogger();
+                        if (logger != null) {
+                            logger.log(Level.SEVERE, "missing plugin " + neededPlugin);
+                        }
+                    }
+
+                    return false;
+                }
+            }
+        }
+
         if (permissions.size() > 0) {
             for (String permission : permissions) {
                 if (!hasPlayerRight(sender, permission)) {
@@ -246,6 +291,23 @@ public class ChatCommand {
     }
 
     private boolean checkCommandForOther(CommandSender sender, String[] args) {
+        if (neededPlugins.size() > 0) {
+            for (String neededPlugin : neededPlugins) {
+                if (WrapperManager.isPluginEnabled(neededPlugin)) {
+                    chatService.one(sender, "other.neededPluginMissing");
+
+                    if (plugin != null) {
+                        Logger logger = plugin.getLogger();
+                        if (logger != null) {
+                            logger.log(Level.SEVERE, "missing plugin " + neededPlugin);
+                        }
+                    }
+
+                    return false;
+                }
+            }
+        }
+
         if (min > 0 && min > args.length) {
             chatService.one(sender, "other.parameterMissing");
             if (!usage.isEmpty()) {
@@ -514,6 +576,14 @@ public class ChatCommand {
         this.permissions = permissions;
     }
 
+    public ArrayList<String> getNeededPlugins() {
+        return neededPlugins;
+    }
+
+    public void setNeededPlugins(ArrayList<String> neededPlugins) {
+        this.neededPlugins = neededPlugins;
+    }
+
     @Override
     public String toString() {
         String type = "[NONE]";
@@ -536,28 +606,19 @@ public class ChatCommand {
 
         String perm = "";
         if (permissions.size() > 0) {
-            for (String permission : permissions) {
-                if (perm.length() > 0) {
-                    perm += ", ";
-                }
-                perm += permission;
-            }
-
-            perm = " [permission: " + perm + "]";
+            perm = " [permission: " + StringUtils.join(permissions, ", ") + "]";
         }
 
         String world = "";
         if (worlds.size() > 0) {
-            for (String w : worlds) {
-                if (world.length() > 0) {
-                    world += ", ";
-                }
-                world += w;
-            }
-
-            world = " [world: " + world + "]";
+            world = " [world: " + StringUtils.join(worlds, ", ") + "]";
         }
 
-        return "/" + mainNames.get(0) + (subNames.size() > 0 ? " " + subNames.get(0) : "") + " " + type + perm + world;
+        String plugin = "";
+        if (neededPlugins.size() > 0) {
+            plugin = " [plugin dependency: " + StringUtils.join(neededPlugins, ", ") + "]";
+        }
+
+        return "/" + mainNames.get(0) + (subNames.size() > 0 ? " " + subNames.get(0) : "") + " " + type + perm + world + plugin;
     }
 }

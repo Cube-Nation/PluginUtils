@@ -26,6 +26,7 @@ import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.T
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMultiAnnotation;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandOtherException;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandWrongConstructor;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandWrongMainSpaces;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandWrongMethodParameterFirstBlock;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandWrongMethodParameterFirstConsole;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandWrongMethodParameterFirstParameter;
@@ -38,6 +39,7 @@ import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.T
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandWrongMethodParameterWithoutSecond;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandWrongMin;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandWrongMinMax;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandWrongSubSpaces;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.TestValidCommandMain;
 
 public class CommandExceptionTest extends AbstractTest {
@@ -64,6 +66,32 @@ public class CommandExceptionTest extends AbstractTest {
             Assert.fail("expected null main string raise exception");
         } catch (CommandWarmUpException e) {
             Assert.assertEquals("[" + TestInvalidCommandEmptyMain.class.getName() + "] main attribute could not be empty", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandMainSpaces() throws CommandManagerException {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandWrongMainSpaces.class);
+            Assert.fail("expected null main string raise exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandWrongMainSpaces.class.getName() + "] main attribute could contain spaces", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCommandSubSpaces() throws CommandManagerException {
+        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        });
+
+        try {
+            commandsManager.add(TestInvalidCommandWrongSubSpaces.class);
+            Assert.fail("expected null main string raise exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandWrongSubSpaces.class.getName() + "] sub attribute could contain spaces", e.getMessage());
         }
     }
 

@@ -21,9 +21,9 @@ public class ShopkeepersWrapper {
     public static void loadPlugin() {
         if (shopkeepersPlugin == null) {
             shopkeepersPlugin = (com.nisovin.shopkeepers.ShopkeepersPlugin) Bukkit.getServer().getPluginManager()
-                    .getPlugin(WrapperManager.Plugins.SHOPKEEPERS.getName());
+                    .getPlugin(WrapperManager.PLUGIN_NAME_SHOPKEEPERS);
             if (shopkeepersPlugin == null) {
-                log.info(WrapperManager.Plugins.SHOPKEEPERS.getName() + " not found");
+                log.info(WrapperManager.PLUGIN_NAME_SHOPKEEPERS + " not found");
             }
         }
     }

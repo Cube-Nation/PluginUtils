@@ -9,7 +9,7 @@ public class PermissionService implements PermissionInterface {
     public boolean hasPermission(Player player, String rightName) {
         boolean has = false;
 
-        if (WrapperManager.isPluginEnabled(WrapperManager.Plugins.PERMISSIONS_EX)) {
+        if (WrapperManager.isPluginEnabled(WrapperManager.PLUGIN_NAME_PERMISSIONS_EX)) {
             has = PermissionsExWrapper.hasPermission(player, rightName);
         } else {
             if (player == null) {

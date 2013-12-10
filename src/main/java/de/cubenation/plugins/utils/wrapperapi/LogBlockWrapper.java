@@ -30,9 +30,9 @@ public class LogBlockWrapper {
 
     public static void loadPlugin() {
         if (logBlock == null) {
-            logBlock = (de.diddiz.LogBlock.LogBlock) Bukkit.getServer().getPluginManager().getPlugin(WrapperManager.Plugins.LOG_BLOCK.getName());
+            logBlock = (de.diddiz.LogBlock.LogBlock) Bukkit.getServer().getPluginManager().getPlugin(WrapperManager.PLUGIN_NAME_LOG_BLOCK);
             if (logBlock == null) {
-                log.info(WrapperManager.Plugins.LOG_BLOCK.getName() + " not found");
+                log.info(WrapperManager.PLUGIN_NAME_LOG_BLOCK + " not found");
             }
         }
     }
@@ -238,7 +238,7 @@ public class LogBlockWrapper {
         }
 
         public void setSelection(Selection sel) {
-            if (!WrapperManager.isPluginEnabled(WrapperManager.Plugins.WORLD_EDIT)) {
+            if (!WrapperManager.isPluginEnabled(WrapperManager.PLUGIN_NAME_WORLD_EDIT)) {
                 return;
             }
 

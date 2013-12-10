@@ -27,9 +27,9 @@ public class VanishNoPacketWrapper {
     public static void loadPlugin() {
         if (vanishManager == null) {
             org.kitteh.vanish.VanishPlugin vanishPlugin = (org.kitteh.vanish.VanishPlugin) Bukkit.getServer().getPluginManager()
-                    .getPlugin(WrapperManager.Plugins.VANISH_NO_PACKET.getName());
+                    .getPlugin(WrapperManager.PLUGIN_NAME_VANISH_NO_PACKET);
             if (vanishPlugin == null) {
-                log.info(WrapperManager.Plugins.VANISH_NO_PACKET.getName() + " not found");
+                log.info(WrapperManager.PLUGIN_NAME_VANISH_NO_PACKET + " not found");
                 vanishManager = null;
                 return;
             }

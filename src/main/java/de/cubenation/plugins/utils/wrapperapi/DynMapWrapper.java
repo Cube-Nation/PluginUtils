@@ -20,9 +20,9 @@ public class DynMapWrapper {
 
     public static void loadPlugin() {
         if (dynmapAPI == null) {
-            dynmapAPI = (org.dynmap.DynmapAPI) Bukkit.getServer().getPluginManager().getPlugin(WrapperManager.Plugins.DYNMAP.getName());
+            dynmapAPI = (org.dynmap.DynmapAPI) Bukkit.getServer().getPluginManager().getPlugin(WrapperManager.PLUGIN_NAME_DYNMAP);
             if (dynmapAPI == null) {
-                log.info(WrapperManager.Plugins.DYNMAP.getName() + " not found");
+                log.info(WrapperManager.PLUGIN_NAME_DYNMAP + " not found");
             }
         }
     }

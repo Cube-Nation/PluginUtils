@@ -16,9 +16,9 @@ public class PermissionsExWrapper {
     public static void loadPlugin() {
         if (permissionManager == null) {
             ru.tehkode.permissions.bukkit.PermissionsEx permissions = (ru.tehkode.permissions.bukkit.PermissionsEx) Bukkit.getServer().getPluginManager()
-                    .getPlugin(WrapperManager.Plugins.PERMISSIONS_EX.getName());
+                    .getPlugin(WrapperManager.PLUGIN_NAME_PERMISSIONS_EX);
             if (permissions == null) {
-                log.info(WrapperManager.Plugins.PERMISSIONS_EX.getName() + " not found");
+                log.info(WrapperManager.PLUGIN_NAME_PERMISSIONS_EX + " not found");
                 permissionManager = null;
                 return;
             }

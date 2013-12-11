@@ -104,8 +104,10 @@ public class CommandExceptionTest extends AbstractTest {
             commandsManager.add(TestInvalidCommandWrongConstructor.class);
             Assert.fail("expected wrong constructor");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandWrongConstructor.class.getName()
-                    + "] no matching constructor found, matches are empty constructors and constructors is specified in add() or CommandsManager()",
+            Assert.assertEquals(
+                    "["
+                            + TestInvalidCommandWrongConstructor.class.getName()
+                            + "] no matching constructor found, matches are empty constructors and constructors is specified in add() or CommandsManager(), found: Constructor1(Integer), defined: JavaPlugin",
                     e.getMessage());
         }
     }

@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -66,9 +67,9 @@ public class CommandsManager {
             // create object instance
             Object instance = null;
             JavaPlugin localPlugin = plugin;
+            List<Class<?>> classList = new ArrayList<Class<?>>();
             try {
                 List<Object> objectList = Arrays.asList(constructorParameter);
-                List<Class<?>> classList = new ArrayList<Class<?>>();
 
                 for (Object object : objectList) {
                     Class<? extends Object> classObj = object.getClass();
@@ -92,8 +93,36 @@ public class CommandsManager {
                 try {
                     instance = commandClass.newInstance();
                 } catch (InstantiationException e1) {
+
+                    Constructor<?>[] constructors = commandClass.getConstructors();
+                    String[] availableConstructors = new String[constructors.length];
+
+                    int i = 0;
+                    for (Constructor<?> constructor : constructors) {
+                        Class<?>[] parameterTypes = constructor.getParameterTypes();
+
+                        String[] availableTypes = new String[parameterTypes.length];
+                        int j = 0;
+                        for (Class<?> parameterType : parameterTypes) {
+                            availableTypes[j] = parameterType.getSimpleName();
+                            j++;
+                        }
+
+                        availableConstructors[i] = "Constructor" + (i + 1) + "(" + StringUtils.join(availableTypes, ", ") + ")";
+
+                        i++;
+                    }
+                    String[] definedConstructorTypes = new String[classList.size()];
+
+                    int k = 0;
+                    for (Class<?> clazz : classList) {
+                        definedConstructorTypes[k] = clazz.getSimpleName();
+                        k++;
+                    }
+
                     throw new CommandWarmUpException(commandClass,
-                            "no matching constructor found, matches are empty constructors and constructors is specified in add() or CommandsManager()");
+                            "no matching constructor found, matches are empty constructors and constructors is specified in add() or CommandsManager(), found: "
+                                    + StringUtils.join(availableConstructors, ", ") + ", defined: " + StringUtils.join(definedConstructorTypes, ", "));
                 }
             }
 

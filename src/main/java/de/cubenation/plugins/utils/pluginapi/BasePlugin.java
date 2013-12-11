@@ -53,7 +53,12 @@ public abstract class BasePlugin extends JavaPlugin {
             };
         }
 
-        saveDefaultConfig();
+        if (getResource("config.yml") != null) {
+            getLogger().info("save default config");
+            saveDefaultConfig();
+        } else {
+            getLogger().info("save no default config");
+        }
         reloadConfig();
 
         customDatabaseServer = getCustomDatabaseServer();

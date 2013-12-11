@@ -287,6 +287,7 @@ Available wrapper classes:
 - dynmap (finished)
 - LogBlock (finished)
 - LWC (not finished)
+- MultiverseCoreWrapper (finished)
 - PermissionsEx (not finished)
 - Shopkeepers (not finished)
 - VanishNoPacket (not finished)

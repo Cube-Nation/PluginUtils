@@ -34,10 +34,13 @@ public class LWCWrapper {
         if (lwcPlugin != null) {
             List<com.griefcraft.model.Protection> loadProtections = lwcPlugin.getPhysicalDatabase().loadProtections(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
 
-            List<Protection> protections = new ArrayList<Protection>();
+            List<Protection> protections = null;
 
-            for (com.griefcraft.model.Protection loadProtection : loadProtections) {
-                protections.add(new Protection(loadProtection));
+            if (loadProtections != null) {
+                protections = new ArrayList<Protection>();
+                for (com.griefcraft.model.Protection loadProtection : loadProtections) {
+                    protections.add(new Protection(loadProtection));
+                }
             }
 
             return protections;

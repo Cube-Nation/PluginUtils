@@ -43,9 +43,12 @@ public class DynMapWrapper {
         }
 
         public MarkerSet createMarkerSet(String arg0, String arg1, Set<MarkerIcon> arg2, boolean arg3) {
-            Set<org.dynmap.markers.MarkerIcon> newArg = new HashSet<org.dynmap.markers.MarkerIcon>();
-            for (MarkerIcon arg : arg2) {
-                newArg.add(arg.markerIcon);
+            Set<org.dynmap.markers.MarkerIcon> newArg = null;
+            if (arg2 != null) {
+                newArg = new HashSet<org.dynmap.markers.MarkerIcon>();
+                for (MarkerIcon arg : arg2) {
+                    newArg.add(arg.markerIcon);
+                }
             }
             return new MarkerSet(markerAPI.createMarkerSet(arg0, arg1, newArg, arg3));
         }
@@ -61,9 +64,13 @@ public class DynMapWrapper {
         public Set<MarkerIcon> getMarkerIcons() {
             Set<org.dynmap.markers.MarkerIcon> markerIcons = markerAPI.getMarkerIcons();
 
-            HashSet<MarkerIcon> hashSet = new HashSet<MarkerIcon>();
-            for (org.dynmap.markers.MarkerIcon markerIcon : markerIcons) {
-                hashSet.add(new MarkerIcon(markerIcon));
+            HashSet<MarkerIcon> hashSet = null;
+
+            if (markerIcons != null) {
+                hashSet = new HashSet<MarkerIcon>();
+                for (org.dynmap.markers.MarkerIcon markerIcon : markerIcons) {
+                    hashSet.add(new MarkerIcon(markerIcon));
+                }
             }
 
             return hashSet;
@@ -72,10 +79,14 @@ public class DynMapWrapper {
         public Set<MarkerSet> getMarkerSets() {
             Set<org.dynmap.markers.MarkerSet> markerSets = markerAPI.getMarkerSets();
 
-            HashSet<MarkerSet> hashSet = new HashSet<MarkerSet>();
-            for (org.dynmap.markers.MarkerSet markerSet : markerSets) {
-                hashSet.add(new MarkerSet(markerSet));
+            HashSet<MarkerSet> hashSet = null;
+            if (markerSets != null) {
+                hashSet = new HashSet<MarkerSet>();
+                for (org.dynmap.markers.MarkerSet markerSet : markerSets) {
+                    hashSet.add(new MarkerSet(markerSet));
+                }
             }
+
             return hashSet;
         }
 
@@ -86,9 +97,12 @@ public class DynMapWrapper {
         public Set<PlayerSet> getPlayerSets() {
             Set<org.dynmap.markers.PlayerSet> playerSets = markerAPI.getPlayerSets();
 
-            HashSet<PlayerSet> hashSet = new HashSet<PlayerSet>();
-            for (org.dynmap.markers.PlayerSet playerSet : playerSets) {
-                hashSet.add(new PlayerSet(playerSet));
+            HashSet<PlayerSet> hashSet = null;
+            if (playerSets != null) {
+                hashSet = new HashSet<PlayerSet>();
+                for (org.dynmap.markers.PlayerSet playerSet : playerSets) {
+                    hashSet.add(new PlayerSet(playerSet));
+                }
             }
             return hashSet;
         }
@@ -320,9 +334,12 @@ public class DynMapWrapper {
         public Set<MarkerIcon> getAllowedMarkerIcons() {
             Set<org.dynmap.markers.MarkerIcon> markerIcons = markerSet.getAllowedMarkerIcons();
 
-            Set<MarkerIcon> hashSet = new HashSet<MarkerIcon>();
-            for (org.dynmap.markers.MarkerIcon markerIcon : markerIcons) {
-                hashSet.add(new MarkerIcon(markerIcon));
+            Set<MarkerIcon> hashSet = null;
+            if (markerIcons != null) {
+                hashSet = new HashSet<MarkerIcon>();
+                for (org.dynmap.markers.MarkerIcon markerIcon : markerIcons) {
+                    hashSet.add(new MarkerIcon(markerIcon));
+                }
             }
 
             return hashSet;
@@ -331,9 +348,12 @@ public class DynMapWrapper {
         public Set<AreaMarker> getAreaMarkers() {
             Set<org.dynmap.markers.AreaMarker> areaMarkers = markerSet.getAreaMarkers();
 
-            Set<AreaMarker> hashSet = new HashSet<AreaMarker>();
-            for (org.dynmap.markers.AreaMarker areaMarker : areaMarkers) {
-                hashSet.add(new AreaMarker(areaMarker));
+            Set<AreaMarker> hashSet = null;
+            if (areaMarkers != null) {
+                hashSet = new HashSet<AreaMarker>();
+                for (org.dynmap.markers.AreaMarker areaMarker : areaMarkers) {
+                    hashSet.add(new AreaMarker(areaMarker));
+                }
             }
 
             return hashSet;
@@ -342,9 +362,12 @@ public class DynMapWrapper {
         public Set<CircleMarker> getCircleMarkers() {
             Set<org.dynmap.markers.CircleMarker> circleMarkers = markerSet.getCircleMarkers();
 
-            Set<CircleMarker> hashSet = new HashSet<CircleMarker>();
-            for (org.dynmap.markers.CircleMarker circleMarker : circleMarkers) {
-                hashSet.add(new CircleMarker(circleMarker));
+            Set<CircleMarker> hashSet = null;
+            if (circleMarkers != null) {
+                hashSet = new HashSet<CircleMarker>();
+                for (org.dynmap.markers.CircleMarker circleMarker : circleMarkers) {
+                    hashSet.add(new CircleMarker(circleMarker));
+                }
             }
 
             return hashSet;
@@ -369,9 +392,12 @@ public class DynMapWrapper {
         public Set<MarkerIcon> getMarkerIconsInUse() {
             Set<org.dynmap.markers.MarkerIcon> markerIcons = markerSet.getMarkerIconsInUse();
 
-            Set<MarkerIcon> hashSet = new HashSet<MarkerIcon>();
-            for (org.dynmap.markers.MarkerIcon markerIcon : markerIcons) {
-                hashSet.add(new MarkerIcon(markerIcon));
+            Set<MarkerIcon> hashSet = null;
+            if (markerIcons != null) {
+                hashSet = new HashSet<MarkerIcon>();
+                for (org.dynmap.markers.MarkerIcon markerIcon : markerIcons) {
+                    hashSet.add(new MarkerIcon(markerIcon));
+                }
             }
 
             return hashSet;
@@ -388,9 +414,12 @@ public class DynMapWrapper {
         public Set<Marker> getMarkers() {
             Set<org.dynmap.markers.Marker> markers = markerSet.getMarkers();
 
-            Set<Marker> hashSet = new HashSet<Marker>();
-            for (org.dynmap.markers.Marker marker : markers) {
-                hashSet.add(new Marker(marker));
+            Set<Marker> hashSet = null;
+            if (markers != null) {
+                hashSet = new HashSet<Marker>();
+                for (org.dynmap.markers.Marker marker : markers) {
+                    hashSet.add(new Marker(marker));
+                }
             }
 
             return hashSet;
@@ -403,9 +432,12 @@ public class DynMapWrapper {
         public Set<PolyLineMarker> getPolyLineMarkers() {
             Set<org.dynmap.markers.PolyLineMarker> polyLineMarkers = markerSet.getPolyLineMarkers();
 
-            Set<PolyLineMarker> hashSet = new HashSet<PolyLineMarker>();
-            for (org.dynmap.markers.PolyLineMarker polyLineMarker : polyLineMarkers) {
-                hashSet.add(new PolyLineMarker(polyLineMarker));
+            Set<PolyLineMarker> hashSet = null;
+            if (polyLineMarkers != null) {
+                hashSet = new HashSet<PolyLineMarker>();
+                for (org.dynmap.markers.PolyLineMarker polyLineMarker : polyLineMarkers) {
+                    hashSet.add(new PolyLineMarker(polyLineMarker));
+                }
             }
 
             return hashSet;

@@ -40,9 +40,12 @@ public class LogBlockWrapper {
     public static List<BlockChange> getBlockChanges(QueryParams arg0) throws SQLException {
         List<de.diddiz.LogBlock.BlockChange> blockChanges = logBlock.getBlockChanges(arg0.queryParams);
 
-        List<BlockChange> list = new ArrayList<BlockChange>();
-        for (de.diddiz.LogBlock.BlockChange blockChange : blockChanges) {
-            list.add(new BlockChange(blockChange));
+        List<BlockChange> list = null;
+        if (blockChanges != null) {
+            list = new ArrayList<BlockChange>();
+            for (de.diddiz.LogBlock.BlockChange blockChange : blockChanges) {
+                list.add(new BlockChange(blockChange));
+            }
         }
 
         return list;

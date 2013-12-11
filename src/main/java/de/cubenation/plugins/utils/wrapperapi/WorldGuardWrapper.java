@@ -43,11 +43,15 @@ public class WorldGuardWrapper {
         public List<BlockVector2D> getPoints() {
             List<com.sk89q.worldedit.BlockVector2D> points = protectedRegion.getPoints();
 
-            List<BlockVector2D> list = new ArrayList<WorldEditWrapper.BlockVector2D>();
+            List<BlockVector2D> list = null;
 
-            if (WrapperManager.isPluginEnabled(WrapperManager.PLUGIN_NAME_WORLD_EDIT)) {
-                for (com.sk89q.worldedit.BlockVector2D point : points) {
-                    list.add(new BlockVector2D(point));
+            if (points != null) {
+                list = new ArrayList<WorldEditWrapper.BlockVector2D>();
+
+                if (WrapperManager.isPluginEnabled(WrapperManager.PLUGIN_NAME_WORLD_EDIT)) {
+                    for (com.sk89q.worldedit.BlockVector2D point : points) {
+                        list.add(new BlockVector2D(point));
+                    }
                 }
             }
 
@@ -128,22 +132,28 @@ public class WorldGuardWrapper {
         }
 
         public List<ProtectedRegion> getIntersectingRegions(ArrayList<ProtectedRegion> userRegion) throws UnsupportedIntersectionException {
-            ArrayList<com.sk89q.worldguard.protection.regions.ProtectedRegion> list = new ArrayList<com.sk89q.worldguard.protection.regions.ProtectedRegion>();
+            ArrayList<com.sk89q.worldguard.protection.regions.ProtectedRegion> list = null;
 
-            for (ProtectedRegion region : userRegion) {
-                list.add(region.protectedRegion);
+            if (userRegion != null) {
+                list = new ArrayList<com.sk89q.worldguard.protection.regions.ProtectedRegion>();
+                for (ProtectedRegion region : userRegion) {
+                    list.add(region.protectedRegion);
+                }
             }
 
-            List<com.sk89q.worldguard.protection.regions.ProtectedRegion> intersectingRegions;
+            List<com.sk89q.worldguard.protection.regions.ProtectedRegion> intersectingRegions = null;
             try {
                 intersectingRegions = protectedRegion.getIntersectingRegions(list);
             } catch (com.sk89q.worldguard.protection.UnsupportedIntersectionException e) {
                 throw new UnsupportedIntersectionException(e);
             }
 
-            ArrayList<ProtectedRegion> newList = new ArrayList<ProtectedRegion>();
-            for (com.sk89q.worldguard.protection.regions.ProtectedRegion intersectingRegion : intersectingRegions) {
-                newList.add(new ProtectedRegion(intersectingRegion));
+            ArrayList<ProtectedRegion> newList = null;
+            if (intersectingRegions != null) {
+                newList = new ArrayList<ProtectedRegion>();
+                for (com.sk89q.worldguard.protection.regions.ProtectedRegion intersectingRegion : intersectingRegions) {
+                    newList.add(new ProtectedRegion(intersectingRegion));
+                }
             }
 
             return newList;

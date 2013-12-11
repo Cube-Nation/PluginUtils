@@ -81,10 +81,13 @@ public class ShopkeepersWrapper {
         if (shopkeepersPlugin != null) {
             List<com.nisovin.shopkeepers.Shopkeeper> shopkeepersInChunks = shopkeepersPlugin.getShopkeepersInChunk(worldName, x, z);
 
-            ArrayList<Shopkeeper> list = new ArrayList<Shopkeeper>();
+            ArrayList<Shopkeeper> list = null;
 
-            for (com.nisovin.shopkeepers.Shopkeeper shopkeepersInChunk : shopkeepersInChunks) {
-                list.add(new Shopkeeper(shopkeepersInChunk));
+            if (shopkeepersInChunks != null) {
+                list = new ArrayList<Shopkeeper>();
+                for (com.nisovin.shopkeepers.Shopkeeper shopkeepersInChunk : shopkeepersInChunks) {
+                    list.add(new Shopkeeper(shopkeepersInChunk));
+                }
             }
 
             return list;

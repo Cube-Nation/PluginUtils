@@ -203,11 +203,14 @@ public class WorldEditWrapper {
         }
 
         public void replaceBlocks(CuboidRegion restoreRegion, HashSet<BaseBlock> newHashSet, BaseBlock baseBlock) throws MaxChangedBlocksException {
-            HashSet<com.sk89q.worldedit.blocks.BaseBlock> map = new HashSet<com.sk89q.worldedit.blocks.BaseBlock>();
+            HashSet<com.sk89q.worldedit.blocks.BaseBlock> map = null;
 
-            Iterator<BaseBlock> iterator = newHashSet.iterator();
-            while (iterator.hasNext()) {
-                map.add(iterator.next().baseBlock);
+            if (newHashSet != null) {
+                map = new HashSet<com.sk89q.worldedit.blocks.BaseBlock>();
+                Iterator<BaseBlock> iterator = newHashSet.iterator();
+                while (iterator.hasNext()) {
+                    map.add(iterator.next().baseBlock);
+                }
             }
 
             try {
@@ -460,18 +463,28 @@ public class WorldEditWrapper {
         }
 
         public List<Vector2D> getErrorChunks() {
-            List<Vector2D> list = new ArrayList<Vector2D>();
-            for (com.sk89q.worldedit.Vector2D errorChunk : snapshotRestore.getErrorChunks()) {
-                list.add(new Vector2D(errorChunk));
+            List<com.sk89q.worldedit.Vector2D> errorChunks = snapshotRestore.getErrorChunks();
+
+            List<Vector2D> list = null;
+            if (errorChunks != null) {
+                list = new ArrayList<Vector2D>();
+                for (com.sk89q.worldedit.Vector2D errorChunk : errorChunks) {
+                    list.add(new Vector2D(errorChunk));
+                }
             }
 
             return list;
         }
 
         public List<Vector2D> getMissingChunks() {
-            List<Vector2D> list = new ArrayList<Vector2D>();
-            for (com.sk89q.worldedit.Vector2D errorChunk : snapshotRestore.getMissingChunks()) {
-                list.add(new Vector2D(errorChunk));
+            List<com.sk89q.worldedit.Vector2D> missingChunks = snapshotRestore.getMissingChunks();
+
+            List<Vector2D> list = null;
+            if (missingChunks != null) {
+                list = new ArrayList<Vector2D>();
+                for (com.sk89q.worldedit.Vector2D errorChunk : missingChunks) {
+                    list.add(new Vector2D(errorChunk));
+                }
             }
 
             return list;

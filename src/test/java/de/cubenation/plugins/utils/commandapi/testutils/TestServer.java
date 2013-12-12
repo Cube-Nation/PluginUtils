@@ -276,7 +276,17 @@ public class TestServer implements Server {
             }
 
             @Override
-            public BukkitTask runTask(Plugin plugin, Runnable task) throws IllegalArgumentException {
+            public BukkitTask runTask(Plugin plugin, final Runnable task) throws IllegalArgumentException {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException e) {
+                        }
+                        task.run();
+                    }
+                }.start();
                 return null;
             }
 

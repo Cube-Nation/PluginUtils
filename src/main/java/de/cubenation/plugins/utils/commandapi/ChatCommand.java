@@ -351,40 +351,52 @@ public class ChatCommand {
         return true;
     }
 
-    public void execute(CommandSender sender, final String[] args) throws CommandException {
+    public void execute(final CommandSender sender, final String[] args) throws CommandException {
         if (!checkCommand(sender, args)) {
             return;
         }
 
         final ArrayList<Object> arguments = getParameterList(sender, args);
-
-        if (runAsynchron) {
+        if (plugin != null) {
             Thread task = new Thread("CommandRunner-" + method.getName()) {
                 @Override
                 public void run() {
+                    CommandsManager.addTask(plugin);
+                    if (!runAsynchron) {
+                        CommandsManager.syncronTask();
+                    }
+
                     try {
                         method.invoke(instance, arguments.toArray());
                     } catch (Exception e) {
+                        boolean writeError = false;
+                        boolean isError = true;
                         if (e instanceof IllegalArgumentException) {
                             if (args.length == 1) {
                                 try {
                                     method.invoke(instance, arguments.get(0), args[0]);
-                                    return;
+                                    isError = false;
                                 } catch (Exception e1) {
-                                    errorHandler.onError(new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e1));
+                                    writeError = true;
+                                    logError(e1);
                                 }
                             } else if (args.length == 0) {
                                 try {
                                     method.invoke(instance, arguments.get(0));
-                                    return;
+                                    isError = false;
                                 } catch (Exception e1) {
-                                    errorHandler.onError(new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e1));
+                                    writeError = true;
+                                    logError(e1);
                                 }
                             }
                         }
 
-                        errorHandler.onError(new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e));
+                        if (isError && !writeError) {
+                            logError(e);
+                        }
                     }
+
+                    CommandsManager.removeTask();
                 }
             };
 
@@ -412,6 +424,19 @@ public class ChatCommand {
                 }
 
                 throw new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e);
+            }
+        }
+    }
+
+    private void logError(Exception e) {
+        if (errorHandler != null) {
+            errorHandler.onError(new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e));
+        } else {
+            if (plugin.getLogger() != null) {
+                plugin.getLogger().log(Level.SEVERE, "error on execute " + method.getName(),
+                        new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e));
+            } else {
+                new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e).printStackTrace();
             }
         }
     }

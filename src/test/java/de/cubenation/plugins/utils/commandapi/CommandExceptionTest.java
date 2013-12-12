@@ -1,6 +1,6 @@
 package de.cubenation.plugins.utils.commandapi;
 
-import java.lang.reflect.InvocationTargetException;
+import static org.junit.Assert.assertEquals;
 
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -303,53 +303,62 @@ public class CommandExceptionTest extends AbstractTest {
     }
 
     @Test
-    public void testCommandMethodExceptionStringArray() throws CommandManagerException, CommandWarmUpException {
+    public void testCommandMethodExceptionStringArray() throws CommandException {
+        final StringBuffer s = new StringBuffer();
+        commandsManager.setErrorHandler(new ErrorHandler() {
+            @Override
+            public void onError(Throwable thrown) {
+                s.append("E");
+            }
+        });
         commandsManager.add(TestInvalidCommandMethodExceptionStringArray.class);
 
-        try {
-            executeComannd("/test");
-            Assert.fail("expected exception on execute");
-        } catch (CommandException e) {
-            Assert.assertEquals("[" + TestInvalidCommandMethodExceptionStringArray.class.getName() + "] error on execute emptyCommand", e.getMessage());
-            Assert.assertNotNull(e.getCause());
-            Assert.assertEquals(InvocationTargetException.class, e.getCause().getClass());
-            Assert.assertEquals(Exception.class, ((InvocationTargetException) e.getCause()).getTargetException().getClass());
-            Assert.assertEquals("test exception", ((Exception) ((InvocationTargetException) e.getCause()).getTargetException()).getMessage());
-        }
+        assertEquals(0, s.length());
+
+        executeComannd("/test");
+
+        assertEquals(1, s.length());
+
         Assert.assertEquals(0, chatList.size());
     }
 
     @Test
-    public void testCommandMethodExceptionString() throws CommandManagerException, CommandWarmUpException {
+    public void testCommandMethodExceptionString() throws CommandException {
+        final StringBuffer s = new StringBuffer();
+        commandsManager.setErrorHandler(new ErrorHandler() {
+            @Override
+            public void onError(Throwable thrown) {
+                s.append("E");
+            }
+        });
         commandsManager.add(TestInvalidCommandMethodExceptionString.class);
 
-        try {
-            executeComannd("/test 5");
-            Assert.fail("expected exception on execute");
-        } catch (CommandException e) {
-            Assert.assertEquals("[" + TestInvalidCommandMethodExceptionString.class.getName() + "] error on execute emptyCommand", e.getMessage());
-            Assert.assertNotNull(e.getCause());
-            Assert.assertEquals(InvocationTargetException.class, e.getCause().getClass());
-            Assert.assertEquals(Exception.class, ((InvocationTargetException) e.getCause()).getTargetException().getClass());
-            Assert.assertEquals("test exception", ((Exception) ((InvocationTargetException) e.getCause()).getTargetException()).getMessage());
-        }
+        assertEquals(0, s.length());
+
+        executeComannd("/test 5");
+
+        assertEquals(1, s.length());
+
         Assert.assertEquals(0, chatList.size());
     }
 
     @Test
-    public void testCommandMethodExceptionNoParameter() throws CommandManagerException, CommandWarmUpException {
+    public void testCommandMethodExceptionNoParameter() throws CommandException {
+        final StringBuffer s = new StringBuffer();
+        commandsManager.setErrorHandler(new ErrorHandler() {
+            @Override
+            public void onError(Throwable thrown) {
+                s.append("E");
+            }
+        });
         commandsManager.add(TestInvalidCommandMethodExceptionNoParameter.class);
 
-        try {
-            executeComannd("/test");
-            Assert.fail("expected exception on execute");
-        } catch (CommandException e) {
-            Assert.assertEquals("[" + TestInvalidCommandMethodExceptionNoParameter.class.getName() + "] error on execute emptyCommand", e.getMessage());
-            Assert.assertNotNull(e.getCause());
-            Assert.assertEquals(InvocationTargetException.class, e.getCause().getClass());
-            Assert.assertEquals(Exception.class, ((InvocationTargetException) e.getCause()).getTargetException().getClass());
-            Assert.assertEquals("test exception", ((Exception) ((InvocationTargetException) e.getCause()).getTargetException()).getMessage());
-        }
+        assertEquals(0, s.length());
+
+        executeComannd("/test");
+
+        assertEquals(1, s.length());
+
         Assert.assertEquals(0, chatList.size());
     }
 
@@ -409,15 +418,24 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testErrorHandlerCommand() throws CommandException, InterruptedException {
+        final StringBuffer s = new StringBuffer();
         commandsManager.setErrorHandler(new ErrorHandler() {
             @Override
             public void onError(Throwable thrown) {
+                s.append("E");
             }
         });
         commandsManager.add(TestInvalidCommandErrorHandler.class);
 
+        assertEquals(0, s.length());
+
         executeComannd("/test");
+
+        assertEquals(1, s.length());
+
         executeComannd("/test 3");
+
+        assertEquals(2, s.length());
     }
 
     @Test

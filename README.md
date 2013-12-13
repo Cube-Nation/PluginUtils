@@ -142,7 +142,7 @@ public void doSomeLongWork(Player player, String[] args) {
 }
 ```
 
-To easy switch *bukkit thread* to *non bukkit thread* and back you can use `CommandsManager.syncronTask()` or `CommandsManager.asyncronTask()`. The Thread will automaticaly insert in bukkit task queue or detached from there.
+To easy switch *bukkit thread* to *non bukkit thread* and back you can use `TaskManager.syncTask()` or `TaskManager.asyncTask()`. The Thread will automaticaly insert in bukkit task queue or detached from there.
 
 ```java
 @Command(main = "work")
@@ -150,11 +150,11 @@ To easy switch *bukkit thread* to *non bukkit thread* and back you can use `Comm
 public void doSomeLongWork(Player player, String[] args) {
     // do something external work
     
-    CommandsManager.syncronTask();
+    TaskManager.syncTask();
 
     // do some bukkit stuff
     
-    CommandsManager.asyncronTask();
+    TaskManager.asyncTask();
     
     // do something external work
 }
@@ -163,11 +163,11 @@ public void doSomeLongWork(Player player, String[] args) {
 public void doSomeLongWork(Player player, String[] args) {
     // do some bukkit stuff
     
-    CommandsManager.asyncronTask();
+    TaskManager.asyncTask();
     
     // do something external work
       
-    CommandsManager.syncronTask();
+    TaskManager.syncTask();
     
     // do some bukkit stuff
 }

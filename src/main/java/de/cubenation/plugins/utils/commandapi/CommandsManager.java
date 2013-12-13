@@ -34,7 +34,6 @@ public class CommandsManager {
     private ErrorHandler errorHandler = null;
     private CommandValidator commandValidator = new CommandValidator();
     private JavaPlugin plugin;
-    private static ThreadLocal<CommandTask> commandTaskPlugins = new ThreadLocal<CommandTask>();
 
     public CommandsManager(Object... constructorParameter) throws CommandManagerException {
         this.constructorParameter = constructorParameter;
@@ -433,44 +432,5 @@ public class CommandsManager {
 
     public static void setOwnChatService(ChatService chatService) {
         CommandsManager.chatService = chatService;
-    }
-
-    public static void syncronTask() throws RuntimeException {
-        CommandTask commandTask = commandTaskPlugins.get();
-
-        if (commandTask == null) {
-            throw new RuntimeException("Thread was not created by " + CommandsManager.class.getSimpleName() + " or Plugin was not set for "
-                    + CommandsManager.class.getSimpleName());
-        }
-
-        commandTask.syncronTask();
-    }
-
-    public static void asyncronTask() throws RuntimeException {
-        CommandTask commandTask = commandTaskPlugins.get();
-
-        if (commandTask == null) {
-            throw new RuntimeException("Thread was not created by " + CommandsManager.class.getSimpleName() + " or Plugin was not set for "
-                    + CommandsManager.class.getSimpleName());
-        }
-
-        commandTask.asyncronTask();
-    }
-
-    public static void addTask(JavaPlugin plugin) throws RuntimeException {
-        if (plugin == null) {
-            throw new RuntimeException("Plugin could not be null");
-        }
-
-        CommandTask commandTask = commandTaskPlugins.get();
-        if (commandTask == null) {
-            commandTaskPlugins.set(new CommandTask(plugin));
-        }
-    }
-
-    public static void removeTask() throws RuntimeException {
-        asyncronTask();
-
-        commandTaskPlugins.remove();
     }
 }

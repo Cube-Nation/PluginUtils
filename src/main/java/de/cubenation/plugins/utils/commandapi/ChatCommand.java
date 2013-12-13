@@ -361,9 +361,9 @@ public class ChatCommand {
             Thread task = new Thread("CommandRunner-" + method.getName()) {
                 @Override
                 public void run() {
-                    CommandsManager.addTask(plugin);
+                    TaskManager.createTask(plugin);
                     if (!runAsynchron) {
-                        CommandsManager.syncronTask();
+                        TaskManager.syncTask();
                     }
 
                     try {
@@ -396,7 +396,7 @@ public class ChatCommand {
                         }
                     }
 
-                    CommandsManager.removeTask();
+                    TaskManager.removeTask();
                 }
             };
 

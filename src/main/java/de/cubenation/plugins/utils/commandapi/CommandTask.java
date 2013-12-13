@@ -18,6 +18,10 @@ public class CommandTask {
     }
 
     public void syncronTask() {
+        if (bukkitQueueThread != null || plugin == null) {
+            return;
+        }
+
         lock.lock();
         final Lock blockerInner = new ReentrantLock();
         final Condition waiterInner = blockerInner.newCondition();
@@ -33,6 +37,7 @@ public class CommandTask {
                     waiter.await();
                 } catch (InterruptedException e) {
                 } finally {
+                    bukkitQueueThread = null;
                     lock.unlock();
                 }
             }
@@ -50,6 +55,10 @@ public class CommandTask {
     }
 
     public void asyncronTask() {
+        if (bukkitQueueThread == null || plugin == null) {
+            return;
+        }
+
         lock.lock();
         waiter.signalAll();
         lock.unlock();

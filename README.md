@@ -142,6 +142,37 @@ public void doSomeLongWork(Player player, String[] args) {
 }
 ```
 
+To easy switch *bukkit thread* to *non bukkit thread* and back you can use `CommandsManager.syncronTask()` or `CommandsManager.asyncronTask()`. The Thread will automaticaly insert in bukkit task queue or detached from there.
+
+```java
+@Command(main = "work")
+@Asynchron
+public void doSomeLongWork(Player player, String[] args) {
+    // do something external work
+    
+    CommandsManager.syncronTask();
+
+    // do some bukkit stuff
+    
+    CommandsManager.asyncronTask();
+    
+    // do something external work
+}
+
+@Command(main = "work")
+public void doSomeLongWork(Player player, String[] args) {
+    // do some bukkit stuff
+    
+    CommandsManager.asyncronTask();
+    
+    // do something external work
+      
+    CommandsManager.syncronTask();
+    
+    // do some bukkit stuff
+}
+```
+
 ## `@CommandPermissions` ##
 The command method will only called if the player has the specified permissions. Can be defined as single string or string array (for more permissions).
 

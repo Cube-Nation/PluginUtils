@@ -288,12 +288,11 @@ public void saveWorld(RemoteConsoleCommandSender remoteConsole, String[] args) {
 }
 ```
 
+# ConfirmApi #
+TODO
 
 # PermissionApi #
 Simple permission interface for easy use. Bukkit core permission methods is used, if PermissionEx plugin is not available.
-
-# ConfirmApi #
-TODO
 
 # PluginApi #
 New base class `BasePlugin` for Bukkit plugins with standard services (PermissionService, ChatService, CommandsManager, ConfirmService).

@@ -19,12 +19,14 @@ import de.cubenation.plugins.utils.commandapi.ErrorHandler;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandManagerException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
+import de.cubenation.plugins.utils.confirmapi.ConfirmService;
 import de.cubenation.plugins.utils.permissionapi.PermissionService;
 
 public abstract class BasePlugin extends JavaPlugin {
     // framework services
     protected PermissionService permissionService;
     protected ChatService chatService;
+    protected ConfirmService confirmService;
     protected CommandsManager commandsManager;
 
     private EbeanServer customDatabaseServer = null;
@@ -69,6 +71,7 @@ public abstract class BasePlugin extends JavaPlugin {
 
         permissionService = new PermissionService();
         chatService = new ChatService(this, permissionService);
+        confirmService = new ConfirmService();
 
         initialCustomServices();
 

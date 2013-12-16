@@ -23,19 +23,12 @@ public class ConfirmService {
         confirms.clear();
     }
 
-    public boolean hasConfirm(Player player, Class<? extends Confirm> clazz) {
-        if (player == null || clazz == null) {
-            return false;
-        }
-
+    public boolean hasConfirm(Player player) {
         Confirm confirm = confirms.get(player);
         if (confirm == null) {
             return false;
         }
 
-        if (confirm.getClass().isInstance(clazz)) {
-            return true;
-        }
-        return false;
+        return true;
     }
 }

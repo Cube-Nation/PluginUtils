@@ -103,6 +103,7 @@ public abstract class BasePlugin extends JavaPlugin {
 
     @Override
     public final void onDisable() {
+        confirmService.clear();
         commandsManager.clear();
 
         stopCustomServices();

@@ -25,7 +25,6 @@ public class TaskManager {
     /**
      * Atache the current thread to bukkit task queue and run on the next tick.
      * 
-     * 
      * @throws TaskManagerException
      *             Is thown when current thread was not created with
      *             {@link #createTask(JavaPlugin)}.

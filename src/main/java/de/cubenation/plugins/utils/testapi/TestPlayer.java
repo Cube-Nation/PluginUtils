@@ -1,4 +1,4 @@
-package de.cubenation.plugins.utils.commandapi.testutils;
+package de.cubenation.plugins.utils.testapi;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -327,12 +327,7 @@ public class TestPlayer implements Player {
 
     @Override
     public World getWorld() {
-        return new TestWorld() {
-            @Override
-            public String getName() {
-                return "testWorld";
-            }
-        };
+        return null;
     }
 
     @Override

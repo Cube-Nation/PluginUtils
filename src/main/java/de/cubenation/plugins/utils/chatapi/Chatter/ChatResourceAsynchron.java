@@ -15,7 +15,8 @@ public class ChatResourceAsynchron {
     public static void chat(final JavaPlugin plugin, final ResourceBundle resource, final CommandSender sender, final String resourceString,
             final Object... parameter) {
         if (sender == null) {
-            throw new NullPointerException("sender is null");
+            plugin.getLogger().warning("sender is null");
+            return;
         }
 
         if (resourceString == null || resourceString.isEmpty()) {

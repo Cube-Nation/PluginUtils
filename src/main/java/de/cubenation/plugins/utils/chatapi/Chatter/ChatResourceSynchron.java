@@ -11,7 +11,8 @@ import de.cubenation.plugins.utils.chatapi.ColorParser;
 public class ChatResourceSynchron {
     public static void chat(JavaPlugin plugin, ResourceBundle resource, CommandSender sender, String resourceString, Object... parameter) {
         if (sender == null) {
-            throw new NullPointerException("sender is null");
+            plugin.getLogger().warning("sender is null");
+            return;
         }
 
         if (resourceString == null || resourceString.isEmpty()) {

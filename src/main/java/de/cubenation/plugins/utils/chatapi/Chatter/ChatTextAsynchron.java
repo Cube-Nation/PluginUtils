@@ -7,7 +7,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ChatTextAsynchron {
     public static void chat(final JavaPlugin plugin, final CommandSender sender, final String message) {
         if (sender == null) {
-            throw new NullPointerException("sender is null");
+            plugin.getLogger().warning("sender is null");
+            return;
         }
 
         if (message == null || message.isEmpty()) {

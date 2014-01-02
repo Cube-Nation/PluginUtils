@@ -1,11 +1,14 @@
 package de.cubenation.plugins.utils.chatapi.Chatter;
 
+import java.util.logging.Logger;
+
 import org.bukkit.command.CommandSender;
 
 public class ChatTextSynchron {
     public static void chat(CommandSender sender, String message) {
         if (sender == null) {
-            throw new NullPointerException("sender is null");
+            Logger.getAnonymousLogger().warning("sender is null");
+            return;
         }
 
         if (message == null || message.isEmpty()) {

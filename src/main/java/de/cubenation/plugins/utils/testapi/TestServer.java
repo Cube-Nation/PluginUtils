@@ -186,7 +186,7 @@ public class TestServer implements Server {
 
     @Override
     public Player getPlayerExact(String name) {
-        return null;
+        return onlinePlayer.get(name);
     }
 
     @Override

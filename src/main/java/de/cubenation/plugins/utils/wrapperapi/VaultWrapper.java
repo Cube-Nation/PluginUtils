@@ -162,4 +162,11 @@ public class VaultWrapper {
             return economyResponse.transactionSuccess();
         }
     }
+
+    public static class ChatService {
+        public ChatService(net.milkbowl.vault.chat.Chat chatService) {
+        }
+
+        // TODO
+    }
 }

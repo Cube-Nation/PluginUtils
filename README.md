@@ -184,6 +184,17 @@ public void doAdminStuff(Player player, String[] args) {
 }
 ```
 
+## `@CommandPermissionsNot` ##
+The command method will only called if the player has not the specified permissions. Can be defined as single string or string array (for more permissions).
+
+```java
+@Command(main = "work")
+@CommandPermissionsNot("permission.admin")
+public void doUserStuff(Player player, String[] args) {
+    // do something
+}
+```
+
 ```java
 @Command(main = "work")
 @CommandPermissions({"permission.admin", "permission.mod"})
@@ -320,6 +331,7 @@ Available wrapper classes:
 - dynmap (finished)
 - LogBlock (finished)
 - LWC (not finished)
+- Herochat (finished)
 - MultiverseCoreWrapper (finished)
 - PermissionsEx (not finished)
 - Shopkeepers (not finished)

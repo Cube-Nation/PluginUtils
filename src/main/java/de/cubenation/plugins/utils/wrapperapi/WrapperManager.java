@@ -8,6 +8,7 @@ public class WrapperManager {
     public static final String PLUGIN_NAME_DYNMAP = "dynmap";
     public static final String PLUGIN_NAME_LOG_BLOCK = "LogBlock";
     public static final String PLUGIN_NAME_LWC = "LWC";
+    public static final String PLUGIN_NAME_HEROCHAT = "Herochat";
     public static final String PLUGIN_NAME_MULTIVERSE_CORE = "Multiverse-Core";
     public static final String PLUGIN_NAME_PERMISSIONS_EX = "PermissionsEx";
     public static final String PLUGIN_NAME_SHOPKEEPERS = "Shopkeepers";
@@ -25,6 +26,9 @@ public class WrapperManager {
         }
         if (isPluginEnabled(PLUGIN_NAME_LWC)) {
             LWCWrapper.setLogger(logger);
+        }
+        if (isPluginEnabled(PLUGIN_NAME_HEROCHAT)) {
+            HerochatWrapper.setLogger(logger);
         }
         if (isPluginEnabled(PLUGIN_NAME_MULTIVERSE_CORE)) {
             MultiverseCoreWrapper.setLogger(logger);

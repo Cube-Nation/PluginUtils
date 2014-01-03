@@ -19,6 +19,7 @@ import de.cubenation.plugins.utils.chatapi.ChatService;
 import de.cubenation.plugins.utils.commandapi.annotation.Asynchron;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.annotation.CommandPermissions;
+import de.cubenation.plugins.utils.commandapi.annotation.CommandPermissionsNot;
 import de.cubenation.plugins.utils.commandapi.annotation.NeededPlugin;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderBlock;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderConsole;
@@ -37,6 +38,7 @@ public class ChatCommand {
     private ArrayList<String> mainNames = new ArrayList<String>();
     private ArrayList<String> subNames = new ArrayList<String>();
     private ArrayList<String> permissions = new ArrayList<String>();
+    private ArrayList<String> permissionsNot = new ArrayList<String>();
     private ArrayList<String> neededPlugins = new ArrayList<String>();
     private ArrayList<String> worlds = new ArrayList<String>();
     private boolean isConsoleSender = false;
@@ -141,6 +143,20 @@ public class ChatCommand {
             }
         }
 
+        boolean checkPermissionNotAnnotation = method.isAnnotationPresent(CommandPermissionsNot.class);
+        if (checkPermissionNotAnnotation) {
+            CommandPermissionsNot checkPermissionNot = method.getAnnotation(CommandPermissionsNot.class);
+
+            for (String permissionNot : checkPermissionNot.value()) {
+                if (permissionNot == null || permissionNot.isEmpty()) {
+                    continue;
+                }
+                if (!permissionsNot.contains(permissionNot)) {
+                    permissionsNot.add(permissionNot);
+                }
+            }
+        }
+
         boolean checkWorldAnnotation = method.isAnnotationPresent(World.class);
         if (checkWorldAnnotation) {
             World checkWorld = method.getAnnotation(World.class);
@@ -198,7 +214,7 @@ public class ChatCommand {
         return senderArg && mainArg && subArg && minMax;
     }
 
-    public boolean isExactCommand(CommandSender sender, String mainName, String subName, int argSize) {
+    public boolean isCommandWithoutPermission(CommandSender sender, String mainName, String subName, int argSize) {
         boolean senderArg = false || (sender instanceof Player && isPlayerSender && (worlds.isEmpty() || worlds.contains(((Player) sender).getWorld().getName()
                 .toLowerCase())));
         senderArg = senderArg || (sender instanceof ConsoleCommandSender && isConsoleSender);
@@ -214,6 +230,40 @@ public class ChatCommand {
         return senderArg && mainArg && subArg && minMax;
     }
 
+    public boolean isExactCommand(CommandSender sender, String mainName, String subName, int argSize) {
+        boolean senderArg = false || (sender instanceof Player && isPlayerSender && (worlds.isEmpty() || worlds.contains(((Player) sender).getWorld().getName()
+                .toLowerCase())));
+        senderArg = senderArg || (sender instanceof ConsoleCommandSender && isConsoleSender);
+        senderArg = senderArg
+                || (sender instanceof BlockCommandSender && isBlockSender && (worlds.isEmpty() || worlds.contains(((BlockCommandSender) sender).getBlock()
+                        .getWorld().getName().toLowerCase())));
+        senderArg = senderArg || (sender instanceof RemoteConsoleCommandSender && isRemoteConsoleSender);
+
+        boolean mainArg = mainNames.contains(mainName.toLowerCase());
+        boolean subArg = ((subName.isEmpty() && subNames.isEmpty()) || (!subName.isEmpty() && subNames.contains(subName.toLowerCase())));
+        boolean minMax = (argSize >= min && (argSize <= max || max == -1));
+
+        boolean permission = true;
+        if (sender instanceof Player) {
+            for (String permissionStr : permissions) {
+                if (!hasPlayerRight((Player) sender, permissionStr)) {
+                    permission = false;
+                    break;
+                }
+            }
+            if (permission) {
+                for (String permissionNotStr : permissionsNot) {
+                    if (hasPlayerRight((Player) sender, permissionNotStr)) {
+                        permission = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return senderArg && mainArg && subArg && minMax && permission;
+    }
+
     private boolean checkCommand(CommandSender sender, String[] args) throws CommandException {
         if (isPlayerSender && sender instanceof Player) {
             return checkCommandForPlayer((Player) sender, args);
@@ -223,7 +273,7 @@ public class ChatCommand {
     }
 
     private boolean checkCommandForPlayer(Player sender, String[] args) {
-        if (neededPlugins.size() > 0) {
+        if (!neededPlugins.isEmpty()) {
             for (String neededPlugin : neededPlugins) {
                 if (WrapperManager.isPluginEnabled(neededPlugin)) {
                     chatService.one(sender, "player.neededPluginMissing");
@@ -240,9 +290,18 @@ public class ChatCommand {
             }
         }
 
-        if (permissions.size() > 0) {
+        if (!permissions.isEmpty()) {
             for (String permission : permissions) {
                 if (!hasPlayerRight(sender, permission)) {
+                    chatService.one(sender, "all.noPermission");
+                    return false;
+                }
+            }
+        }
+
+        if (!permissionsNot.isEmpty()) {
+            for (String permissionNot : permissionsNot) {
+                if (hasPlayerRight(sender, permissionNot)) {
                     chatService.one(sender, "all.noPermission");
                     return false;
                 }
@@ -271,7 +330,7 @@ public class ChatCommand {
             return false;
         }
 
-        if (worlds.size() > 0) {
+        if (!worlds.isEmpty()) {
             String playerCurrentWorld = sender.getWorld().getName().toLowerCase();
 
             if (!worlds.contains(playerCurrentWorld)) {
@@ -291,7 +350,7 @@ public class ChatCommand {
     }
 
     private boolean checkCommandForOther(CommandSender sender, String[] args) {
-        if (neededPlugins.size() > 0) {
+        if (!neededPlugins.isEmpty()) {
             for (String neededPlugin : neededPlugins) {
                 if (WrapperManager.isPluginEnabled(neededPlugin)) {
                     chatService.one(sender, "other.neededPluginMissing");
@@ -331,7 +390,7 @@ public class ChatCommand {
         }
 
         if (sender instanceof BlockCommandSender) {
-            if (worlds.size() > 0) {
+            if (!worlds.isEmpty()) {
                 String blockCurrentWorld = ((BlockCommandSender) sender).getBlock().getWorld().getName().toLowerCase();
 
                 if (!worlds.contains(blockCurrentWorld)) {
@@ -484,9 +543,16 @@ public class ChatCommand {
                 if (isConsoleSender || isBlockSender || isRemoteConsoleSender) {
                     chatService.one(sender, "all.helpMessage", buildHelpMessage(main, false));
                 } else if (isPlayerSender) {
-                    if (permissions.size() > 0) {
+                    if (!permissions.isEmpty()) {
                         for (String permission : permissions) {
                             if (!hasPlayerRight((Player) sender, permission)) {
+                                throw new NoPermissionException();
+                            }
+                        }
+                    }
+                    if (!permissionsNot.isEmpty()) {
+                        for (String permissionNot : permissionsNot) {
+                            if (hasPlayerRight((Player) sender, permissionNot)) {
                                 throw new NoPermissionException();
                             }
                         }
@@ -601,6 +667,14 @@ public class ChatCommand {
         this.permissions = permissions;
     }
 
+    public ArrayList<String> getPermissionsNot() {
+        return permissionsNot;
+    }
+
+    public void setPermissionsNot(ArrayList<String> permissionsNot) {
+        this.permissionsNot = permissionsNot;
+    }
+
     public ArrayList<String> getNeededPlugins() {
         return neededPlugins;
     }
@@ -630,20 +704,23 @@ public class ChatCommand {
         }
 
         String perm = "";
-        if (permissions.size() > 0) {
+        if (!permissions.isEmpty()) {
             perm = " [permission: " + StringUtils.join(permissions, ", ") + "]";
+        }
+        if (!permissionsNot.isEmpty()) {
+            perm = " [permissionNot: " + StringUtils.join(permissionsNot, ", ") + "]";
         }
 
         String world = "";
-        if (worlds.size() > 0) {
+        if (!worlds.isEmpty()) {
             world = " [world: " + StringUtils.join(worlds, ", ") + "]";
         }
 
         String plugin = "";
-        if (neededPlugins.size() > 0) {
+        if (!neededPlugins.isEmpty()) {
             plugin = " [plugin dependency: " + StringUtils.join(neededPlugins, ", ") + "]";
         }
 
-        return "/" + mainNames.get(0) + (subNames.size() > 0 ? " " + subNames.get(0) : "") + " " + type + perm + world + plugin;
+        return "/" + mainNames.get(0) + (!subNames.isEmpty() ? " " + subNames.get(0) : "") + " " + type + perm + world + plugin;
     }
 }

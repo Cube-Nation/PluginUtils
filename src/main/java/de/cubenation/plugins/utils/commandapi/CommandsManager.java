@@ -340,6 +340,27 @@ public class CommandsManager {
             }
         }
 
+        // search exact one command without permission with sub command
+        if (foundCommand == null) {
+            for (ChatCommand command : commands) {
+                if (command.isCommandWithoutPermission(sender, mainCommand, subCommand, argsQueue.size())) {
+                    foundCommand = command;
+                    break;
+                }
+            }
+        }
+
+        // search exact one command without permission and without sub command
+        if (foundCommand == null) {
+            for (ChatCommand command : commands) {
+                if (command.isCommandWithoutPermission(sender, mainCommand, "", originalArgsQueue.size())) {
+                    foundCommand = command;
+                    withSub = false;
+                    break;
+                }
+            }
+        }
+
         // search command without worlds with sub command
         if (foundCommand == null) {
             for (ChatCommand command : commands) {

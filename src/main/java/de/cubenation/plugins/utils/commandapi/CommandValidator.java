@@ -1,6 +1,7 @@
 package de.cubenation.plugins.utils.commandapi;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -140,7 +141,7 @@ public class CommandValidator {
 
         // check sub
         boolean equalSubFound = false;
-        if (newChatCommand.getSubAliases().size() > 0 || existingChatCommand.getSubAliases().size() > 0) {
+        if (!newChatCommand.getSubAliases().isEmpty() || !existingChatCommand.getSubAliases().isEmpty()) {
             for (String sub : newChatCommand.getSubAliases()) {
                 if (existingChatCommand.getSubAliases().contains(sub)) {
                     equalSubFound = true;
@@ -157,7 +158,7 @@ public class CommandValidator {
 
         // check world
         boolean equalWorldFound = false;
-        if (existingChatCommand.getWorlds().size() > 0 && newChatCommand.getWorlds().size() > 0) {
+        if (!existingChatCommand.getWorlds().isEmpty() && !newChatCommand.getWorlds().isEmpty()) {
             for (String world : newChatCommand.getWorlds()) {
                 if (existingChatCommand.getWorlds().contains(world)) {
                     equalWorldFound = true;
@@ -177,6 +178,18 @@ public class CommandValidator {
             return;
         }
         if (newChatCommand.getMinAttribute() > existingChatCommand.getMaxAttribute() && existingChatCommand.getMaxAttribute() >= 0) {
+            return;
+        }
+
+        // check permisson
+        ArrayList<String> newPermissions = newChatCommand.getPermissions();
+        ArrayList<String> newPermissionsNot = newChatCommand.getPermissionsNot();
+        ArrayList<String> existsPermissions = existingChatCommand.getPermissions();
+        ArrayList<String> existsPermissionsNot = existingChatCommand.getPermissionsNot();
+        if ((!newPermissions.isEmpty() && !existsPermissionsNot.isEmpty() && existsPermissionsNot.containsAll(newPermissions) && newPermissions
+                .containsAll(existsPermissionsNot))
+                || (!newPermissionsNot.isEmpty() && !existsPermissions.isEmpty() && existsPermissions.containsAll(newPermissionsNot) && newPermissionsNot
+                        .containsAll(existsPermissions))) {
             return;
         }
 

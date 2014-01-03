@@ -10,6 +10,7 @@ softdepend:
   - dynmap
   - LogBlock
   - LWC
+  - Herochat
   - Multiverse-Core
   - PermissionsEx
   - Shopkeepers

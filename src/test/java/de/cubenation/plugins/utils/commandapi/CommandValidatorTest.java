@@ -7,6 +7,16 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandDuplicateMain1;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandDuplicateMain2;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandPermission;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandPermissionBoth;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandPermissionBothWithout;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandPermissionBothWithoutMulti;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandPermissionMulti;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandPermissionMultiPart;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandPermissionNotWithout;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandPermissionNotWithoutMulti;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandPermissionWithout;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandPermissionWithoutMulti;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestInvalidCommandMinMax1;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestInvalidCommandMinMax2;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.minmax.TestInvalidCommandMinMaxOk;
@@ -91,6 +101,118 @@ public class CommandValidatorTest extends AbstractTest {
         } catch (CommandWarmUpException e) {
             Assert.assertEquals("[" + TestInvalidCommandMainSub2.class.getName() + "] similar command found for testThreeMainOneSubCommand in class "
                     + TestInvalidCommandMainSub1.class.getName() + " method testTwoMainOneSubCommand", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidatePermissionCommand() throws CommandWarmUpException {
+        try {
+            commandsManager.add(TestInvalidCommandPermission.class);
+            Assert.fail("expected exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandPermission.class.getName() + "] similar command found for testPermissionCommandNot in class "
+                    + TestInvalidCommandPermission.class.getName() + " method testPermissionCommand", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidatePermissionBothCommand() throws CommandWarmUpException {
+        try {
+            commandsManager.add(TestInvalidCommandPermissionBoth.class);
+            Assert.fail("expected exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandPermissionBoth.class.getName() + "] similar command found for testPermissionCommandNot in class "
+                    + TestInvalidCommandPermissionBoth.class.getName() + " method testPermissionCommand", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidatePermissionBothWithoutCommand() throws CommandWarmUpException {
+        try {
+            commandsManager.add(TestInvalidCommandPermissionBothWithout.class);
+            Assert.fail("expected exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandPermissionBothWithout.class.getName() + "] similar command found for testPermissionCommand in class "
+                    + TestInvalidCommandPermissionBothWithout.class.getName() + " method testWithoutPermissionCommand", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidatePermissionBothWithoutMultiCommand() throws CommandWarmUpException {
+        try {
+            commandsManager.add(TestInvalidCommandPermissionBothWithoutMulti.class);
+            Assert.fail("expected exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandPermissionBothWithoutMulti.class.getName()
+                    + "] similar command found for testPermissionCommand in class " + TestInvalidCommandPermissionBothWithoutMulti.class.getName()
+                    + " method testWithoutPermissionCommand", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidatePermissionMultiCommand() throws CommandWarmUpException {
+        try {
+            commandsManager.add(TestInvalidCommandPermissionMulti.class);
+            Assert.fail("expected exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandPermissionMulti.class.getName() + "] similar command found for testPermissionCommandNot in class "
+                    + TestInvalidCommandPermissionMulti.class.getName() + " method testPermissionCommand", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidatePermissionMultiPartCommand() throws CommandWarmUpException {
+        try {
+            commandsManager.add(TestInvalidCommandPermissionMultiPart.class);
+            Assert.fail("expected exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandPermissionMultiPart.class.getName() + "] similar command found for testPermissionCommandNot in class "
+                    + TestInvalidCommandPermissionMultiPart.class.getName() + " method testPermissionCommand", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidatePermissionNotWithoutCommand() throws CommandWarmUpException {
+        try {
+            commandsManager.add(TestInvalidCommandPermissionNotWithout.class);
+            Assert.fail("expected exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandPermissionNotWithout.class.getName() + "] similar command found for testPermissionCommand in class "
+                    + TestInvalidCommandPermissionNotWithout.class.getName() + " method testWithoutPermissionCommand", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidatePermissionNotWithoutMultiCommand() throws CommandWarmUpException {
+        try {
+            commandsManager.add(TestInvalidCommandPermissionNotWithoutMulti.class);
+            Assert.fail("expected exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandPermissionNotWithoutMulti.class.getName()
+                    + "] similar command found for testPermissionCommand in class " + TestInvalidCommandPermissionNotWithoutMulti.class.getName()
+                    + " method testWithoutPermissionCommand", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidatePermissionWithoutCommand() throws CommandWarmUpException {
+        try {
+            commandsManager.add(TestInvalidCommandPermissionWithout.class);
+            Assert.fail("expected exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandPermissionWithout.class.getName() + "] similar command found for testPermissionCommand in class "
+                    + TestInvalidCommandPermissionWithout.class.getName() + " method testWithoutPermissionCommand", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidatePermissionWithoutMultiCommand() throws CommandWarmUpException {
+        try {
+            commandsManager.add(TestInvalidCommandPermissionWithoutMulti.class);
+            Assert.fail("expected exception");
+        } catch (CommandWarmUpException e) {
+            Assert.assertEquals("[" + TestInvalidCommandPermissionWithoutMulti.class.getName() + "] similar command found for testPermissionCommand in class "
+                    + TestInvalidCommandPermissionWithoutMulti.class.getName() + " method testWithoutPermissionCommand", e.getMessage());
         }
     }
 }

@@ -10,7 +10,7 @@ public class PermissionService implements PermissionInterface {
         boolean has = false;
 
         if (WrapperManager.isPluginEnabled(WrapperManager.PLUGIN_NAME_PERMISSIONS_EX)) {
-            has = PermissionsExWrapper.hasPermission(player, rightName);
+            has = PermissionsExWrapper.getPermissionManager().has(player, rightName);
         } else {
             if (player == null) {
                 return false;

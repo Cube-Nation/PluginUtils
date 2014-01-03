@@ -132,8 +132,10 @@ public class CommandValidatorTest extends AbstractTest {
             commandsManager.add(TestInvalidCommandPermissionBothWithout.class);
             Assert.fail("expected exception");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandPermissionBothWithout.class.getName() + "] similar command found for testPermissionCommand in class "
-                    + TestInvalidCommandPermissionBothWithout.class.getName() + " method testWithoutPermissionCommand", e.getMessage());
+            Assert.assertTrue(e.getMessage().contains(TestInvalidCommandPermissionBothWithout.class.getName()));
+            Assert.assertTrue(e.getMessage().contains("testPermissionCommand"));
+            Assert.assertTrue(e.getMessage().contains("testWithoutPermissionCommand"));
+            Assert.assertTrue(e.getMessage().contains("similar command found for"));
         }
     }
 
@@ -143,9 +145,10 @@ public class CommandValidatorTest extends AbstractTest {
             commandsManager.add(TestInvalidCommandPermissionBothWithoutMulti.class);
             Assert.fail("expected exception");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandPermissionBothWithoutMulti.class.getName()
-                    + "] similar command found for testPermissionCommand in class " + TestInvalidCommandPermissionBothWithoutMulti.class.getName()
-                    + " method testWithoutPermissionCommand", e.getMessage());
+            Assert.assertTrue(e.getMessage().contains(TestInvalidCommandPermissionBothWithoutMulti.class.getName()));
+            Assert.assertTrue(e.getMessage().contains("testPermissionCommand"));
+            Assert.assertTrue(e.getMessage().contains("testWithoutPermissionCommand"));
+            Assert.assertTrue(e.getMessage().contains("similar command found for"));
         }
     }
 
@@ -177,8 +180,10 @@ public class CommandValidatorTest extends AbstractTest {
             commandsManager.add(TestInvalidCommandPermissionNotWithout.class);
             Assert.fail("expected exception");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandPermissionNotWithout.class.getName() + "] similar command found for testPermissionCommand in class "
-                    + TestInvalidCommandPermissionNotWithout.class.getName() + " method testWithoutPermissionCommand", e.getMessage());
+            Assert.assertTrue(e.getMessage().contains(TestInvalidCommandPermissionNotWithout.class.getName()));
+            Assert.assertTrue(e.getMessage().contains("testPermissionCommand"));
+            Assert.assertTrue(e.getMessage().contains("testWithoutPermissionCommand"));
+            Assert.assertTrue(e.getMessage().contains("similar command found for"));
         }
     }
 
@@ -188,9 +193,10 @@ public class CommandValidatorTest extends AbstractTest {
             commandsManager.add(TestInvalidCommandPermissionNotWithoutMulti.class);
             Assert.fail("expected exception");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandPermissionNotWithoutMulti.class.getName()
-                    + "] similar command found for testPermissionCommand in class " + TestInvalidCommandPermissionNotWithoutMulti.class.getName()
-                    + " method testWithoutPermissionCommand", e.getMessage());
+            Assert.assertTrue(e.getMessage().contains(TestInvalidCommandPermissionNotWithoutMulti.class.getName()));
+            Assert.assertTrue(e.getMessage().contains("testPermissionCommand"));
+            Assert.assertTrue(e.getMessage().contains("testWithoutPermissionCommand"));
+            Assert.assertTrue(e.getMessage().contains("similar command found for"));
         }
     }
 
@@ -200,8 +206,10 @@ public class CommandValidatorTest extends AbstractTest {
             commandsManager.add(TestInvalidCommandPermissionWithout.class);
             Assert.fail("expected exception");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandPermissionWithout.class.getName() + "] similar command found for testPermissionCommand in class "
-                    + TestInvalidCommandPermissionWithout.class.getName() + " method testWithoutPermissionCommand", e.getMessage());
+            Assert.assertTrue(e.getMessage().contains(TestInvalidCommandPermissionWithout.class.getName()));
+            Assert.assertTrue(e.getMessage().contains("testPermissionCommand"));
+            Assert.assertTrue(e.getMessage().contains("testWithoutPermissionCommand"));
+            Assert.assertTrue(e.getMessage().contains("similar command found for"));
         }
     }
 
@@ -211,8 +219,10 @@ public class CommandValidatorTest extends AbstractTest {
             commandsManager.add(TestInvalidCommandPermissionWithoutMulti.class);
             Assert.fail("expected exception");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals("[" + TestInvalidCommandPermissionWithoutMulti.class.getName() + "] similar command found for testPermissionCommand in class "
-                    + TestInvalidCommandPermissionWithoutMulti.class.getName() + " method testWithoutPermissionCommand", e.getMessage());
+            Assert.assertTrue(e.getMessage().contains(TestInvalidCommandPermissionWithoutMulti.class.getName()));
+            Assert.assertTrue(e.getMessage().contains("testPermissionCommand"));
+            Assert.assertTrue(e.getMessage().contains("testWithoutPermissionCommand"));
+            Assert.assertTrue(e.getMessage().contains("similar command found for"));
         }
     }
 }

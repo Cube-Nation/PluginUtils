@@ -70,20 +70,22 @@ public class ChatService {
             resource = ResourceBundle.getBundle(resourceName, locale, plugin.getClass().getClassLoader(), new UTF8Control());
         } catch (MissingResourceException e) {
             if (plugin.getLogger() != null) {
-                plugin.getLogger().log(
-                        Level.WARNING,
-                        "could not load one of the i18n resource files: "
-                                + resourceName
-                                + ".properties, "
-                                + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? resourceName + "_" + locale.getCountry() + ".properties, "
-                                        : "")
-                                + resourceName
-                                + "_"
-                                + locale.getLanguage()
-                                + ".properties, "
-                                + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? resourceName + "_" + locale.getLanguage() + "_"
-                                        + locale.getCountry() + ".properties" : ""), e);
-                plugin.getLogger().warning("i18n disabled");
+                if (plugin.getLogger().getLevel().equals(Level.FINE)) {
+                    plugin.getLogger().log(
+                            Level.WARNING,
+                            "could not load one of the i18n resource files: "
+                                    + resourceName
+                                    + ".properties, "
+                                    + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? resourceName + "_" + locale.getCountry()
+                                            + ".properties, " : "")
+                                    + resourceName
+                                    + "_"
+                                    + locale.getLanguage()
+                                    + ".properties, "
+                                    + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? resourceName + "_" + locale.getLanguage() + "_"
+                                            + locale.getCountry() + ".properties" : ""), e);
+                    plugin.getLogger().warning("i18n disabled");
+                }
             }
         }
     }

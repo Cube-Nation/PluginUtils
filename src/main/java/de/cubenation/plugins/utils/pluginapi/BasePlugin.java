@@ -43,6 +43,8 @@ public abstract class BasePlugin extends JavaPlugin {
 
     @Override
     public final void onEnable() {
+        ScheduleManager.addPlugin(this);
+
         preEnableActions();
 
         errorHandler = createCustomErrorHandler();
@@ -111,6 +113,8 @@ public abstract class BasePlugin extends JavaPlugin {
         getServer().getScheduler().cancelTasks(this);
 
         saveConfig();
+
+        ScheduleManager.removePlugin(this);
 
         getLogger().info("unloaded");
     }

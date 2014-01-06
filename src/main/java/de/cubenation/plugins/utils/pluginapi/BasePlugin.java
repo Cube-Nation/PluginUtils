@@ -96,8 +96,6 @@ public abstract class BasePlugin extends JavaPlugin {
 
         getLogger().info("version " + getDescription().getVersion() + " enabled");
 
-        startCustomServices();
-
         startScheduleTasks();
 
         postEnableActions();

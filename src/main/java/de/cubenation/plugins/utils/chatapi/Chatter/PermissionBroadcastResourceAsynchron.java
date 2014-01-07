@@ -4,12 +4,12 @@ import java.util.ResourceBundle;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import de.cubenation.plugins.utils.permissionapi.PermissionInterface;
 
 public class PermissionBroadcastResourceAsynchron {
-    public static void chat(JavaPlugin plugin, ResourceBundle resource, PermissionInterface permissionInterface, String resourceString, String[] permissions,
+    public static void chat(Plugin plugin, ResourceBundle resource, PermissionInterface permissionInterface, String resourceString, String[] permissions,
             Object... parameter) {
         for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
             PermissionChatResourceAsynchron.chat(plugin, resource, permissionInterface, onlinePlayer, resourceString, permissions, parameter);

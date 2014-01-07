@@ -4,12 +4,12 @@ import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import de.cubenation.plugins.utils.chatapi.ColorParser;
 
 public class ChatResourceSynchron {
-    public static void chat(JavaPlugin plugin, ResourceBundle resource, CommandSender sender, String resourceString, Object... parameter) {
+    public static void chat(Plugin plugin, ResourceBundle resource, CommandSender sender, String resourceString, Object... parameter) {
         if (sender == null) {
             plugin.getLogger().warning("sender is null");
             return;

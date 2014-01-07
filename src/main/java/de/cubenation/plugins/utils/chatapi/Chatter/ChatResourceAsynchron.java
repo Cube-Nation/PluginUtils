@@ -7,12 +7,12 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import de.cubenation.plugins.utils.chatapi.ColorParser;
 
 public class ChatResourceAsynchron {
-    public static void chat(final JavaPlugin plugin, final ResourceBundle resource, final CommandSender sender, final String resourceString,
+    public static void chat(final Plugin plugin, final ResourceBundle resource, final CommandSender sender, final String resourceString,
             final Object... parameter) {
         if (sender == null) {
             plugin.getLogger().warning("sender is null");

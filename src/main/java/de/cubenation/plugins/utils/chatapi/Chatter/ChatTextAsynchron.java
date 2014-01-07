@@ -2,10 +2,10 @@ package de.cubenation.plugins.utils.chatapi.Chatter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 public class ChatTextAsynchron {
-    public static void chat(final JavaPlugin plugin, final CommandSender sender, final String message) {
+    public static void chat(final Plugin plugin, final CommandSender sender, final String message) {
         if (sender == null) {
             plugin.getLogger().warning("sender is null");
             return;

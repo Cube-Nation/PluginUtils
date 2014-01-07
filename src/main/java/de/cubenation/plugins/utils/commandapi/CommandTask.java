@@ -5,15 +5,15 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 public class CommandTask {
     private Thread bukkitQueueThread;
-    private JavaPlugin plugin;
+    private Plugin plugin;
     private Lock lock = new ReentrantLock();
     private Condition waiter = lock.newCondition();
 
-    public CommandTask(JavaPlugin plugin) {
+    public CommandTask(Plugin plugin) {
         this.plugin = plugin;
     }
 

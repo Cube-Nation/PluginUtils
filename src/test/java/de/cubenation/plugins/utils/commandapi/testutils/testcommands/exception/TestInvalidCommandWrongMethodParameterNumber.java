@@ -1,13 +1,13 @@
 package de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.PluginBase;
 import org.junit.Assert;
 
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 
 public class TestInvalidCommandWrongMethodParameterNumber {
-    public TestInvalidCommandWrongMethodParameterNumber(JavaPlugin plugin) {
+    public TestInvalidCommandWrongMethodParameterNumber(PluginBase plugin) {
     }
 
     @Command(main = "test")

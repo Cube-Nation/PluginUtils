@@ -1,12 +1,12 @@
 package de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception;
 
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginBase;
 
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
-import de.cubenation.plugins.utils.commandapi.testutils.TestPlugin;
 
 public class TestInvalidCommandMethodExceptionString {
-    public TestInvalidCommandMethodExceptionString(TestPlugin plugin) throws Exception {
+    public TestInvalidCommandMethodExceptionString(PluginBase plugin) throws Exception {
     }
 
     @Command(main = "test", min = 1, max = 1)

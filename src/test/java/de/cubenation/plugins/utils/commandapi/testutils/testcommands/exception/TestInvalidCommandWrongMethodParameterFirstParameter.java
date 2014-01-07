@@ -1,12 +1,12 @@
 package de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.PluginBase;
 import org.junit.Assert;
 
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 
 public class TestInvalidCommandWrongMethodParameterFirstParameter {
-    public TestInvalidCommandWrongMethodParameterFirstParameter(JavaPlugin plugin) {
+    public TestInvalidCommandWrongMethodParameterFirstParameter(PluginBase plugin) {
     }
 
     @Command(main = "test")

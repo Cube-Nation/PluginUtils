@@ -1,5 +1,6 @@
 package de.cubenation.plugins.utils.commandapi;
 
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -103,7 +104,7 @@ public class TaskManager {
      *             Is thown when parameter plugin is null.
      * @since 0.1.4
      */
-    public static void createTask(JavaPlugin plugin) throws TaskManagerException {
+    public static void createTask(Plugin plugin) throws TaskManagerException {
         if (plugin == null) {
             throw new TaskManagerException("Plugin could not be null");
         }

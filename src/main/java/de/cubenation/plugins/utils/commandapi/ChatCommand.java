@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import de.cubenation.plugins.utils.chatapi.ChatService;
 import de.cubenation.plugins.utils.commandapi.annotation.Asynchron;
@@ -51,7 +51,7 @@ public class ChatCommand {
     private String usage = "";
     private String help = "";
     private boolean runAsynchron = false;
-    private JavaPlugin plugin = null;
+    private Plugin plugin = null;
 
     // reflection objects
     private Object instance = null;
@@ -647,11 +647,11 @@ public class ChatCommand {
         }
     }
 
-    public void setPlugin(JavaPlugin plugin) {
+    public void setPlugin(Plugin plugin) {
         this.plugin = plugin;
     }
 
-    public JavaPlugin getPlugin() {
+    public Plugin getPlugin() {
         return plugin;
     }
 

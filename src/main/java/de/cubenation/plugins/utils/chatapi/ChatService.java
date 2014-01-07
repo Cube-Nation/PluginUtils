@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import de.cubenation.plugins.utils.chatapi.Chatter.BroadcastResourceAsynchron;
 import de.cubenation.plugins.utils.chatapi.Chatter.BroadcastResourceSynchron;
@@ -25,25 +25,25 @@ import de.cubenation.plugins.utils.permissionapi.PermissionInterface;
 public class ChatService {
     private static final Locale defaultLocale = Locale.GERMANY;
 
-    private JavaPlugin plugin;
+    private Plugin plugin;
     private ResourceBundle resource = null;
     private PermissionInterface permissionInterface;
 
-    public ChatService(JavaPlugin plugin) {
+    public ChatService(Plugin plugin) {
         this(plugin, null);
     }
 
-    public ChatService(JavaPlugin plugin, PermissionInterface permissionInterface) {
+    public ChatService(Plugin plugin, PermissionInterface permissionInterface) {
         this(plugin, permissionInterface, null);
     }
 
-    public ChatService(JavaPlugin plugin, PermissionInterface permissionInterface, String resourceName) {
+    public ChatService(Plugin plugin, PermissionInterface permissionInterface, String resourceName) {
         this(plugin, permissionInterface, resourceName, null);
     }
 
-    public ChatService(JavaPlugin plugin, PermissionInterface permissionInterface, String resourceName, Locale locale) {
+    public ChatService(Plugin plugin, PermissionInterface permissionInterface, String resourceName, Locale locale) {
         if (plugin == null) {
-            throw new NullPointerException("JavaPlugin could not be null");
+            throw new NullPointerException("Plugin could not be null");
         }
 
         this.plugin = plugin;

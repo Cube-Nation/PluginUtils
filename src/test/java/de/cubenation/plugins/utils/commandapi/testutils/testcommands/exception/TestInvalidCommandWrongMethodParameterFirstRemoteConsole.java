@@ -1,14 +1,14 @@
 package de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.PluginBase;
 import org.junit.Assert;
 
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.annotation.SenderRemoteConsole;
 
 public class TestInvalidCommandWrongMethodParameterFirstRemoteConsole {
-    public TestInvalidCommandWrongMethodParameterFirstRemoteConsole(JavaPlugin plugin) {
+    public TestInvalidCommandWrongMethodParameterFirstRemoteConsole(PluginBase plugin) {
     }
 
     @Command(main = "test")

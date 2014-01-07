@@ -1,23 +1,30 @@
 package de.cubenation.plugins.utils.commandapi;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
+import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
+import de.cubenation.plugins.utils.ArrayConvert;
 import de.cubenation.plugins.utils.chatapi.ChatService;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
@@ -28,28 +35,41 @@ import de.cubenation.plugins.utils.permissionapi.PermissionInterface;
 
 public class CommandsManager {
     private static ChatService chatService;
-    private Object[] constructorParameter = new Object[] {};
+    private Object[] initialConstructorParameter = new Object[] {};
     private ArrayList<ChatCommand> commands = new ArrayList<ChatCommand>();
     private PermissionInterface permissionInterface = null;
     private ErrorHandler errorHandler = null;
     private CommandValidator commandValidator = new CommandValidator();
-    private JavaPlugin plugin;
+    private Plugin plugin;
+
+    private ArrayConvert<Class<?>> classConverter = new ArrayConvert<Class<?>>() {
+        @Override
+        protected String convertToString(Class<?> obj) {
+            return obj.getSimpleName();
+        }
+    };
+    private ArrayConvert<Object> objectConverter = new ArrayConvert<Object>() {
+        @Override
+        protected String convertToString(Object obj) {
+            return obj.getClass().getSimpleName();
+        }
+    };
 
     public CommandsManager(Object... constructorParameter) throws CommandManagerException {
-        this.constructorParameter = constructorParameter;
+        this.initialConstructorParameter = constructorParameter;
 
         for (Object parameter : constructorParameter) {
             if (parameter == null) {
                 throw new CommandManagerException("manager constructor parameter could not be null");
             }
-            if (parameter instanceof JavaPlugin) {
-                plugin = (JavaPlugin) parameter;
+            if (parameter instanceof Plugin) {
+                plugin = (Plugin) parameter;
             }
         }
     }
 
     public void add(Class<?> commandClass) throws CommandWarmUpException {
-        add(commandClass, constructorParameter);
+        add(commandClass, initialConstructorParameter);
     }
 
     public void add(Class<?> commandClass, Object... constructorParameter) throws CommandWarmUpException {
@@ -66,64 +86,19 @@ public class CommandsManager {
         try {
             // create object instance
             Object instance = null;
-            JavaPlugin localPlugin = plugin;
-            List<Class<?>> classList = new ArrayList<Class<?>>();
+            Plugin localPlugin = plugin;
             try {
-                List<Object> objectList = Arrays.asList(constructorParameter);
-
-                for (Object object : objectList) {
-                    Class<? extends Object> classObj = object.getClass();
-
-                    if (object instanceof JavaPlugin) {
-                        localPlugin = (JavaPlugin) object;
+                for (Object object : constructorParameter) {
+                    if (object instanceof Plugin) {
+                        localPlugin = (Plugin) object;
                     }
-
-                    // check inline classes, to get super class
-                    Class<?> topLevel = classObj.getEnclosingClass();
-                    if (topLevel != null) {
-                        classObj = classObj.getSuperclass();
-                    }
-
-                    classList.add(classObj);
                 }
 
-                Constructor<?> ctor = commandClass.getConstructor(classList.toArray(new Class<?>[] {}));
-                instance = ctor.newInstance(constructorParameter);
+                instance = tryExactConstructor(commandClass, constructorParameter);
             } catch (NoSuchMethodException e) {
-                try {
-                    instance = commandClass.newInstance();
-                } catch (InstantiationException e1) {
-
-                    Constructor<?>[] constructors = commandClass.getConstructors();
-                    String[] availableConstructors = new String[constructors.length];
-
-                    int i = 0;
-                    for (Constructor<?> constructor : constructors) {
-                        Class<?>[] parameterTypes = constructor.getParameterTypes();
-
-                        String[] availableTypes = new String[parameterTypes.length];
-                        int j = 0;
-                        for (Class<?> parameterType : parameterTypes) {
-                            availableTypes[j] = parameterType.getSimpleName();
-                            j++;
-                        }
-
-                        availableConstructors[i] = "Constructor" + (i + 1) + "(" + StringUtils.join(availableTypes, ", ") + ")";
-
-                        i++;
-                    }
-                    String[] definedConstructorTypes = new String[classList.size()];
-
-                    int k = 0;
-                    for (Class<?> clazz : classList) {
-                        definedConstructorTypes[k] = clazz.getSimpleName();
-                        k++;
-                    }
-
-                    throw new CommandWarmUpException(commandClass,
-                            "no matching constructor found, matches are empty constructors and constructors is specified in add() or CommandsManager(), found: "
-                                    + StringUtils.join(availableConstructors, ", ") + ", defined: " + StringUtils.join(definedConstructorTypes, ", "));
-                }
+                instance = tryEmptyConstructor(commandClass, constructorParameter);
+            } catch (IllegalArgumentException e) {
+                instance = tryEmptyConstructor(commandClass, constructorParameter);
             }
 
             // load object methods for commands
@@ -151,17 +126,135 @@ public class CommandsManager {
                     }
                     commandValidator.checkAsynchronSupport(newChatCommand);
                     commands.add(newChatCommand);
-                    if (plugin != null && plugin.getLogger() != null) {
-                        plugin.getLogger().info("add command: " + newChatCommand);
-                    } else {
-                        Bukkit.getLogger().info("add command: " + newChatCommand);
+
+                    Server server = Bukkit.getServer();
+
+                    boolean auto = false;
+                    Method method = null;
+                    try {
+                        method = server.getClass().getDeclaredMethod("getCommandMap");
+                    } catch (NoSuchMethodException e) {
                     }
+
+                    if (method != null) {
+                        Object invoke = method.invoke(server);
+                        if (invoke != null) {
+                            if (invoke instanceof SimpleCommandMap) {
+                                SimpleCommandMap commandMap = (SimpleCommandMap) invoke;
+
+                                org.bukkit.command.Command command = commandMap.getCommand(newChatCommand.getMainAliases().get(0));
+                                if (command == null) {
+                                    commandMap.register(plugin.getDescription().getName(), new BukkitCommand(newChatCommand));
+                                    auto = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if (auto) {
+                        getLogger().info("register command: /" + newChatCommand.getMainAliases().get(0));
+                    }
+                    getLogger().info("add command: " + newChatCommand);
                 }
             }
         } catch (CommandWarmUpException e) {
             throw e;
         } catch (Exception e) {
             throw new CommandWarmUpException(commandClass, "error on command warmup", e);
+        }
+    }
+
+    private Object tryExactConstructor(Class<?> commandClass, Object[] constructorParameter) throws IllegalAccessException, CommandWarmUpException,
+            IllegalArgumentException, InstantiationException, InvocationTargetException, SecurityException, NoSuchMethodException {
+        List<Object> objectList = Arrays.asList(constructorParameter);
+        List<Class<?>> classList = new ArrayList<Class<?>>();
+        Constructor<?>[] availableConstructors = commandClass.getConstructors();
+        Constructor<?> choosedConstructors = null;
+
+        int i = 0;
+        constructor: for (Constructor<?> constructor : availableConstructors) {
+            Class<?>[] parameterTypes = constructor.getParameterTypes();
+
+            parameter: for (Class<?> parameterType : parameterTypes) {
+                if (i >= objectList.size()) {
+                    i = 0;
+                    classList.clear();
+                    continue constructor;
+                }
+
+                Class<?> objClass = objectList.get(i).getClass();
+                if (objClass.equals(parameterType)) {
+                    classList.add(objClass);
+                    i++;
+                    continue parameter;
+                } else {
+                    Class<?> searchClass = objClass;
+                    boolean found;
+                    do {
+                        found = false;
+                        if (searchClass.getSuperclass() != null) {
+                            if (searchClass.getSuperclass().equals(parameterType)) {
+                                classList.add(objClass);
+                                i++;
+                                continue parameter;
+                            } else {
+                                searchClass = searchClass.getSuperclass();
+                                found = true;
+                            }
+                        } else if (searchClass.getSuperclass() != null && !searchClass.getSuperclass().getSimpleName().equals("Object")) {
+                            if (searchClass.getSuperclass().equals(parameterType)) {
+                                classList.add(searchClass.getSuperclass());
+                                i++;
+                                continue parameter;
+                            } else {
+                                searchClass = searchClass.getSuperclass();
+                                found = true;
+                            }
+                        }
+                    } while (found);
+                }
+            }
+            choosedConstructors = constructor;
+        }
+
+        if (choosedConstructors == null) {
+            choosedConstructors = commandClass.getConstructor(classList.toArray(new Class<?>[] {}));
+        }
+
+        if (Level.FINE.equals(getLogger().getLevel())) {
+            getLogger().info(
+                    "creating instance via constructor: " + commandClass.getSimpleName() + "(" + StringUtils.join(classConverter.toCollection(classList), ", ")
+                            + ")");
+        }
+
+        return choosedConstructors.newInstance(constructorParameter);
+    }
+
+    private Object tryEmptyConstructor(final Class<?> commandClass, Object[] constructorParameter) throws IllegalAccessException, CommandWarmUpException {
+        try {
+            if (Level.FINE.equals(getLogger().getLevel())) {
+                getLogger().info("creating instance via emtpy constructor");
+            }
+
+            return commandClass.newInstance();
+        } catch (InstantiationException e1) {
+            ArrayConvert<Constructor<?>> constructorConverter = new ArrayConvert<Constructor<?>>() {
+                @Override
+                protected String convertToString(Constructor<?> obj) {
+
+                    return commandClass.getSimpleName() + "(" + StringUtils.join(classConverter.toCollection(obj.getParameterTypes()), ", ") + ")";
+                }
+            };
+            Collection<String> foundConstructor = constructorConverter.toCollection(commandClass.getConstructors());
+
+            Collection<String> definedConstructorTypes = objectConverter.toCollection(constructorParameter);
+            if (definedConstructorTypes.isEmpty()) {
+                definedConstructorTypes.add("void");
+            }
+
+            throw new CommandWarmUpException(commandClass,
+                    "no matching constructor found, matches are empty constructors and constructors is specified in add() or CommandsManager(), found: "
+                            + StringUtils.join(foundConstructor, ", ") + ", defined: " + StringUtils.join(definedConstructorTypes, ", "));
         }
     }
 
@@ -443,7 +536,7 @@ public class CommandsManager {
         }
     }
 
-    public void setPlugin(JavaPlugin plugin) {
+    public void setPlugin(Plugin plugin) {
         this.plugin = plugin;
 
         for (ChatCommand command : commands) {
@@ -453,5 +546,17 @@ public class CommandsManager {
 
     public static void setOwnChatService(ChatService chatService) {
         CommandsManager.chatService = chatService;
+    }
+
+    private Logger getLogger() {
+        if (plugin != null && plugin.getLogger() != null) {
+            return plugin.getLogger();
+        }
+
+        if (Bukkit.getLogger() != null) {
+            return Bukkit.getLogger();
+        }
+
+        return Logger.getLogger(CommandsManager.class.getSimpleName());
     }
 }

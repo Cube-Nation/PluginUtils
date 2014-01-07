@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,6 +14,7 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandManagerException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
+import de.cubenation.plugins.utils.commandapi.testutils.EmptyTestPlugin;
 import de.cubenation.plugins.utils.commandapi.testutils.TestCustomCommandSender;
 import de.cubenation.plugins.utils.commandapi.testutils.TestPlugin;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.annotation.TestCommandErrorHandler;
@@ -45,7 +45,10 @@ import de.cubenation.plugins.utils.commandapi.testutils.testcommands.parameter.T
 public class CommandExceptionTest extends AbstractTest {
     @Test
     public void testCommandNull() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
+        CommandsManager commandsManager = new CommandsManager(new TestPlugin() {
+            @Override
+            public void doSomeThing(String string) {
+            }
         });
 
         try {
@@ -58,8 +61,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandMainNull() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandEmptyMain.class);
@@ -71,8 +73,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandMainSpaces() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongMainSpaces.class);
@@ -84,8 +85,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandSubSpaces() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongSubSpaces.class);
@@ -97,25 +97,21 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandWrongConstructor() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongConstructor.class);
             Assert.fail("expected wrong constructor");
         } catch (CommandWarmUpException e) {
-            Assert.assertEquals(
-                    "["
-                            + TestInvalidCommandWrongConstructor.class.getName()
-                            + "] no matching constructor found, matches are empty constructors and constructors is specified in add() or CommandsManager(), found: Constructor1(Integer), defined: JavaPlugin",
-                    e.getMessage());
+            Assert.assertEquals("[" + TestInvalidCommandWrongConstructor.class.getName()
+                    + "] no matching constructor found, matches are empty constructors and constructors is specified in add() or CommandsManager(), found: "
+                    + TestInvalidCommandWrongConstructor.class.getSimpleName() + "(Integer), defined: EmptyTestPlugin", e.getMessage());
         }
     }
 
     @Test
     public void testCommandWrongNumberOfMethodParameter() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongMethodParameterNumber.class);
@@ -128,8 +124,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandWrongFirstParameterMethodParameter() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongMethodParameterFirstParameter.class);
@@ -144,8 +139,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandWrongSecondMethodParameter() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongMethodParameterSecond.class);
@@ -158,8 +152,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandOtherException() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandOtherException.class);
@@ -171,8 +164,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandWrongMinMax() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongMinMax.class);
@@ -184,8 +176,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandWrongMin() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongMin.class);
@@ -197,8 +188,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandMultiAnnotation() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandMultiAnnotation.class);
@@ -211,8 +201,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandWrongFirstConsoleMethodParameter() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongMethodParameterFirstConsole.class);
@@ -225,8 +214,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandWrongFirstBlockMethodParameter() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongMethodParameterFirstBlock.class);
@@ -239,8 +227,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandWrongFirstRemoveConsoleMethodParameter() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongMethodParameterFirstRemoteConsole.class);
@@ -254,8 +241,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandWrongFirstPlayerMethodParameter() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongMethodParameterFirstPlayer.class);
@@ -278,8 +264,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandNullParameter() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestValidCommandMain.class, (Object) null);
@@ -364,8 +349,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandWrongSecondStringMethodParameter() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongMethodParameterSecondString.class);
@@ -378,8 +362,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandWrongMissingSecondMethodParameter() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongMethodParameterWithoutSecond.class);
@@ -392,8 +375,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testCommandWrongMissingAllMethodParameter() throws CommandManagerException {
-        CommandsManager commandsManager = new CommandsManager(new JavaPlugin() {
-        });
+        CommandsManager commandsManager = new CommandsManager(new EmptyTestPlugin());
 
         try {
             commandsManager.add(TestInvalidCommandWrongMethodParameterWithoutFirst.class);
@@ -440,11 +422,7 @@ public class CommandExceptionTest extends AbstractTest {
 
     @Test
     public void testPluginCommand() throws CommandManagerException, CommandWarmUpException {
-        TestPlugin plugin = new TestPlugin() {
-            @Override
-            public void doSomeThing(String string) {
-            }
-        };
+        EmptyTestPlugin plugin = new EmptyTestPlugin();
 
         CommandsManager commandsManager = new CommandsManager();
         try {

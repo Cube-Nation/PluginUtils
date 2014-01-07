@@ -3,12 +3,12 @@ package de.cubenation.plugins.utils.chatapi.Chatter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import de.cubenation.plugins.utils.permissionapi.PermissionInterface;
 
 public class PermissionChatTextAsynchron {
-    public static void chat(JavaPlugin plugin, final PermissionInterface permissionInterface, final CommandSender sender, final String message,
+    public static void chat(Plugin plugin, final PermissionInterface permissionInterface, final CommandSender sender, final String message,
             final String[] permissions) {
         Bukkit.getScheduler().runTask(plugin, new Thread("ChatService->PermissionChatTextAsynchron") {
             @Override

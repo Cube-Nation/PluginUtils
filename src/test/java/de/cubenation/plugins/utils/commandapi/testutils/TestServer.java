@@ -21,6 +21,7 @@ import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.help.HelpMap;
@@ -606,6 +607,10 @@ public class TestServer implements Server {
 
     @Override
     public CachedServerIcon loadServerIcon(BufferedImage arg0) throws IllegalArgumentException, Exception {
+        return null;
+    }
+
+    public SimpleCommandMap getCommandMap() {
         return null;
     }
 }

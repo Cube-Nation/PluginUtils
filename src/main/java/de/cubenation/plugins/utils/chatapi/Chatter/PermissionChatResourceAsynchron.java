@@ -1,16 +1,15 @@
 package de.cubenation.plugins.utils.chatapi.Chatter;
 
-import java.util.ResourceBundle;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import de.cubenation.plugins.utils.chatapi.ResourceConverter;
 import de.cubenation.plugins.utils.permissionapi.PermissionInterface;
 
 public class PermissionChatResourceAsynchron {
-    public static void chat(final Plugin plugin, final ResourceBundle resource, final PermissionInterface permissionInterface, final CommandSender sender,
+    public static void chat(final Plugin plugin, final ResourceConverter converter, final PermissionInterface permissionInterface, final CommandSender sender,
             final String resourceString, final String[] permissions, final Object... parameter) {
         Bukkit.getScheduler().runTask(plugin, new Thread("ChatService->PermissionChatTextAsynchron") {
             @Override
@@ -26,7 +25,7 @@ public class PermissionChatResourceAsynchron {
                         }
 
                         if (found) {
-                            ChatResourceSynchron.chat(plugin, resource, sender, resourceString, parameter);
+                            ChatResourceSynchron.chat(plugin, converter, sender, resourceString, parameter);
                         }
                     } else {
                         boolean found = true;
@@ -38,11 +37,11 @@ public class PermissionChatResourceAsynchron {
                         }
 
                         if (found) {
-                            ChatResourceSynchron.chat(plugin, resource, sender, resourceString, parameter);
+                            ChatResourceSynchron.chat(plugin, converter, sender, resourceString, parameter);
                         }
                     }
                 } else {
-                    ChatResourceSynchron.chat(plugin, resource, sender, resourceString, parameter);
+                    ChatResourceSynchron.chat(plugin, converter, sender, resourceString, parameter);
                 }
             }
         });

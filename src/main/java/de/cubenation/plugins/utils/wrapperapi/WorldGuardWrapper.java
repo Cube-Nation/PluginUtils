@@ -334,15 +334,17 @@ public class WorldGuardWrapper {
     public static class StringFlag extends Flag {
     }
 
-    @SuppressWarnings("serial")
     public static class UnsupportedIntersectionException extends Exception {
+        private static final long serialVersionUID = 6423189392345575148L;
+
         public UnsupportedIntersectionException(com.sk89q.worldguard.protection.UnsupportedIntersectionException e) {
             super(e);
         }
     }
 
-    @SuppressWarnings("serial")
     public static class ProtectionDatabaseException extends Exception {
+        private static final long serialVersionUID = 1L;
+
         public ProtectionDatabaseException(com.sk89q.worldguard.protection.databases.ProtectionDatabaseException e) {
             super(e);
         }

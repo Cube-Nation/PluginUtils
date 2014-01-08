@@ -1,8 +1,13 @@
 package de.cubenation.plugins.utils;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+
+import de.cubenation.plugins.utils.exceptionapi.PlayerHasNoWorldException;
+import de.cubenation.plugins.utils.exceptionapi.PlayerNotFoundException;
+import de.cubenation.plugins.utils.exceptionapi.WorldNotFoundException;
 
 /**
  * Useful methodes for Bukkit Server.
@@ -35,20 +40,22 @@ public class BukkitUtils {
 
     /**
      * Returns a valid online player for a player name. On not found it will
-     * raise an IllegalStateException.
+     * raise an PlayerNotFoundException.
      * 
      * @param playerName
      *            not case-sensitive player name
      * @return valid online player
-     * @throws IllegalStateException
+     * @throws PlayerNotFoundException
      *             if player is not found or not online
      * 
      * @since 0.1.4
      */
-    public static Player getPlayerByName(String playerName) throws IllegalStateException {
+    public static Player getPlayerByName(String playerName) throws PlayerNotFoundException {
+        Validate.notEmpty(playerName, "player name cannot be null or empty");
+
         Player player = Bukkit.getPlayerExact(playerName);
         if (player == null) {
-            throw new IllegalStateException("player cannot be found");
+            throw new PlayerNotFoundException(playerName);
         }
 
         return player;
@@ -56,18 +63,20 @@ public class BukkitUtils {
 
     /**
      * Returns a valid world for a world name. On not found it will raise an
-     * IllegalStateException.
+     * WorldNotFoundException.
      * 
      * @param worldName
      *            not case-sensitive world name
      * @return valid world
-     * @throws IllegalStateException
+     * @throws WorldNotFoundException
      *             if world is not registerd on server
      */
-    public static World getWorldByName(String worldName) throws IllegalStateException {
+    public static World getWorldByName(String worldName) throws WorldNotFoundException {
+        Validate.notEmpty(worldName, "world name cannot be null or empty");
+
         World world = Bukkit.getWorld(worldName);
         if (world == null) {
-            throw new IllegalStateException("world is not registerd on server");
+            throw new WorldNotFoundException(worldName);
         }
 
         return world;
@@ -75,24 +84,27 @@ public class BukkitUtils {
 
     /**
      * Returns a valid world for a player name. Where is player is currently
-     * play. On not found it will raise an IllegalStateException.
+     * play. On not found it will raise a PlayerNotFoundException,
+     * WorldNotFoundException or PlayerHasNoWorldException.
      * 
      * @param playerName
      *            not case-sensitive player name
      * @return valid world
-     * @throws IllegalStateException
+     * @throws PlayerNotFoundException
      *             if player is not found or not online
-     * @throws IllegalStateException
-     *             if player has no world
-     * @throws IllegalStateException
+     * @throws WorldNotFoundException
      *             if world is not registerd on server
+     * @throws PlayerHasNoWorldException
+     *             if player has no world
      * 
      * @since 0.1.4
      */
-    public static World getWorldByPlayerName(String playerName) throws IllegalStateException {
+    public static World getWorldByPlayerName(String playerName) throws PlayerNotFoundException, WorldNotFoundException, PlayerHasNoWorldException {
+        Validate.notEmpty(playerName, "player name cannot be null or empty");
+
         World world = getPlayerByName(playerName).getWorld();
         if (world == null) {
-            throw new IllegalStateException("player has no world");
+            throw new PlayerHasNoWorldException(playerName);
         }
 
         return getWorldByName(world.getName());

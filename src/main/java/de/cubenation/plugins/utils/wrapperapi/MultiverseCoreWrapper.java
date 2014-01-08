@@ -1105,8 +1105,9 @@ public class MultiverseCoreWrapper {
         NONE, ALL, NETHER, END;
     }
 
-    @SuppressWarnings("serial")
     public static class PropertyDoesNotExistException extends Exception {
+        private static final long serialVersionUID = 4739997593822009017L;
+
         public PropertyDoesNotExistException(com.onarandombox.MultiverseCore.exceptions.PropertyDoesNotExistException e) {
             super(e);
         }

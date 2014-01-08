@@ -26,7 +26,7 @@ public class ChatService {
     private static final Locale defaultLocale = Locale.GERMANY;
 
     private Plugin plugin;
-    private ResourceBundle resource = null;
+    private ResourceConverter converter = null;
     private PermissionInterface permissionInterface;
 
     public ChatService(Plugin plugin) {
@@ -67,7 +67,7 @@ public class ChatService {
         }
 
         try {
-            resource = ResourceBundle.getBundle(resourceName, locale, plugin.getClass().getClassLoader(), new UTF8Control());
+            converter = new ResourceConverter(ResourceBundle.getBundle(resourceName, locale, plugin.getClass().getClassLoader(), new UTF8Control()));
         } catch (MissingResourceException e) {
             if (plugin.getLogger() != null) {
                 if (plugin.getLogger().getLevel().equals(Level.FINE)) {
@@ -99,11 +99,11 @@ public class ChatService {
     }
 
     public void one(CommandSender sender, String resourceString, Object... parameter) {
-        ChatResourceAsynchron.chat(plugin, resource, sender, resourceString, parameter);
+        ChatResourceAsynchron.chat(plugin, converter, sender, resourceString, parameter);
     }
 
     public void oneSync(CommandSender sender, String resourceString, Object... parameter) {
-        ChatResourceSynchron.chat(plugin, resource, sender, resourceString, parameter);
+        ChatResourceSynchron.chat(plugin, converter, sender, resourceString, parameter);
     }
 
     public void allText(String message) {
@@ -115,11 +115,11 @@ public class ChatService {
     }
 
     public void all(String resourceString, Object... parameter) {
-        BroadcastResourceAsynchron.chat(plugin, resource, resourceString, parameter);
+        BroadcastResourceAsynchron.chat(plugin, converter, resourceString, parameter);
     }
 
     public void allSync(String resourceString, Object... parameter) {
-        BroadcastResourceSynchron.chat(plugin, resource, resourceString, parameter);
+        BroadcastResourceSynchron.chat(plugin, converter, resourceString, parameter);
     }
 
     public void allTextPerms(String message, String[] permissions) {
@@ -127,7 +127,7 @@ public class ChatService {
     }
 
     public void allPerms(String resourceString, String[] permissions, Object... parameter) {
-        PermissionBroadcastResourceAsynchron.chat(plugin, resource, permissionInterface, resourceString, permissions, parameter);
+        PermissionBroadcastResourceAsynchron.chat(plugin, converter, permissionInterface, resourceString, permissions, parameter);
     }
 
     public void allTextPerm(String message, String permission) {
@@ -143,7 +143,7 @@ public class ChatService {
     }
 
     public void onePerms(CommandSender sender, String resourceString, String[] permissions, Object... parameter) {
-        PermissionChatResourceAsynchron.chat(plugin, resource, permissionInterface, sender, resourceString, permissions, parameter);
+        PermissionChatResourceAsynchron.chat(plugin, converter, permissionInterface, sender, resourceString, permissions, parameter);
     }
 
     public void oneTextPerm(CommandSender sender, String message, String permission) {
@@ -156,5 +156,9 @@ public class ChatService {
 
     public void setPermissionInterface(PermissionInterface permissionInterface) {
         this.permissionInterface = permissionInterface;
+    }
+
+    public ResourceConverter getResourceConverter() {
+        return converter;
     }
 }

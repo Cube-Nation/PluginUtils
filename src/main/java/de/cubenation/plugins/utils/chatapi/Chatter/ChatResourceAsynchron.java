@@ -1,18 +1,16 @@
 package de.cubenation.plugins.utils.chatapi.Chatter;
 
-import java.text.MessageFormat;
 import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
-import de.cubenation.plugins.utils.chatapi.ColorParser;
+import de.cubenation.plugins.utils.chatapi.ResourceConverter;
 
 public class ChatResourceAsynchron {
-    public static void chat(final Plugin plugin, final ResourceBundle resource, final CommandSender sender, final String resourceString,
+    public static void chat(final Plugin plugin, final ResourceConverter converter, final CommandSender sender, final String resourceString,
             final Object... parameter) {
         if (sender == null) {
             plugin.getLogger().warning("sender is null");
@@ -26,44 +24,18 @@ public class ChatResourceAsynchron {
         Bukkit.getScheduler().runTask(plugin, new Thread("ChatService->ChatResourceAsynchron") {
             @Override
             public void run() {
-                if (resource == null) {
+                if (converter == null) {
                     plugin.getLogger().severe("i18n support is disabled");
                     return;
                 }
 
+                String convertedStr = converter.convert(resourceString, parameter);
                 try {
-                    if (parameter.length > 0) {
-                        MessageFormat formatter = new MessageFormat("");
-                        formatter.setLocale(resource.getLocale());
-                        String outputString = ColorParser.replaceColor(resource.getString(resourceString));
-                        formatter.applyPattern(outputString);
-                        String formatedOutputString = formatter.format(parameter);
-
-                        formatedOutputString = formatedOutputString.replace("\r\n", "\n").replace("\r", "\n");
-                        if (formatedOutputString.contains("\n")) {
-                            for (String msg : formatedOutputString.split("\n")) {
-                                if (msg.trim().isEmpty()) {
-                                    continue;
-                                }
-                                sender.sendMessage(msg);
-                            }
-                        } else {
-                            sender.sendMessage(formatedOutputString);
+                    for (String msg : convertedStr.split("\n")) {
+                        if (msg.trim().isEmpty()) { // do not send empty lines
+                            continue;
                         }
-                    } else {
-                        String outputString = ColorParser.replaceColor(resource.getString(resourceString));
-
-                        outputString = outputString.replace("\r\n", "\n").replace("\r", "\n");
-                        if (outputString.contains("\n")) {
-                            for (String msg : outputString.split("\n")) {
-                                if (msg.trim().isEmpty()) {
-                                    continue;
-                                }
-                                sender.sendMessage(msg);
-                            }
-                        } else {
-                            sender.sendMessage(outputString);
-                        }
+                        sender.sendMessage(msg);
                     }
                 } catch (NullPointerException e) {
                     plugin.getLogger().log(Level.SEVERE, "error on ChatService->ChatResourceAsynchron(" + sender.getName() + ", " + resourceString + ")", e);

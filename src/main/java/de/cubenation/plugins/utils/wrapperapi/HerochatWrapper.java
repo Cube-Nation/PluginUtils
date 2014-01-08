@@ -1027,8 +1027,9 @@ public class HerochatWrapper {
         }
     }
 
-    @SuppressWarnings("serial")
     public static class MessageNotFoundException extends Exception {
+        private static final long serialVersionUID = -610345829513225073L;
+
         public MessageNotFoundException(com.dthielke.herochat.MessageNotFoundException e) {
             super(e);
         }

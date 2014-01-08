@@ -11,6 +11,7 @@ public class WrapperManager {
     public static final String PLUGIN_NAME_HEROCHAT = "Herochat";
     public static final String PLUGIN_NAME_MULTIVERSE_CORE = "Multiverse-Core";
     public static final String PLUGIN_NAME_PERMISSIONS_EX = "PermissionsEx";
+    public static final String PLUGIN_NAME_PLUGIN_UTILS = "PluginUtils";
     public static final String PLUGIN_NAME_SHOPKEEPERS = "Shopkeepers";
     public static final String PLUGIN_NAME_VANISH_NO_PACKET = "VanishNoPacket";
     public static final String PLUGIN_NAME_VAULT = "Vault";

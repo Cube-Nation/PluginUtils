@@ -1,15 +1,12 @@
 package de.cubenation.plugins.utils.chatapi.Chatter;
 
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
-import de.cubenation.plugins.utils.chatapi.ColorParser;
+import de.cubenation.plugins.utils.chatapi.ResourceConverter;
 
 public class ChatResourceSynchron {
-    public static void chat(Plugin plugin, ResourceBundle resource, CommandSender sender, String resourceString, Object... parameter) {
+    public static void chat(Plugin plugin, ResourceConverter converter, CommandSender sender, String resourceString, Object... parameter) {
         if (sender == null) {
             plugin.getLogger().warning("sender is null");
             return;
@@ -19,45 +16,17 @@ public class ChatResourceSynchron {
             return;
         }
 
-        if (resource == null) {
+        if (converter == null) {
             plugin.getLogger().severe("i18n support is disabled");
             return;
         }
 
-        if (parameter.length > 0) {
-            MessageFormat formatter = new MessageFormat("");
-            formatter.setLocale(resource.getLocale());
-            String outputString = ColorParser.replaceColor(resource.getString(resourceString));
-            formatter.applyPattern(outputString);
-            String formatedOutputString = formatter.format(parameter);
-
-            formatedOutputString = formatedOutputString.replace("\r\n", "\n").replace("\r", "\n");
-
-            if (formatedOutputString.contains("\n")) {
-                for (String msg : formatedOutputString.split("\n")) {
-                    if (msg.trim().isEmpty()) {
-                        continue;
-                    }
-                    sender.sendMessage(msg);
-                }
-            } else {
-                sender.sendMessage(formatedOutputString);
+        String convertedStr = converter.convert(resourceString, parameter);
+        for (String msg : convertedStr.split("\n")) {
+            if (msg.trim().isEmpty()) { // do not send empty lines
+                continue;
             }
-        } else {
-            String outputString = resource.getString(resourceString);
-
-            outputString = outputString.replace("\r\n", "\n").replace("\r", "\n");
-
-            if (outputString.contains("\n")) {
-                for (String msg : outputString.split("\n")) {
-                    if (msg.trim().isEmpty()) {
-                        continue;
-                    }
-                    sender.sendMessage(msg);
-                }
-            } else {
-                sender.sendMessage(outputString);
-            }
+            sender.sendMessage(msg);
         }
     }
 }

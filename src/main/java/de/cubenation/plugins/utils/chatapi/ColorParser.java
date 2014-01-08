@@ -34,6 +34,10 @@ public class ColorParser {
         ret = ret.replace("{RESET}", "§r");
         ret = ret.replace("{PLAIN_WHITE}", "§r");
 
+        if (ret.contains("{PRE_LAST}")) {
+            // TODO support pre last color
+        }
+
         return ret;
     }
 }

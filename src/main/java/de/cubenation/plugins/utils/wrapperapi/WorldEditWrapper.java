@@ -335,29 +335,33 @@ public class WorldEditWrapper {
         }
     }
 
-    @SuppressWarnings("serial")
     public static class MaxChangedBlocksException extends Exception {
+        private static final long serialVersionUID = -2621044030640945259L;
+
         public MaxChangedBlocksException(com.sk89q.worldedit.MaxChangedBlocksException e) {
             super(e);
         }
     }
 
-    @SuppressWarnings("serial")
     public static class InvalidSnapshotException extends Exception {
+        private static final long serialVersionUID = 7307139106494852893L;
+
         public InvalidSnapshotException(com.sk89q.worldedit.snapshots.InvalidSnapshotException e) {
             super(e);
         }
     }
 
-    @SuppressWarnings("serial")
     public static class DataException extends Exception {
+        private static final long serialVersionUID = 5806521052111023788L;
+
         public DataException(com.sk89q.worldedit.data.DataException e) {
             super(e);
         }
     }
 
-    @SuppressWarnings("serial")
     public static class IncompleteRegionException extends Exception {
+        private static final long serialVersionUID = 458988897980179094L;
+
         public IncompleteRegionException(com.sk89q.worldedit.IncompleteRegionException e) {
             super(e);
         }

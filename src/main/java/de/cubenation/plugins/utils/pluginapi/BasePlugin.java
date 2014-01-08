@@ -242,4 +242,20 @@ public abstract class BasePlugin extends JavaPlugin {
 
     protected void registerScheduledTasks(List<ScheduleTask> list) {
     }
+
+    public final PermissionService getPermissionService() {
+        return permissionService;
+    }
+
+    public final ChatService getChatService() {
+        return chatService;
+    }
+
+    public final ConfirmService getConfirmService() {
+        return confirmService;
+    }
+
+    public final CommandsManager getCommandsManager() {
+        return commandsManager;
+    }
 }

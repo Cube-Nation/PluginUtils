@@ -7,7 +7,7 @@ import de.cubenation.plugins.utils.chatapi.ResourceConverter;
  * 
  * @since 0.1.4
  */
-public class PlayerHasNoWorldException extends PlayerException {
+public class PlayerHasNoWorldException extends PlayerException implements DefaultMessageableException {
     private static final long serialVersionUID = -8188422360259682682L;
 
     public PlayerHasNoWorldException(String playerName) {

@@ -7,7 +7,7 @@ import de.cubenation.plugins.utils.chatapi.ResourceConverter;
  * 
  * @since 0.1.4
  */
-public class WorldNotFoundException extends WorldException {
+public class WorldNotFoundException extends WorldException implements DefaultMessageableException {
     private static final long serialVersionUID = 8644075630695257338L;
 
     public WorldNotFoundException(String worldName) {

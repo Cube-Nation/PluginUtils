@@ -7,7 +7,7 @@ import de.cubenation.plugins.utils.chatapi.ResourceConverter;
  * 
  * @since 0.1.4
  */
-public class PlayerNotFoundException extends PlayerException {
+public class PlayerNotFoundException extends PlayerException implements DefaultMessageableException {
     private static final long serialVersionUID = -5776382275660492845L;
 
     public PlayerNotFoundException(String playerName) {

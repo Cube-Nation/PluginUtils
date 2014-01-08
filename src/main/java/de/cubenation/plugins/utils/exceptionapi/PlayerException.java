@@ -5,7 +5,7 @@ package de.cubenation.plugins.utils.exceptionapi;
  * 
  * @since 0.1.4
  */
-public abstract class PlayerException extends DefaultMessageableException {
+public abstract class PlayerException extends MessageableException {
     private static final long serialVersionUID = 4101207331381341559L;
 
     private final String playerName;

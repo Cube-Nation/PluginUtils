@@ -5,7 +5,7 @@ package de.cubenation.plugins.utils.exceptionapi;
  * 
  * @since 0.1.4
  */
-public abstract class WorldException extends DefaultMessageableException {
+public abstract class WorldException extends MessageableException {
     private static final long serialVersionUID = 5923209673221758907L;
 
     private final String worldName;

@@ -34,7 +34,8 @@ public class BukkitUtils {
     }
 
     /**
-     * Returns a valid online player for a player name.
+     * Returns a valid online player for a player name. On not found it will
+     * raise an IllegalStateException.
      * 
      * @param playerName
      *            not case-sensitive player name
@@ -54,8 +55,27 @@ public class BukkitUtils {
     }
 
     /**
+     * Returns a valid world for a world name. On not found it will raise an
+     * IllegalStateException.
+     * 
+     * @param worldName
+     *            not case-sensitive world name
+     * @return valid world
+     * @throws IllegalStateException
+     *             if world is not registerd on server
+     */
+    public static World getWorldByName(String worldName) throws IllegalStateException {
+        World world = Bukkit.getWorld(worldName);
+        if (world == null) {
+            throw new IllegalStateException("world is not registerd on server");
+        }
+
+        return world;
+    }
+
+    /**
      * Returns a valid world for a player name. Where is player is currently
-     * play.
+     * play. On not found it will raise an IllegalStateException.
      * 
      * @param playerName
      *            not case-sensitive player name
@@ -75,11 +95,6 @@ public class BukkitUtils {
             throw new IllegalStateException("player has no world");
         }
 
-        World checkedWorld = Bukkit.getWorld(world.getName());
-        if (checkedWorld == null) {
-            throw new IllegalStateException("world is not registerd on server");
-        }
-
-        return world;
+        return getWorldByName(world.getName());
     }
 }

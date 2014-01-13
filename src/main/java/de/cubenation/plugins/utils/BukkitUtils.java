@@ -2,7 +2,9 @@ package de.cubenation.plugins.utils;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import de.cubenation.plugins.utils.exceptionapi.PlayerHasNoWorldException;
@@ -108,5 +110,27 @@ public class BukkitUtils {
         }
 
         return getWorldByName(world.getName());
+    }
+
+    /**
+     * TODO
+     * 
+     * @param world
+     * @param x
+     * @param z
+     * @return
+     * 
+     * @since 0.1.4
+     */
+    public static int getYOfHeighestSetBlock(World world, int x, int z) {
+        for (int y = world.getMaxHeight(); y > 0; y--) {
+            Block block = world.getBlockAt(x, y, z);
+            if (!block.getType().equals(Material.AIR) && !block.getType().equals(Material.BEDROCK)) {
+
+                return y;
+            }
+        }
+
+        return -1;
     }
 }

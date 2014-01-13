@@ -123,6 +123,8 @@ public class BukkitUtils {
      * @since 0.1.4
      */
     public static int getYOfHeighestSetBlock(World world, int x, int z) {
+        Validate.notNull(world, "world cannot be null");
+
         for (int y = world.getMaxHeight(); y > 0; y--) {
             Block block = world.getBlockAt(x, y, z);
             if (!block.getType().equals(Material.AIR) && !block.getType().equals(Material.BEDROCK)) {

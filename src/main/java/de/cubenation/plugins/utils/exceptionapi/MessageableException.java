@@ -13,6 +13,10 @@ public abstract class MessageableException extends Exception {
         super(message);
     }
 
+    public MessageableException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public final String getLocaleMessage(BasePlugin plugin) {
         Validate.notNull(plugin, "plugin cannot be null");
 

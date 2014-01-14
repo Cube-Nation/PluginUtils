@@ -113,12 +113,15 @@ public class BukkitUtils {
     }
 
     /**
-     * TODO
+     * Return the heightest y pos of placed block.
      * 
      * @param world
+     *            world for check
      * @param x
+     *            x for check
      * @param z
-     * @return
+     *            z for check
+     * @return y position. -1, if not found.
      * 
      * @since 0.1.4
      */
@@ -134,5 +137,20 @@ public class BukkitUtils {
         }
 
         return -1;
+    }
+
+    /**
+     * Return the heightest y pos of placed block.
+     * 
+     * @param block
+     *            block for check
+     * @return y position. -1, if not found.
+     * 
+     * @since 0.1.4
+     */
+    public static int getYOfHeighestSetBlock(Block block) {
+        Validate.notNull(block, "block cannot be null");
+
+        return getYOfHeighestSetBlock(block.getWorld(), block.getX(), block.getZ());
     }
 }

@@ -55,6 +55,9 @@ public class WrapperManager {
     }
 
     public static boolean isPluginEnabled(String pluginName) {
-        return Bukkit.getServer().getPluginManager().isPluginEnabled(pluginName);
+        if (Bukkit.getServer().getPluginManager() != null) {
+            return Bukkit.getServer().getPluginManager().isPluginEnabled(pluginName);
+        }
+        return false;
     }
 }

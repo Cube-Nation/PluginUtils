@@ -23,6 +23,9 @@ import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.T
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMethodExceptionNoParameter;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMethodExceptionString;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMethodExceptionStringArray;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMethodMessageableExceptionNoParameter;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMethodMessageableExceptionString;
+import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMethodMessageableExceptionStringArray;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandMultiAnnotation;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandOtherException;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.exception.TestInvalidCommandWrongConstructor;
@@ -343,6 +346,66 @@ public class CommandExceptionTest extends AbstractTest {
         executeComannd("/test");
 
         assertEquals(1, s.length());
+
+        Assert.assertEquals(0, chatList.size());
+    }
+
+    @Test
+    public void testCommandMethodMessageableExceptionStringArray() throws CommandException {
+        final StringBuffer s = new StringBuffer();
+        commandsManager.setErrorHandler(new ErrorHandler() {
+            @Override
+            public void onError(Throwable thrown) {
+                s.append("E");
+            }
+        });
+        commandsManager.add(TestInvalidCommandMethodMessageableExceptionStringArray.class);
+
+        assertEquals(0, s.length());
+
+        executeComannd("/test");
+
+        assertEquals(0, s.length());
+
+        Assert.assertEquals(0, chatList.size());
+    }
+
+    @Test
+    public void testCommandMethodMessageableExceptionString() throws CommandException {
+        final StringBuffer s = new StringBuffer();
+        commandsManager.setErrorHandler(new ErrorHandler() {
+            @Override
+            public void onError(Throwable thrown) {
+                s.append(thrown.toString());
+            }
+        });
+        commandsManager.add(TestInvalidCommandMethodMessageableExceptionString.class);
+
+        assertEquals(0, s.length());
+
+        executeComannd("/test 5");
+
+        assertEquals(0, s.length());
+
+        Assert.assertEquals(0, chatList.size());
+    }
+
+    @Test
+    public void testCommandMethodMessageableExceptionNoParameter() throws CommandException {
+        final StringBuffer s = new StringBuffer();
+        commandsManager.setErrorHandler(new ErrorHandler() {
+            @Override
+            public void onError(Throwable thrown) {
+                s.append("E");
+            }
+        });
+        commandsManager.add(TestInvalidCommandMethodMessageableExceptionNoParameter.class);
+
+        assertEquals(0, s.length());
+
+        executeComannd("/test");
+
+        assertEquals(0, s.length());
 
         Assert.assertEquals(0, chatList.size());
     }

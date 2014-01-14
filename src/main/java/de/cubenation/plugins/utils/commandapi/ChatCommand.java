@@ -1,5 +1,6 @@
 package de.cubenation.plugins.utils.commandapi;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -15,6 +16,7 @@ import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import de.cubenation.plugins.utils.PluginUtils;
 import de.cubenation.plugins.utils.chatapi.ChatService;
 import de.cubenation.plugins.utils.commandapi.annotation.Asynchron;
 import de.cubenation.plugins.utils.commandapi.annotation.Command;
@@ -30,7 +32,10 @@ import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandExecutionException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.exception.NoPermissionException;
+import de.cubenation.plugins.utils.exceptionapi.DefaultMessageableException;
+import de.cubenation.plugins.utils.exceptionapi.MessageableException;
 import de.cubenation.plugins.utils.permissionapi.PermissionInterface;
+import de.cubenation.plugins.utils.pluginapi.BasePlugin;
 import de.cubenation.plugins.utils.wrapperapi.WrapperManager;
 
 public class ChatCommand {
@@ -425,38 +430,11 @@ public class ChatCommand {
                         TaskManager.syncTask();
                     }
 
-                    try {
-                        method.invoke(instance, arguments.toArray());
-                    } catch (Exception e) {
-                        boolean writeError = false;
-                        boolean isError = true;
-                        if (e instanceof IllegalArgumentException) {
-                            if (args.length == 1) {
-                                try {
-                                    method.invoke(instance, arguments.get(0), args[0]);
-                                    isError = false;
-                                } catch (Exception e1) {
-                                    writeError = true;
-                                    logError(e1);
-                                }
-                            } else if (args.length == 0) {
-                                try {
-                                    method.invoke(instance, arguments.get(0));
-                                    isError = false;
-                                } catch (Exception e1) {
-                                    writeError = true;
-                                    logError(e1);
-                                }
-                            }
-                        }
-
-                        if (isError && !writeError) {
-                            logError(e);
-                        }
-                    }
+                    executeExact(sender, args, arguments);
 
                     TaskManager.removeTask();
                 }
+
             };
 
             Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
@@ -484,6 +462,82 @@ public class ChatCommand {
 
                 throw new CommandExecutionException(instance.getClass(), "error on execute " + method.getName(), e);
             }
+        }
+    }
+
+    private void executeExact(CommandSender sender, String[] args, ArrayList<Object> arguments) {
+        try {
+            // player & string[]
+            method.invoke(instance, arguments.toArray());
+        } catch (InvocationTargetException e) {
+            if (e.getCause() != null && e.getCause() instanceof MessageableException) {
+                chatCustomError(sender, (MessageableException) e.getCause());
+            } else {
+                executeLike(sender, args, arguments, e);
+            }
+        } catch (Exception e) {
+            executeLike(sender, args, arguments, e);
+        }
+    }
+
+    private void chatCustomError(CommandSender sender, MessageableException e) {
+        try {
+            if (e instanceof DefaultMessageableException) {
+                if (WrapperManager.isPluginEnabled(WrapperManager.PLUGIN_NAME_PLUGIN_UTILS)) {
+                    PluginUtils plugin = (PluginUtils) Bukkit.getServer().getPluginManager().getPlugin(WrapperManager.PLUGIN_NAME_PLUGIN_UTILS);
+
+                    ((BasePlugin) plugin).getChatService().oneText(sender, e.getLocaleMessage((BasePlugin) plugin));
+                }
+            } else if (plugin != null && plugin instanceof BasePlugin && ((BasePlugin) plugin).getChatService() != null) {
+                ((BasePlugin) plugin).getChatService().oneText(sender, e.getLocaleMessage((BasePlugin) plugin));
+            }
+        } catch (Exception e1) {
+        }
+    }
+
+    private void executeLike(CommandSender sender, String[] args, ArrayList<Object> arguments, Exception e) {
+        boolean writeError = false;
+        boolean isError = true;
+        if (e instanceof IllegalArgumentException) {
+            if (args.length == 1) {
+                try {
+                    // player & string
+                    method.invoke(instance, arguments.get(0), args[0]);
+                    isError = false;
+                } catch (InvocationTargetException e1) {
+                    if (e1.getCause() != null && e1.getCause() instanceof MessageableException) {
+                        chatCustomError(sender, (MessageableException) e1.getCause());
+                        isError = false;
+                    } else {
+                        writeError = true;
+                        logError(e1);
+                    }
+                } catch (Exception e1) {
+                    writeError = true;
+                    logError(e1);
+                }
+            } else if (args.length == 0) {
+                try {
+                    // player
+                    method.invoke(instance, arguments.get(0));
+                    isError = false;
+                } catch (InvocationTargetException e1) {
+                    if (e1.getCause() != null && e1.getCause() instanceof MessageableException) {
+                        chatCustomError(sender, (MessageableException) e1.getCause());
+                        isError = false;
+                    } else {
+                        writeError = true;
+                        logError(e1);
+                    }
+                } catch (Exception e1) {
+                    writeError = true;
+                    logError(e1);
+                }
+            }
+        }
+
+        if (isError && !writeError) {
+            logError(e);
         }
     }
 

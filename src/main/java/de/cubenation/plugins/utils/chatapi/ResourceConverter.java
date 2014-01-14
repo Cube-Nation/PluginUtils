@@ -35,7 +35,7 @@ public class ResourceConverter {
                 if (WrapperManager.isPluginEnabled(WrapperManager.PLUGIN_NAME_PLUGIN_UTILS)) {
                     PluginUtils plugin = (PluginUtils) Bukkit.getServer().getPluginManager().getPlugin(WrapperManager.PLUGIN_NAME_PLUGIN_UTILS);
 
-                    paramList.add(((MessageableException) param).getLocaleMessage(plugin.getChatService().getResourceConverter()));
+                    paramList.add(((MessageableException) param).getLocaleMessage(plugin));
                 } else {
                     paramList.add(param);
                 }

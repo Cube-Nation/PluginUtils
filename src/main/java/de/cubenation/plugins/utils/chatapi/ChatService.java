@@ -81,10 +81,23 @@ public class ChatService {
                                     + resourceName
                                     + "_"
                                     + locale.getLanguage()
-                                    + ".properties, "
-                                    + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? resourceName + "_" + locale.getLanguage() + "_"
+                                    + ".properties"
+                                    + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? ", " + resourceName + "_" + locale.getLanguage() + "_"
                                             + locale.getCountry() + ".properties" : ""), e);
                     plugin.getLogger().warning("i18n disabled");
+                }
+            } else {
+                if (plugin.getLogger() == null || (plugin.getLogger() != null && plugin.getLogger().getLevel().equals(Level.FINE))) {
+                    System.out.println("could not load one of the i18n resource files: "
+                            + resourceName
+                            + ".properties, "
+                            + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? resourceName + "_" + locale.getCountry() + ".properties, " : "")
+                            + resourceName
+                            + "_"
+                            + locale.getLanguage()
+                            + ".properties"
+                            + (locale.getCountry() != null && !locale.getCountry().isEmpty() ? ", " + resourceName + "_" + locale.getLanguage() + "_"
+                                    + locale.getCountry() + ".properties" : ""));
                 }
             }
         }

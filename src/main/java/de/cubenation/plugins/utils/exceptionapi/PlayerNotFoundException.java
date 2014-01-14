@@ -1,5 +1,7 @@
 package de.cubenation.plugins.utils.exceptionapi;
 
+import org.apache.commons.lang.Validate;
+
 import de.cubenation.plugins.utils.chatapi.ResourceConverter;
 
 /**
@@ -16,6 +18,8 @@ public class PlayerNotFoundException extends PlayerException implements DefaultM
 
     @Override
     public String getLocaleMessage(ResourceConverter converter) {
+        Validate.notNull(converter, "converter cannot be null");
+
         return converter.convert("exception.player.notFoundOrNotOnline", getPlayerName());
     }
 }

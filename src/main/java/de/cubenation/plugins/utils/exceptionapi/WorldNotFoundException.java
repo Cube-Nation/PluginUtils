@@ -1,5 +1,7 @@
 package de.cubenation.plugins.utils.exceptionapi;
 
+import org.apache.commons.lang.Validate;
+
 import de.cubenation.plugins.utils.chatapi.ResourceConverter;
 
 /**
@@ -16,6 +18,8 @@ public class WorldNotFoundException extends WorldException implements DefaultMes
 
     @Override
     public String getLocaleMessage(ResourceConverter converter) {
+        Validate.notNull(converter, "converter cannot be null");
+
         return converter.convert("exception.world.notFound", getWorldName());
     }
 }

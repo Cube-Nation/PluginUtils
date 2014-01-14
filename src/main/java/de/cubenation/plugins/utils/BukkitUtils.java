@@ -131,7 +131,6 @@ public class BukkitUtils {
         for (int y = world.getMaxHeight(); y > 0; y--) {
             Block block = world.getBlockAt(x, y, z);
             if (!block.getType().equals(Material.AIR) && !block.getType().equals(Material.BEDROCK)) {
-
                 return y;
             }
         }
@@ -152,5 +151,46 @@ public class BukkitUtils {
         Validate.notNull(block, "block cannot be null");
 
         return getYOfHeighestSetBlock(block.getWorld(), block.getX(), block.getZ());
+    }
+
+    /**
+     * Return the heightest y pos of solid placed block.
+     * 
+     * @param world
+     *            world for check
+     * @param x
+     *            x for check
+     * @param z
+     *            z for check
+     * @return y position. -1, if not found.
+     * 
+     * @since 0.1.4
+     */
+    public static int getYOfHeighestSetSolidBlock(World world, int x, int z) {
+        Validate.notNull(world, "world cannot be null");
+
+        for (int y = world.getMaxHeight(); y > 0; y--) {
+            Block block = world.getBlockAt(x, y, z);
+            if (!block.getType().equals(Material.AIR) && !block.getType().equals(Material.BEDROCK) && block.getType().isSolid()) {
+                return y;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Return the heightest y pos of solid placed block.
+     * 
+     * @param block
+     *            block for check
+     * @return y position. -1, if not found.
+     * 
+     * @since 0.1.4
+     */
+    public static int getYOfHeighestSetSolidBlock(Block block) {
+        Validate.notNull(block, "block cannot be null");
+
+        return getYOfHeighestSetSolidBlock(block.getWorld(), block.getX(), block.getZ());
     }
 }

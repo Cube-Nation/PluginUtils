@@ -13,7 +13,7 @@ public class WorldNotFoundException extends WorldException implements DefaultMes
     private static final long serialVersionUID = 8644075630695257338L;
 
     public WorldNotFoundException(String worldName) {
-        super("world is not registerd on server", worldName);
+        super("world " + worldName + " is not registerd on server", worldName);
     }
 
     @Override

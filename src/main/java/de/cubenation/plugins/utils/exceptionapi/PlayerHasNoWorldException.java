@@ -13,7 +13,7 @@ public class PlayerHasNoWorldException extends PlayerException implements Defaul
     private static final long serialVersionUID = -8188422360259682682L;
 
     public PlayerHasNoWorldException(String playerName) {
-        super("player has no world", playerName);
+        super("player " + playerName + " has no world", playerName);
     }
 
     @Override

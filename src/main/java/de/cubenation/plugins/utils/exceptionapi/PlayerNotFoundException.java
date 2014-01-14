@@ -13,7 +13,7 @@ public class PlayerNotFoundException extends PlayerException implements DefaultM
     private static final long serialVersionUID = -5776382275660492845L;
 
     public PlayerNotFoundException(String playerName) {
-        super("player cannot be found", playerName);
+        super("player " + playerName + " cannot be found", playerName);
     }
 
     @Override

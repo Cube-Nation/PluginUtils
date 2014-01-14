@@ -8,7 +8,7 @@ public class PluginNotEnabledException extends PluginException implements Defaul
     private static final long serialVersionUID = -7856851799777016425L;
 
     public PluginNotEnabledException(String pluginName) {
-        super("plugin is not enabled", pluginName);
+        super("plugin " + pluginName + " is not enabled", pluginName);
     }
 
     @Override

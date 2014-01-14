@@ -41,6 +41,23 @@ public class BukkitUtils {
     }
 
     /**
+     * Check if the player is offline
+     * 
+     * @param playerName
+     *            not case-sensitive player name
+     * @return True, if the player is offline, otherwise false. Also false if
+     *         playerName is null or empty.
+     * 
+     * @since 0.1.4
+     */
+    public static boolean isPlayerOffline(String playerName) {
+        if (playerName == null || playerName.isEmpty()) {
+            return false;
+        }
+        return !isPlayerOnline(playerName);
+    }
+
+    /**
      * Returns a valid online player for a player name. On not found it will
      * raise an PlayerNotFoundException.
      * 

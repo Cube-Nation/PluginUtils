@@ -323,6 +323,8 @@ For easy extend, overwrite following hook methods:
 - registerScheduledTasks
 - createCustomErrorHandler
 
+![Used Pattern](src/docs/pattern.png)
+
 # WrapperApi #
 Use WrapperApi for third party plugin integration. So it wouldn't need `depend` configuration in plugin.yml.
 Before use, check WrapperManager.isPluginEnabled if plugin is available.

@@ -1,0 +1,11 @@
+digraph G {
+  node [shape=box];
+  subgraph clusterPattern {
+    label = "Pattern";
+    v1[label="Services"];
+    v2[label="Commands"];
+    v3[label="EventListener"];
+    v2 -> v1;
+    v3 -> v1;
+  }
+}

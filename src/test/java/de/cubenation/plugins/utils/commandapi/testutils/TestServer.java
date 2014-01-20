@@ -613,4 +613,19 @@ public class TestServer implements Server {
     public SimpleCommandMap getCommandMap() {
         return null;
     }
+
+    @Override
+    public int getIdleTimeout() {
+        return 0;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public org.bukkit.UnsafeValues getUnsafe() {
+        return null;
+    }
+
+    @Override
+    public void setIdleTimeout(int arg0) {
+    }
 }

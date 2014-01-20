@@ -515,6 +515,9 @@ public class WorldEditWrapper {
         public static final int VINE = com.sk89q.worldedit.blocks.BlockID.VINE;
         public static final int SIGN_POST = com.sk89q.worldedit.blocks.BlockID.SIGN_POST;
         public static final int CHEST = com.sk89q.worldedit.blocks.BlockID.CHEST;
+        public static final int COBBLESTONE_WALL = com.sk89q.worldedit.blocks.BlockID.COBBLESTONE_WALL;
+        public static final int LIGHTSTONE = com.sk89q.worldedit.blocks.BlockID.LIGHTSTONE;
+        // TODO
     };
 
     public static class ServerInterface {

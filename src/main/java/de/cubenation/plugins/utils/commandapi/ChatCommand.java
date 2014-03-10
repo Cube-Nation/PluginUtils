@@ -236,8 +236,8 @@ public class ChatCommand {
     }
 
     public boolean isExactCommand(CommandSender sender, String mainName, String subName, int argSize) {
-        boolean senderArg = false || (sender instanceof Player && isPlayerSender && (worlds.isEmpty() || worlds.contains(((Player) sender).getWorld().getName()
-                .toLowerCase())));
+        boolean senderArg = false || (sender instanceof Player && isPlayerSender && (worlds.isEmpty() || (((Player) sender).getWorld() != null && worlds
+                .contains(((Player) sender).getWorld().getName().toLowerCase()))));
         senderArg = senderArg || (sender instanceof ConsoleCommandSender && isConsoleSender);
         senderArg = senderArg
                 || (sender instanceof BlockCommandSender && isBlockSender && (worlds.isEmpty() || worlds.contains(((BlockCommandSender) sender).getBlock()

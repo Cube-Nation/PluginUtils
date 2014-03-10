@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 
@@ -11,30 +14,37 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandManagerException;
 import de.cubenation.plugins.utils.commandapi.exception.CommandWarmUpException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
 import de.cubenation.plugins.utils.commandapi.testutils.TestCommand;
-import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
-import de.cubenation.plugins.utils.commandapi.testutils.TestServer;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.tab.TestWarn;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.tab.TestWarnServeralSub;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.tab.TestWarnWithoutEmpty;
 
 public class CommandTabCompleteTest extends AbstractTest {
-    private TestPlayer testPlayer1;
-    private TestPlayer testPlayer2;
+    private Player testPlayer1;
+    private Player testPlayer2;
 
     @Before
     @Override
     public void setUp() throws CommandWarmUpException, CommandManagerException {
         super.setUp();
 
-        testPlayer1 = new TestPlayer("checkPlayer");
-        testPlayer2 = new TestPlayer("testPlayer");
-        ((TestServer) Bukkit.getServer()).setOnlinePlayers(new Player[] { testPlayer1, testPlayer2 });
+        testPlayer1 = mock(Player.class);
+        when(testPlayer1.getName()).thenReturn("checkPlayer");
+        testPlayer2 = mock(Player.class);
+        when(testPlayer2.getName()).thenReturn("testPlayer");
+
+        doAnswer(new Answer<Player[]>() {
+            public Player[] answer(InvocationOnMock invocation) {
+                return new Player[] { testPlayer1, testPlayer2 };
+            }
+        }).when(Bukkit.getServer()).getOnlinePlayers();
     }
 
     @Test

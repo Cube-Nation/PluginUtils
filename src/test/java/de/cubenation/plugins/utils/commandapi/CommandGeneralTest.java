@@ -1,18 +1,23 @@
 package de.cubenation.plugins.utils.commandapi;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.command.BlockCommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.RemoteConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
-import de.cubenation.plugins.utils.commandapi.testutils.TestBlock;
-import de.cubenation.plugins.utils.commandapi.testutils.TestBlockCommandSender;
-import de.cubenation.plugins.utils.commandapi.testutils.TestConsoleCommandSender;
-import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
-import de.cubenation.plugins.utils.commandapi.testutils.TestRemoteConsole;
-import de.cubenation.plugins.utils.commandapi.testutils.TestWorld;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.GeneralTestCommand;
 
 public class CommandGeneralTest extends AbstractTest {
@@ -32,12 +37,16 @@ public class CommandGeneralTest extends AbstractTest {
     public void testGeneralCommand2() throws CommandException {
         commandsManager.add(GeneralTestCommand.class);
 
-        executeComannd("/test", new TestConsoleCommandSender() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
+        ConsoleCommandSender sender = mock(ConsoleCommandSender.class);
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                chatList.add((String) args[0]);
+                return null;
             }
-        });
+        }).when(sender).sendMessage(anyString());
+
+        executeComannd("/test", sender);
 
         Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
@@ -49,18 +58,24 @@ public class CommandGeneralTest extends AbstractTest {
     public void testGeneralCommand3() throws CommandException {
         commandsManager.add(GeneralTestCommand.class);
 
-        executeComannd("/test", new TestBlockCommandSender() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
+        BlockCommandSender blockCommandSender = mock(BlockCommandSender.class);
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                chatList.add((String) args[0]);
+                return null;
             }
-        });
-        executeComannd("/test", new TestRemoteConsole() {
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
+        }).when(blockCommandSender).sendMessage(anyString());
+        RemoteConsoleCommandSender remoteConsoleCommandSender = mock(RemoteConsoleCommandSender.class);
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                chatList.add((String) args[0]);
+                return null;
             }
-        });
+        }).when(remoteConsoleCommandSender).sendMessage(anyString());
+        executeComannd("/test", blockCommandSender);
+        executeComannd("/test", remoteConsoleCommandSender);
 
         Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
@@ -72,22 +87,18 @@ public class CommandGeneralTest extends AbstractTest {
     public void testGeneralCommand4() throws CommandException {
         commandsManager.add(GeneralTestCommand.class);
 
-        executeComannd("/test 5", new TestPlayer() {
-            @Override
-            public World getWorld() {
-                return new TestWorld() {
-                    @Override
-                    public String getName() {
-                        return "world1";
-                    }
-                };
+        World world = mock(World.class);
+        when(world.getName()).thenReturn("world1");
+        Player sender = mock(Player.class);
+        when(sender.getWorld()).thenReturn(world);
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                chatList.add((String) args[0]);
+                return null;
             }
-
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        }).when(sender).sendMessage(anyString());
+        executeComannd("/test 5", sender);
 
         Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
@@ -99,22 +110,19 @@ public class CommandGeneralTest extends AbstractTest {
     public void testGeneralCommand5() throws CommandException {
         commandsManager.add(GeneralTestCommand.class);
 
-        executeComannd("/test 5", new TestPlayer() {
-            @Override
-            public World getWorld() {
-                return new TestWorld() {
-                    @Override
-                    public String getName() {
-                        return "world2";
-                    }
-                };
+        World world = mock(World.class);
+        when(world.getName()).thenReturn("world2");
+        Player sender = mock(Player.class);
+        when(sender.getWorld()).thenReturn(world);
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                chatList.add((String) args[0]);
+                return null;
             }
+        }).when(sender).sendMessage(anyString());
 
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test 5", sender);
 
         Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
@@ -126,17 +134,22 @@ public class CommandGeneralTest extends AbstractTest {
     public void testGeneralCommand6() throws CommandException {
         commandsManager.add(GeneralTestCommand.class);
 
-        executeComannd("/test 6 5 7", new TestPlayer() {
-            @Override
-            public boolean hasPermission(String name) {
-                return "perm1".equals(name);
+        Player sender = mock(Player.class);
+        doAnswer(new Answer<Boolean>() {
+            public Boolean answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                return "perm1".equals((String) args[0]);
             }
+        }).when(sender).hasPermission(anyString());
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                chatList.add((String) args[0]);
+                return null;
+            }
+        }).when(sender).sendMessage(anyString());
 
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test 6 5 7", sender);
 
         Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
@@ -148,27 +161,21 @@ public class CommandGeneralTest extends AbstractTest {
     public void testGeneralCommand7() throws CommandException {
         commandsManager.add(GeneralTestCommand.class);
 
-        executeComannd("/test3 5", new TestBlockCommandSender() {
-            @Override
-            public Block getBlock() {
-                return new TestBlock() {
-                    @Override
-                    public World getWorld() {
-                        return new TestWorld() {
-                            @Override
-                            public String getName() {
-                                return "world4";
-                            }
-                        };
-                    }
-                };
+        World world = mock(World.class);
+        when(world.getName()).thenReturn("world4");
+        Block block = mock(Block.class);
+        when(block.getWorld()).thenReturn(world);
+        BlockCommandSender sender = mock(BlockCommandSender.class);
+        when(sender.getBlock()).thenReturn(block);
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                chatList.add((String) args[0]);
+                return null;
             }
+        }).when(sender).sendMessage(anyString());
 
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test3 5", sender);
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());

@@ -1,14 +1,20 @@
 package de.cubenation.plugins.utils.commandapi;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import de.cubenation.plugins.utils.commandapi.exception.CommandException;
 import de.cubenation.plugins.utils.commandapi.testutils.AbstractTest;
-import de.cubenation.plugins.utils.commandapi.testutils.TestPlayer;
-import de.cubenation.plugins.utils.commandapi.testutils.TestWorld;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.world.TestValidCommandMultiWorld1;
 import de.cubenation.plugins.utils.commandapi.testutils.testcommands.world.TestValidCommandOneWorld;
 
@@ -17,22 +23,19 @@ public class CommandWorldTest extends AbstractTest {
     public void testValidOneWorldCommand() throws CommandException {
         commandsManager.add(TestValidCommandOneWorld.class);
 
-        executeComannd("/test", new TestPlayer() {
-            @Override
-            public World getWorld() {
-                return new TestWorld() {
-                    @Override
-                    public String getName() {
-                        return "world";
-                    }
-                };
+        World world = mock(World.class);
+        when(world.getName()).thenReturn("world");
+        Player sender = mock(Player.class);
+        when(sender.getWorld()).thenReturn(world);
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                chatList.add((String) args[0]);
+                return null;
             }
+        }).when(sender).sendMessage(anyString());
 
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test", sender);
 
         Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
@@ -44,33 +47,25 @@ public class CommandWorldTest extends AbstractTest {
     public void testValidMultiWorldCommand() throws CommandException {
         commandsManager.add(TestValidCommandMultiWorld1.class);
 
-        executeComannd("/test", new TestPlayer() {
-            @Override
-            public World getWorld() {
-                return new TestWorld() {
-                    @Override
-                    public String getName() {
-                        return "world1";
-                    }
-                };
-            }
-        });
-        executeComannd("/test", new TestPlayer() {
-            @Override
-            public World getWorld() {
-                return new TestWorld() {
-                    @Override
-                    public String getName() {
-                        return "world2";
-                    }
-                };
-            }
+        World world1 = mock(World.class);
+        when(world1.getName()).thenReturn("world1");
+        Player sender1 = mock(Player.class);
+        when(sender1.getWorld()).thenReturn(world1);
 
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
+        World world2 = mock(World.class);
+        when(world2.getName()).thenReturn("world2");
+        Player sender2 = mock(Player.class);
+        when(sender2.getWorld()).thenReturn(world2);
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                chatList.add((String) args[0]);
+                return null;
             }
-        });
+        }).when(sender2).sendMessage(anyString());
+
+        executeComannd("/test", sender1);
+        executeComannd("/test", sender2);
 
         Assert.assertEquals(0, chatList.size());
         Assert.assertEquals(1, testValid.size());
@@ -82,23 +77,19 @@ public class CommandWorldTest extends AbstractTest {
     public void testInvalidOneWorldCommand() throws CommandException {
         commandsManager.add(TestValidCommandOneWorld.class);
 
-        executeComannd("/test", new TestPlayer() {
-            @Override
-            public World getWorld() {
-                return new TestWorld() {
-                    @Override
-                    public String getName() {
-                        return "world0";
-                    }
-
-                };
+        World world = mock(World.class);
+        when(world.getName()).thenReturn("world0");
+        Player sender = mock(Player.class);
+        when(sender.getWorld()).thenReturn(world);
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                chatList.add((String) args[0]);
+                return null;
             }
+        }).when(sender).sendMessage(anyString());
 
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test", sender);
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());
@@ -110,23 +101,19 @@ public class CommandWorldTest extends AbstractTest {
     public void testInvalidMultiWorldCommand() throws CommandException {
         commandsManager.add(TestValidCommandMultiWorld1.class);
 
-        executeComannd("/test", new TestPlayer() {
-            @Override
-            public World getWorld() {
-                return new TestWorld() {
-                    @Override
-                    public String getName() {
-                        return "world0";
-                    }
-
-                };
+        World world = mock(World.class);
+        when(world.getName()).thenReturn("world0");
+        Player sender = mock(Player.class);
+        when(sender.getWorld()).thenReturn(world);
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                Object[] args = invocation.getArguments();
+                chatList.add((String) args[0]);
+                return null;
             }
+        }).when(sender).sendMessage(anyString());
 
-            @Override
-            public void sendMessage(String message) {
-                chatList.add(message);
-            }
-        });
+        executeComannd("/test", sender);
 
         Assert.assertEquals(0, testValid.size());
         Assert.assertEquals(1, chatList.size());

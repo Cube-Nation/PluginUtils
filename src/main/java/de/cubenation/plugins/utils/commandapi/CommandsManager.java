@@ -319,9 +319,11 @@ public class CommandsManager {
             }
 
             if (addPlayer) {
-                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    if (player.getName().toLowerCase().startsWith(firstArg.toLowerCase())) {
-                        tabArray.put(player.getName(), player.getName());
+                if (Bukkit.getServer().getOnlinePlayers() != null) {
+                    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                        if (player.getName().toLowerCase().startsWith(firstArg.toLowerCase())) {
+                            tabArray.put(player.getName(), player.getName());
+                        }
                     }
                 }
             }

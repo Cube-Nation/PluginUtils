@@ -5,7 +5,6 @@ import java.util.List;
 import javax.persistence.PersistenceException;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import com.avaje.ebean.EbeanServer;
 import com.avaje.ebean.EbeanServerFactory;
@@ -17,7 +16,7 @@ import com.avaje.ebeaninternal.server.ddl.DdlGenerator;
 public class AbstractDatabaseTest extends AbstractTest {
     protected EbeanServer dbConnection;
 
-    public void setUp(JavaPlugin plugin) {
+    public void setUp(List<Class<?>> classes) {
         super.setUp();
 
         ServerConfig db = new ServerConfig();
@@ -25,7 +24,7 @@ public class AbstractDatabaseTest extends AbstractTest {
         Bukkit.getServer().configureDbConfig(db);
         db.setDefaultServer(false);
         db.setRegister(false);
-        db.setClasses(plugin.getDatabaseClasses());
+        db.setClasses(classes);
         db.setName("test");
 
         dbConnection = EbeanServerFactory.create(db);
@@ -35,8 +34,8 @@ public class AbstractDatabaseTest extends AbstractTest {
         }
 
         try {
-            for (Class<?> classes : plugin.getDatabaseClasses()) {
-                dbConnection.find(classes).findRowCount();
+            for (Class<?> clas : classes) {
+                dbConnection.find(clas).findRowCount();
             }
         } catch (PersistenceException ex) {
             SpiEbeanServer serv = (SpiEbeanServer) dbConnection;
@@ -46,8 +45,8 @@ public class AbstractDatabaseTest extends AbstractTest {
         }
 
         // delete data from before runnig tests
-        for (Class<?> classes : plugin.getDatabaseClasses()) {
-            Query<?> query = dbConnection.find(classes);
+        for (Class<?> clas : classes) {
+            Query<?> query = dbConnection.find(clas);
 
             List<?> beans = query.findList();
 

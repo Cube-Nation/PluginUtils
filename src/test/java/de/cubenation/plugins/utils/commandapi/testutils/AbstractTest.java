@@ -3,21 +3,16 @@ package de.cubenation.plugins.utils.commandapi.testutils;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.junit.After;
 import org.junit.Before;
 import org.mockito.invocation.InvocationOnMock;
@@ -39,43 +34,7 @@ public abstract class AbstractTest {
     @Before
     public void setUp() throws CommandWarmUpException, CommandManagerException {
         if (Bukkit.getServer() == null) {
-            Server server = mock(Server.class);
-            when(server.getName()).thenReturn("Test Server");
-            when(server.getVersion()).thenReturn("1.0");
-            when(server.getBukkitVersion()).thenReturn("1.0");
-
-            Logger serverLogger = Logger.getLogger("TestServer");
-            when(server.getLogger()).thenReturn(serverLogger);
-
-            BukkitScheduler scheduler = mock(BukkitScheduler.class);
-            doAnswer(new Answer<Object>() {
-                public Object answer(InvocationOnMock invocation) {
-                    Object[] args = invocation.getArguments();
-                    final Runnable task = (Runnable) args[1];
-
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(50);
-                            } catch (InterruptedException e) {
-                            }
-                            task.run();
-                        }
-                    }.start();
-                    return null;
-                }
-            }).when(scheduler).runTask(any(Plugin.class), any(Runnable.class));
-            doAnswer(new Answer<Object>() {
-                public Object answer(InvocationOnMock invocation) {
-                    Object[] args = invocation.getArguments();
-                    Runnable task = (Runnable) args[1];
-                    task.run();
-                    return null;
-                }
-            }).when(scheduler).runTaskAsynchronously(any(Plugin.class), any(Runnable.class));
-
-            when(server.getScheduler()).thenReturn(scheduler);
+            Server server = de.cubenation.plugins.utils.testapi.AbstractTest.getServer();
 
             Bukkit.setServer(server);
         }

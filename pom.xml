@@ -148,7 +148,6 @@
 			<artifactId>mockito-all</artifactId>
 			<version>1.9.5</version>
 			<type>jar</type>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
